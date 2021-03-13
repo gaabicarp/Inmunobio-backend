@@ -7,7 +7,7 @@ app= Flask(__name__)
 app.config.from_object(config)
 
 dbMongo = MongoAlchemy(app)
-dbSQL = SQLAlchemy(app)
+db = SQLAlchemy(app)
 
 class Usuarios(dbMongo.Document):
 	nombre = dbMongo.StringField()
@@ -19,6 +19,10 @@ def Prueba():
 	nuevo.save()
 
 	usuario = Usuarios.query.filter(Usuarios.nombre == "Nadia").first()
-	return usuario.mail
+
+	from mysql.usuario.prueba import Prueba
+	p = Prueba.query.filter_by(id=1).first()
+	return f"Mysql: {p.prueba} Mongo: {usuario.mail}"
+
 if __name__ == "__main__":
-	app.run(debug="true")
+    app.run(port=8080)
