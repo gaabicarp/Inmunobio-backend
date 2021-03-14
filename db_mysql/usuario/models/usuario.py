@@ -17,20 +17,21 @@ class Usuario(db.Model):
 	habilitado = db.Column(db.Boolean, default = True, nullable=True)
 	direccion = db.Column(String(50))
 	telefono = db.Column(String(120))
+	apodo = db.Column(String(100))
 	id_permisos = db.relationship('Permiso',secondary =permisoXUsuario, backref = db.backref('permisos'),lazy = 'dynamic')
 	
 
-	def __init__(self, nombre, contrasenia,direccion,telefono):
+	def __init__(self, nombre, contrasenia,direccion,telefono,apodo):
 		self.nombre = nombre
 		self.contrasenia = contrasenia
 		self.direccion = direccion
 		self.telefono = telefono
+		self.apodo = apodo
 		
 	def __repr__(self):
 		return f"{self.id}||Nombre:{self.nombre} \n direccion:{self.direccion} \n  Telefono:{self.telefono}"
 		
-#db.create_all()
-#db.session.commit()
+
 
 class Permiso(db.Model):
     __tablename__ = 'permisos'
