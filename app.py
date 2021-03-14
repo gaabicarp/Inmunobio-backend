@@ -9,6 +9,7 @@ app.config.from_object(config)
 dbMongo = MongoAlchemy(app)
 db = SQLAlchemy(app)
 
+from db_mysql.usuario.models.usuario import *
 class Usuarios(dbMongo.Document):
 	nombre = dbMongo.StringField()
 	mail = dbMongo.StringField()
@@ -20,7 +21,7 @@ def Prueba():
 
 	usuario = Usuarios.query.filter(Usuarios.nombre == "Nadia").first()
 
-	from mysql.usuario.prueba import Prueba
+	from db_mysql.usuario.prueba import Prueba
 	p = Prueba.query.filter_by(id=1).first()
 	return f"Mysql: {p.prueba} Mongo: {usuario.mail}"
 
