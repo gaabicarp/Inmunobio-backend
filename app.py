@@ -9,10 +9,8 @@ app.config.from_object(config)
 
 dbMongo = MongoAlchemy(app)
 db = SQLAlchemy(app)
-Migrate(app,db)
+Migrate(app,db, compare_type=True)
 
-db.create_all()
-db.session.commit()
 from db_mysql.usuario.models.usuario import *
 
 class Usuarios(dbMongo.Document):
@@ -21,16 +19,16 @@ class Usuarios(dbMongo.Document):
 
 @app.route("/")
 def Prueba():
-	nuevo = Usuarios(nombre="Emmanuel", mail="alcaraz.emmanuel@gmail.com")
-	nuevo.save()
+	from db_mysql.usuario.models.usuario import Usuario, Permiso
+	u = Usuario.query.limit(1).all()
+	p = Permiso.query.limit(5).all()
+	return f"{p}"
 
-	usuario = Usuarios.query.filter(Usuarios.nombre == "Nadia").first()
-
-	from db_mysql.usuario.prueba import Prueba
-	p = Prueba.query.filter_by(id=1).first()
-	#compare_type=True
-
-	return f"Mysql: {p.prueba} Mongo: {usuario.mail}"
+@app.route('/llenar_msyql')
+def llenar_msyql():
+	from db_mysql.usuario.models.sql_script import MysqlScript
+	p = MysqlScript
+	p.ScriptLlenarTablas()
 
 if __name__ == "__main__":
     app.run(port=8080)
