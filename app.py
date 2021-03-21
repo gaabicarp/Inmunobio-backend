@@ -1,6 +1,9 @@
 from flask import Flask
 import config
 from flask_migrate import Migrate
+from flask_jwt import JWT
+
+from security import authenticate, identity
 from db import db, dbMongo
 
 #from models import *
@@ -21,6 +24,8 @@ from resources.usuarios import Usuarios
 from resources.usuariosXUsername import UsuarioxUsername
 
 api = Api(app)
+jwt = JWT(app, authenticate, identity) 
+
 api.add_resource(Usuarios, '/api/usuarios')
 api.add_resource(UsuarioxUsername, '/api/usuario/<string:username>')
 
@@ -31,9 +36,9 @@ api.add_resource(UsuarioxUsername, '/api/usuario/<string:username>')
 @app.route("/")
 def Prueba():
 	from models.usuario import Usuario, Permiso
-	u = Usuario.query.limit(1).all()
+	u = Usuario.find_by_username('naye')
 	p = Permiso.query.limit(5).all()
-	return f"{p}"
+	return f"{u}"
 
 @app.route('/llenar_msyql')
 def llenar_msyql():
