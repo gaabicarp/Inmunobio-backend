@@ -2,7 +2,7 @@ from flask import Flask
 from sqlalchemy import Boolean, Column, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy import DateTime, Integer, String, Text, Float, Boolean
-from app import db
+from db import db
 
 permisoXUsuario = db.Table('permisosxUsuarios', 
     db.Column('usuario_id', db.Integer, db.ForeignKey('usuarios.id')),

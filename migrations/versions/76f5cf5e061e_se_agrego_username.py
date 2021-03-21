@@ -1,8 +1,8 @@
-"""Se agregaron los campos username y mail
+"""se agrego username
 
-Revision ID: 9ec4ee498a00
+Revision ID: 76f5cf5e061e
 Revises: 
-Create Date: 2021-03-20 21:18:56.582550
+Create Date: 2021-03-21 01:26:32.137210
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '9ec4ee498a00'
+revision = '76f5cf5e061e'
 down_revision = None
 branch_labels = None
 depends_on = None

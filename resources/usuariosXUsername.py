@@ -1,4 +1,4 @@
-from db_mysql.usuario.models import Usuario
+from models.usuario import Usuario
 from flask_restful import Resource,Api
 
 
