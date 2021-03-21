@@ -1,16 +1,12 @@
 from flask import Flask
-from flask_mongoalchemy import MongoAlchemy
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 import config
 from models import *
 
 app= Flask(__name__)
 app.config.from_object(config)
 
-dbMongo = MongoAlchemy(app)
-db = SQLAlchemy(app)
-Migrate(app,db, compare_type=True)
+
+
 
 ############################ Api configuracion
 from flask_restful import Resource, Api
