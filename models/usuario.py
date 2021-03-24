@@ -43,6 +43,12 @@ class Usuario(db.Model):
             'direccion':self.direccion,
             'telefono':self.telefono
             }
+        
+    def jsonPerm(self):
+        perms = {}
+        for permiso in self.id_permisos:
+            perms[permiso.id] = permiso.descripcion
+        return perms        
 
     @classmethod
     def find_by_username(cls, username):
@@ -66,5 +72,6 @@ class Permiso(db.Model):
 
     def json(self):
         return {'descripcion': self.descripcion}
+
 
 

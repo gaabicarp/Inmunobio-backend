@@ -11,3 +11,5 @@ class UsuarioxUsername(Resource):
 		if usuario:
 			return usuario.json()
 		return {'name': 'None'},404
+
+
