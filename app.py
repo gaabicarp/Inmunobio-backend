@@ -13,6 +13,8 @@ app.config.from_object(config)
 
 ############################db configuracion
 db.init_app(app)
+with app.app_context():
+    db.create_all()
 dbMongo.init_app(app)
 Migrate(app,db,compare_type=True)
 
@@ -31,9 +33,7 @@ api.add_resource(UsuarioxUsername, '/api/usuario/<string:username>')
 
 ############################
 
-
-
-@app.route("/")
+@app.route("/")|
 def Prueba():
 	from models.usuario import Usuario, Permiso
 	u = Usuario.find_by_username('naye')
@@ -45,6 +45,8 @@ def llenar_msyql():
 	from models.sql_script import MysqlScript
 	p = MysqlScript
 	p.ScriptLlenarTablas()
+
+	
 if __name__ == "__main__":
 	
 	if app.config['DEBUG']:

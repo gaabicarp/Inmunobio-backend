@@ -18,7 +18,7 @@ class MysqlScript:
         db.session.add_all([superusuarios, directorCentro, jefe, directorProyecto, tecnico])
         db.session.commit()
 
-        emmanuel = Usuario('Emmanuel', 'emmanuel', 'emmanuel@emmauel.com', q1w2e3r4', 'Dirección 1', '12312121')
+        emmanuel = Usuario('Emmanuel', 'emmanuel', 'emmanuel@emmauel.com', 'q1w2e3r4', 'Dirección 1', '12312121')
         naye = Usuario('Naye', 'naye', 'naye@naye.com', 'q1w2e3r4','Dirección 2', '12312121')
         db.session.add_all([emmanuel, naye])
         db.session.commit()
