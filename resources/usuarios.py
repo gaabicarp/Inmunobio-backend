@@ -50,10 +50,11 @@ class UsuariosXIdUsuario(Resource):
             return {'Status':'ok'}
         return {'name': 'None'},404
     
-class PermisosXIdUsuario(Resource):
+    
+""" class PermisosXIdUsuario(Resource):
 	@jwt_required()
 	def get(self, id):
-		#no hice la busqueda por username, me parecio mejor hacerla por id ya que es unico ->VER
+		no hice la busqueda por username, me parecio mejor hacerla por id ya que es unico ->VER
 		usuario = Usuario.find_by_id(id)
 		permisos = {}
 		if usuario:
@@ -62,7 +63,7 @@ class PermisosXIdUsuario(Resource):
 				permisos[permiso.id] = permiso.descripcion      
 			return jsonify(permisos)
 				
-		return  {'name': 'None'},404
+		return  {'name': 'None'},404 """
 
 
 class NuevoUsuario(Resource):

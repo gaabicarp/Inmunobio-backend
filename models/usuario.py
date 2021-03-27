@@ -41,7 +41,8 @@ class Usuario(db.Model):
             'mail':self.mail,
             'habilitado':self.habilitado,
             'direccion':self.direccion,
-            'telefono':self.telefono
+            'telefono':self.telefono,
+            'permisos':self.id_permisos
             }
  
 
