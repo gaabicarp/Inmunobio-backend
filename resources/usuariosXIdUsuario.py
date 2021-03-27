@@ -6,12 +6,14 @@ from db import db
 
 class UsuariosXIdUsuario(Resource):
 
-    #@jwt_required()
+     #@jwt_required()
     def get(self, id):
         usuario = Usuario.find_by_id(id)
         if usuario:
             return usuario.json()
         return {'name': 'None'},404
+    
+   #  @jwt_required()
     def post(self,id):
 
         datos = request.get_json(silent=True)
@@ -27,7 +29,7 @@ class UsuariosXIdUsuario(Resource):
             db.session.commit()
             return {'Status':'ok'}
         return {'name': 'None'},404
-        
+    #@jwt_required()
     def put(self,id):
         modificaciones = request.get_json()
         #aca los parametros pueden ser direccion y/o telefono y/o mail y/o contraseña

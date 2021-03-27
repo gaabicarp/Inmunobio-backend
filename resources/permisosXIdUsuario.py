@@ -4,7 +4,7 @@ from flask_jwt import jwt_required
 from flask import jsonify, request
 
 class PermisosXIdUsuario(Resource):
-	@jwt_required()
+	#@jwt_required()
 	def get(self, id):
 		#no hice la busqueda por username, me parecio mejor hacerla por id ya que es unico ->VER
 		usuario = Usuario.find_by_id(id)
