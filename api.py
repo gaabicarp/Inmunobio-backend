@@ -5,7 +5,6 @@ from resources.permisosXIdUsuario import PermisosXIdUsuario
 from resources.usuariosXIdUsuario import UsuariosXIdUsuario
 from resources.nuevoUsuario import NuevoUsuario
 api = Api()
-#nojwt = JWT(app, authenticate, identity) 
 
 api.add_resource(Usuarios, '/api/usuarios')
 api.add_resource(UsuarioxUsername, '/api/usuario/<string:username>')

@@ -6,7 +6,7 @@ from db import db
 
 class NuevoUsuario(Resource):
     
-    #@jwt_required()
+    @jwt_required()
     def post(self):
         datos = request.get_json(silent=True)
         if (datos):
