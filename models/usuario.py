@@ -67,7 +67,7 @@ class Permiso(db.Model):
         return f"El permiso es {self.descripcion} y tiene su número de id es {self.id}"
 
     def json(self):
-        return {'descripcion': self.descripcion}
+        return {'id':self.id,'descripcion': self.descripcion}
 
 
 
