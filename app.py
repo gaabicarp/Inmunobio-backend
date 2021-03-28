@@ -41,7 +41,6 @@ def llenar_msyql():
 	p.ScriptLlenarTablas()
 
 if __name__ == "__main__":
-	
 	if app.config['DEBUG']:
 		@app.before_first_request
 		def create_tables():
