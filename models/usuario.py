@@ -30,6 +30,8 @@ class Usuario(db.Model):
         self.password = password
         self.direccion = direccion
         self.telefono = telefono
+
+        
         
     def __repr__(self):
         return f"{self.id}||Nombre:{self.nombre} \r\n direccion:{self.direccion} \r\n  Telefono:{self.telefono} \r\n Username: {self.username} \r\n password: {self.password}, Permisos: {self.id_permisos[0]}"
@@ -68,6 +70,14 @@ class Permiso(db.Model):
         permisoSchema = PermisoSchema()
         return jsonify(permisoSchema.dump(self))
 
+    @classmethod
+    def find_by_id(cls, _id):
+        return cls.query.filter_by(id=_id).first()
+        
+    @classmethod
+    def all_permisos(cls):
+        permisos = cls.query.all()
+        return jsonify(Permisoschema().dump(permisos, many=True))
 
 
 from marshmallow import Schema, fields

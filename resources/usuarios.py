@@ -1,15 +1,14 @@
-from models.usuario import Usuario,  UsuarioSchema
+from models.usuario import Usuario,  UsuarioSchema, Permiso
 from flask_restful import Resource,Api
 from flask_jwt import jwt_required
 from flask import jsonify, request
 from db import db
-
+import json
 class Usuarios(Resource):
 
     def get(self):
         usuarios = Usuario.find_usuarios_Habilitados()
         if usuarios:
-           # return UsuarioSchema().dump(usuarios)
            return usuarios 
         return {'name': 'None'},404
         
@@ -62,9 +61,11 @@ class UsuariosXIdUsuario(Resource):
 
 class NuevoUsuario(Resource):
     
-    @jwt_required()
+   # @jwt_required()
     def post(self):
         datos = request.get_json(silent=True)
+        permisos= []
+
         if (datos):
             nombre = datos['nombre']
             username = datos['username']
@@ -73,12 +74,33 @@ class NuevoUsuario(Resource):
             direccion = datos['direccion']
             telefono = datos['telefono']
             usuario = Usuario(nombre , username , mail,password,direccion ,telefono )
+
+            for dato in datos['permisos']:
+                    permiso = Permiso.find_by_id(dato['id'])
+                    permisos.append(permiso)
+            if(len(permisos) == len(datos['permisos'])):
+                usuario.id_permisos = permisos
             db.session.add(usuario)
             db.session.commit()
             return {'Status':'ok'},200
         return {'name': 'None'},404
-   
-    
+
+     #@jwt_required()
+    def put(self):
+        permisos= []
+        datos = request.get_json(silent=True)
+        if(datos):
+            usuario = Usuario.find_by_id(datos['id'])
+            if(usuario):
+                for dato in datos['permisos']:
+                    permiso = Permiso.find_by_id(dato['id'])
+                    permisos.append(permiso)
+                if(len(permisos) == len(datos['permisos'])):
+                    usuario.id_permisos = permisos
+                    db.session.add(usuario)
+                    db.session.commit()
+        return {'name': 'None'}, 404
+
 class UsuarioxUsername(Resource):
 	@jwt_required()
 	def get(self, username):
