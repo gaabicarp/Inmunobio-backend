@@ -19,6 +19,8 @@ dbMongo.init_app(app)
 
 Migrate(app,db,compare_type=True)
 
+nojwt = JWT(app, authenticate, identity) 
+
 ############################ Api configuracion
 api.init_app(app)
 
