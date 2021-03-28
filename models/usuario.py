@@ -46,6 +46,11 @@ class Usuario(db.Model):
     def find_by_id(cls, _id):
         return cls.query.filter_by(id=_id).first()
         
+    @classmethod
+    def find_usuarios_Habilitados(cls):
+        usuarios = cls.query.filter_by(habilitado=1).all()
+        return jsonify(UsuarioSchema().dump(usuarios, many=True))
+
 class Permiso(db.Model):
     
     __tablename__='permisos'
