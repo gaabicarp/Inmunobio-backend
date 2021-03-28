@@ -45,6 +45,11 @@ class Usuario(db.Model):
     @classmethod
     def find_by_id(cls, _id):
         return cls.query.filter_by(id=_id).first()
+
+    @classmethod
+    def find_usuarios_Habilitados(cls):
+        usuarios = cls.query.filter_by(habilitado=1).all()
+        return jsonify(UsuarioSchema().dump(usuarios, many=True))
         
 class Permiso(db.Model):
     
@@ -63,6 +68,9 @@ class Permiso(db.Model):
         permisoSchema = PermisoSchema()
         return jsonify(permisoSchema.dump(self))
 
+    @classmethod
+    def find_by_id(cls, _id):
+        return cls.query.filter_by(id=_id).first()
 
 
 from marshmallow import Schema, fields
@@ -80,11 +88,3 @@ class UsuarioSchema(Schema):
     direccion = fields.Str()
     telefono = fields.Str()
     id_permisos = fields.Nested(PermisoSchema, many=True)
-
-
-
-
-
-
-
-
