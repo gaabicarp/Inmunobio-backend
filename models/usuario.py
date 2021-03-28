@@ -3,6 +3,7 @@ from sqlalchemy import Boolean, Column, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy import DateTime, Integer, String, Text, Float, Boolean
 from db import db
+from flask import jsonify
 
 permisoXUsuario = db.Table('permisosxUsuarios', 
     db.Column('usuario_id', db.Integer, db.ForeignKey('usuarios.id')),
@@ -31,18 +32,11 @@ class Usuario(db.Model):
         self.telefono = telefono
         
     def __repr__(self):
-        return f"{self.id}||Nombre:{self.nombre} \r\n direccion:{self.direccion} \r\n  Telefono:{self.telefono} \r\n Username: {self.username} \r\n password: {self.password}"
+        return f"{self.id}||Nombre:{self.nombre} \r\n direccion:{self.direccion} \r\n  Telefono:{self.telefono} \r\n Username: {self.username} \r\n password: {self.password}, Permisos: {self.id_permisos[0]}"
 
     def json(self):
-        return {
-            'nombre':self.nombre,
-            'username':self.username,
-            'password':self.password,
-            'mail':self.mail,
-            'habilitado':self.habilitado,
-            'direccion':self.direccion,
-            'telefono':self.telefono
-            }
+        usuarioSchema = UsuarioSchema()
+        return jsonify(usuarioSchema.dump(self))
 
     @classmethod
     def find_by_username(cls, username):
@@ -53,6 +47,7 @@ class Usuario(db.Model):
         return cls.query.filter_by(id=_id).first()
         
 class Permiso(db.Model):
+    
     __tablename__='permisos'
     __table_args__ = {'mysql_engine':'InnoDB','mysql_charset':'utf8','mysql_collate':'utf8_general_ci' }
     id = db.Column(db.Integer, primary_key=True)
@@ -63,8 +58,33 @@ class Permiso(db.Model):
 
     def __repr__(self):
         return f"El permiso es {self.descripcion} y tiene su número de id es {self.id}"
-
+    
     def json(self):
-        return {'descripcion': self.descripcion}
+        permisoSchema = PermisoSchema()
+        return jsonify(permisoSchema.dump(self))
+
+
+
+from marshmallow import Schema, fields
+class PermisoSchema(Schema):
+    id = fields.Str()
+    descripcion = fields.Str()
+
+class UsuarioSchema(Schema):
+    id = fields.Str(dump_only=True)
+    username = fields.Str()
+    mail = fields.Str()
+    nombre = fields.Str()
+    password = fields.Str()
+    habilitado = fields.Int()
+    direccion = fields.Str()
+    telefono = fields.Str()
+    id_permisos = fields.Nested(PermisoSchema, many=True)
+
+
+
+
+
+
 
 
