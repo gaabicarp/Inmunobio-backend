@@ -12,7 +12,6 @@ class Usuarios(Resource):
            return usuarios 
         return {'name': 'None'},404
         
-
 class UsuariosXIdUsuario(Resource):
 
     #@jwt_required()
@@ -44,21 +43,6 @@ class UsuariosXIdUsuario(Resource):
             return {'Status':'ok'}
         return {'name': 'None'},404
     
-""" class PermisosXIdUsuario(Resource):
-	@jwt_required()
-	def get(self, id):
-		no hice la busqueda por username, me parecio mejor hacerla por id ya que es unico ->VER
-		usuario = Usuario.find_by_id(id)
-		permisos = {}
-		if usuario:
-		
-			for permiso in usuario.id_permisos:
-				permisos[permiso.id] = permiso.descripcion      
-			return jsonify(permisos)
-				
-		return  {'name': 'None'},404 """
-
-
 class NuevoUsuario(Resource):
     
    # @jwt_required()
@@ -73,7 +57,7 @@ class NuevoUsuario(Resource):
             mail = datos['mail']
             direccion = datos['direccion']
             telefono = datos['telefono']
-            usuario = Usuario(nombre , username , mail,password,direccion ,telefono )
+            usuario = Usuario(nombre, username, mail, password, direccion, telefono)
 
             for dato in datos['permisos']:
                     permiso = Permiso.find_by_id(dato['id'])
@@ -109,4 +93,24 @@ class UsuarioxUsername(Resource):
 		if usuario:
 			return usuario.json()
 		return {'name': 'None'},404
+
+
+class ActualizarPermisos(Resource):
+    #@jwt_required()
+    def put(self):
+        permisos= []
+        datos = request.get_json(silent=True)
+        if(datos):
+            usuario = Usuario.find_by_id(datos['id'])
+            if(usuario):
+                for dato in datos['permisos']:
+                    permiso = Permiso.find_by_id(dato['id'])
+                    permisos.append(permiso)
+                if(len(permisos) == len(datos['permisos'])):
+                    usuario.id_permisos = permisos
+                    db.session.add(usuario)
+                    db.session.commit()
+                    return usuario.json()
+        return {'name': 'None'}, 404
+
 

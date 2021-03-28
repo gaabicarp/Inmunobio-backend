@@ -32,7 +32,8 @@ def Prueba():
 	from models.usuario import Usuario, Permiso
 	u = Usuario.find_by_username('naye')
 	p = Permiso.query.limit(5).all()
-	return f"{u}"
+	f = Usuario.find_usuarios_Habilitados()
+	return f"{f}"
 
 @app.route('/llenar_msyql')
 def llenar_msyql():
