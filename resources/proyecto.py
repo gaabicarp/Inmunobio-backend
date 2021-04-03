@@ -2,6 +2,7 @@ from models.mongo.proyecto import Proyecto
 from flask_restful import Resource,Api
 from flask_jwt import jwt_required
 from flask import jsonify, request
+from dateutil import parser
 import json
 
 class Proyectos(Resource):
@@ -16,10 +17,14 @@ class NuevoProyecto(Resource):
 
     # @jwt_required()
     def post(self):
-        datos = request.get_json(silent=True)
+        datos = request.get_json()
 
         if (datos):
-            nuevoProyecto = Proyecto(datos['nombre'], datos['descripcion'], datos['montoInicial'])
+            nuevoProyecto = Proyecto()
+            nuevoProyecto.nombre = datos['nombre']
+            nuevoProyecto.descripcion = datos['descripcion']
+            nuevoProyecto.montoInicial = datos['montoInicial']
+
             nuevoProyecto.guardar()
-            return {'Status':'ok'},200
+            return {'Status':'ok', 'Proyecto':nuevoProyecto.json()},200
         return {'name': datos},404
