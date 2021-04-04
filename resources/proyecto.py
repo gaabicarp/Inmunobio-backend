@@ -4,7 +4,8 @@ from flask_jwt import jwt_required
 from flask import jsonify, request
 from dateutil import parser
 import json
-
+from marshmallow import ValidationError
+from pprint import pprint
 class Proyectos(Resource):
 
     def get(self):
@@ -18,17 +19,14 @@ class NuevoProyecto(Resource):
     # @jwt_required()
     def post(self):
         datos = request.get_json()
-
-        if (datos):
+        if datos:
             schemaProyecto = ProyectoSchema()
-            nuevoProyecto = schemaProyecto.load(datos)
-            #nuevoProyecto = Proyecto()
-            #nuevoProyecto.nombre = datos['nombre']
-            #nuevoProyecto.descripcion = datos['descripcion']
-            #nuevoProyecto.montoInicial = datos['montoInicial']
-
-            nuevoProyecto.save()
-            return {'Status':'ok'},200
+            try:
+                dictProyecto = schemaProyecto.load(datos)
+                dictProyecto.save()
+                return {'Status':'ok'},200
+            except ValidationError as err:
+                return {'error': err.messages},404
         return {'name': datos},404
 
 class ProyectoID(Resource):

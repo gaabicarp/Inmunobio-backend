@@ -1,6 +1,6 @@
 from db import dbMongo
 import datetime
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, post_load, ValidationError
 from bson import ObjectId
 from dateutil import parser
 from flask import jsonify
@@ -14,8 +14,15 @@ class Proyecto(dbMongo.Document):
     finalizado = dbMongo.BooleanField(default=False)
     montoInicial = dbMongo.DecimalField()
     conclusion = dbMongo.StringField()
+    participantes = dbMongo.FieldList(dbMongo.IntField())
+    idDirectorProyecto = dbMongo.IntField()
 
     def guardar(self):
+        self.save()
+    
+    def crearProyecto(self, datos):
+        self.codigoProyecto = datos['codigoProyecto']
+        self.nombre = datos['nombre']
         self.save()
 
     @classmethod
@@ -29,23 +36,38 @@ class Proyecto(dbMongo.Document):
     @classmethod
     def find_by_nombre(cls, _nombre):
         return cls.objects(nombre = _nombre).first()
+    
+    @classmethod
+    def cerrarProyecto(cls, _idProyecto, conclusion):
+        proyecto = cls.objects(idProyecto = _idProyecto).first()
+        proyecto.conclusion = conclusion
+        proyecto.
 
     def json(self):
         proyectoSchema = ProyectoSchema()
         return proyectoSchema.dump(self)
 
-Schema.TYPE_MAPPING[ObjectId] = fields.String
+#Schema.TYPE_MAPPING[ObjectId] = fields.String
 class ProyectoSchema(Schema):
     idProyecto = fields.Str()
-    codigoProyecto = fields.Str()
-    nombre = fields.Str()
+    codigoProyecto = fields.Str(
+        required=True,
+        error_messages={"required": {"message": "Se necesita el código del proyecto", "code": 400}},
+        )
+    nombre = fields.Str(
+        required=True,
+        error_messages={"required": {"message": "Se necesita ingresar el nombre del proyecto", "code": 400}},
+    )
     descripcion = fields.Str()
     fechaInicio = fields.DateTime()
     fechaFinal = fields.DateTime()
     finalizado = fields.Boolean()
-    montoInicial = fields.Float()
+    montoInicial = fields.Float(
+        required=True,
+        error_messages={"required": {"message": "Se necesita ingresar un monto inicial", "code": 400}},
+        )
     conclusion = fields.Str()
 
-    class Meta:
-        model : Proyecto
-        #datetimeformat = '%Y-%m-%dT%H:%M:%SZ'
+    @post_load
+    def make_Proyecto(self, data, **kwargs):
+        return Proyecto(**data)
