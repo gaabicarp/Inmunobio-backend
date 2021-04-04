@@ -4,7 +4,10 @@ from marshmallow import Schema, fields, post_load, ValidationError
 from bson import ObjectId
 from dateutil import parser
 from flask import jsonify
+from models.mysql.usuario import Usuario
+ 
 class Proyecto(dbMongo.Document):
+
     idProyecto = dbMongo.SequenceField()
     codigoProyecto = dbMongo.StringField()
     nombre = dbMongo.StringField()
@@ -27,7 +30,8 @@ class Proyecto(dbMongo.Document):
 
     @classmethod
     def find_all(cls):
-        return cls.objects.filter(finalizado=False).all()
+        return jsonify(ProyectoSchema().dump(cls.objects.filter(finalizado=False).all(), many=True))
+        
 
     @classmethod
     def find_by_id(cls, id):
@@ -54,6 +58,10 @@ class Proyecto(dbMongo.Document):
     def json(self):
         proyectoSchema = ProyectoSchema()
         return proyectoSchema.dump(self)
+    @classmethod
+    def agregarMiembros(self):
+        usuariosIdPermitidas = Usuario.find_usuarios_Habilitados()
+        return usuariosIdPermitidas
 
 class ProyectoSchema(Schema):
     idProyecto = fields.Str()
@@ -66,6 +74,8 @@ class ProyectoSchema(Schema):
         error_messages={"required": {"message": "Se necesita ingresar el nombre del proyecto", "code": 400}},
     )
     descripcion = fields.Str()
+    participantes = fields.List(fields.Int())
+    idDirectorProyecto = fields.Int()
     fechaInicio = fields.DateTime()
     fechaFinal = fields.DateTime()
     finalizado = fields.Boolean()
@@ -88,6 +98,8 @@ class ProyectoCerradoSchema(Schema):
     nombre = fields.Str()
     descripcion = fields.Str()
     fechaInicio = fields.DateTime()
+    participantes = fields.List(fields.Int())
+    idDirectorProyecto = fields.Int()
     fechaFinal = fields.DateTime()
     finalizado = fields.Boolean()
     montoInicial = fields.Float()
@@ -103,6 +115,8 @@ class ProyectoModificarSchema(Schema):
     )
     codigoProyecto = fields.Str()
     nombre = fields.Str()
+    participantes = fields.List(fields.Int())
+    idDirectorProyecto = fields.Int()
     descripcion = fields.Str(
         required=True,
         error_messages={"required": {"message": "Es necesaria una descripcion. Este campo puede estar vacío", "code": 400}},

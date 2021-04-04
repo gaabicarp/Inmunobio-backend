@@ -45,16 +45,18 @@ class Usuario(db.Model):
     @classmethod
     def find_by_id(cls, _id):
         return cls.query.filter_by(id=_id).first()
-
-    @classmethod
-    def find_usuarios_Habilitados(cls):
-        usuarios = cls.query.filter_by(habilitado=1).all()
-        return jsonify(UsuarioSchema().dump(usuarios, many=True))
         
     @classmethod
-    def find_usuarios_Proyecto(cls):
-        usuarios = Usuario.query.filter(~Usuario.id_permisos.any(Permiso.id.in_([4])))
-        return usuarios
+    def find_usuarios_Habilitados(cls):
+        return  cls.query.filter_by(habilitado=1).all()
+    
+    @classmethod
+    def usuariosSinElPermiso(cls,idPermiso):
+        return Usuario.query.filter(~Usuario.id_permisos.any(Permiso.id.in_([idPermiso])))
+     
+        
+
+
 
 class Permiso(db.Model):
     

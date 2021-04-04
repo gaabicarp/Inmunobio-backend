@@ -5,17 +5,11 @@ from flask import jsonify, request
 from db import db
 import json
 
-class UsuariosProyecto(Resource):
-    
-    def get(self):
-        usuarios = Usuario.find_usuarios_Proyecto()
-        return jsonify(UsuarioSchema().dump(usuarios, many=True))
 class Usuarios(Resource):
-
     def get(self):
         usuarios = Usuario.find_usuarios_Habilitados()
         if usuarios:
-           return usuarios 
+           return jsonify(UsuarioSchema().dump(usuarios, many=True)) 
         return {'name': 'None'},404
         
 class UsuariosXIdUsuario(Resource):
@@ -119,4 +113,11 @@ class ActualizarPermisos(Resource):
                     return usuario.json()
         return {'name': 'None'}, 404
 
+
+class ObtenerUsuariosParaProyecto(Resource):
+
+    def get(self):
+       return jsonify(UsuarioSchema().dump(Usuario.usuariosSinElPermiso(4), many=True))
+
+        
 
