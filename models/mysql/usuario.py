@@ -30,8 +30,6 @@ class Usuario(db.Model):
         self.password = password
         self.direccion = direccion
         self.telefono = telefono
-
-        
         
     def __repr__(self):
         return f"{self.id}||Nombre:{self.nombre} \r\n direccion:{self.direccion} \r\n  Telefono:{self.telefono} \r\n Username: {self.username} \r\n password: {self.password}, Permisos: {self.id_permisos[0]}"
@@ -54,9 +52,9 @@ class Usuario(db.Model):
         return jsonify(UsuarioSchema().dump(usuarios, many=True))
         
     @classmethod
-    def find_usuarios_Habilitados(cls):
-        usuarios = cls.query.filter_by(habilitado=1).all()
-        return jsonify(UsuarioSchema().dump(usuarios, many=True))
+    def find_usuarios_Proyecto(cls):
+        usuarios = Usuario.query.filter(~Usuario.id_permisos.any(Permiso.id.in_([4])))
+        return usuarios
 
 class Permiso(db.Model):
     

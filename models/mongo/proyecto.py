@@ -14,7 +14,7 @@ class Proyecto(dbMongo.Document):
     finalizado = dbMongo.BooleanField(default=False)
     montoInicial = dbMongo.DecimalField()
     conclusion = dbMongo.StringField()
-    participantes = dbMongo.FieldList(dbMongo.IntField())
+    participantes = dbMongo.ListField(dbMongo.IntField())
     idDirectorProyecto = dbMongo.IntField()
 
     def guardar(self):
@@ -38,16 +38,23 @@ class Proyecto(dbMongo.Document):
         return cls.objects(nombre = _nombre).first()
     
     @classmethod
-    def cerrarProyecto(cls, _idProyecto, conclusion):
-        proyecto = cls.objects(idProyecto = _idProyecto).first()
-        proyecto.conclusion = conclusion
-        proyecto.
-
+    def cerrarProyecto(cls, datos):
+        proyecto = cls.objects(idProyecto = datos['idProyecto']).update(
+            set__conclusion = datos['conclusion'],
+            set__finalizado = True,
+            set__fechaFinal = parser.parse(str(datetime.datetime.utcnow()))
+        )
+    
+    @classmethod
+    def modificarProyecto(cls, datos):
+        if datos['descripcion'].strip() != "":
+            proyecto = cls.objects(idProyecto =datos['idProyecto']).update(set__descripcion = datos['descripcion'])
+        proyecto = cls.objects(idProyecto =datos['idProyecto']).update(set__montoInicial = datos['montoInicial'])
+        
     def json(self):
         proyectoSchema = ProyectoSchema()
         return proyectoSchema.dump(self)
 
-#Schema.TYPE_MAPPING[ObjectId] = fields.String
 class ProyectoSchema(Schema):
     idProyecto = fields.Str()
     codigoProyecto = fields.Str(
@@ -71,3 +78,40 @@ class ProyectoSchema(Schema):
     @post_load
     def make_Proyecto(self, data, **kwargs):
         return Proyecto(**data)
+    
+class ProyectoCerradoSchema(Schema):
+    idProyecto = fields.Str(
+        required=True,
+        error_messages={"required": {"message": "Es necesario el idProyecto", "code:": 400}},
+    )
+    codigoProyecto = fields.Str()
+    nombre = fields.Str()
+    descripcion = fields.Str()
+    fechaInicio = fields.DateTime()
+    fechaFinal = fields.DateTime()
+    finalizado = fields.Boolean()
+    montoInicial = fields.Float()
+    conclusion = fields.Str(
+        required=True,
+        error_messages={"required": {"message": "Es necesario detallar la conclusión para cerrar el proyecto", "code": 400}},
+    )
+
+class ProyectoModificarSchema(Schema):
+    idProyecto = fields.Str(
+        required=True,
+        error_messages={"required": {"message": "Es necesario el idProyecto. Este campo no puede estar vacío", "code:": 400}},
+    )
+    codigoProyecto = fields.Str()
+    nombre = fields.Str()
+    descripcion = fields.Str(
+        required=True,
+        error_messages={"required": {"message": "Es necesaria una descripcion. Este campo puede estar vacío", "code": 400}},
+    )
+    fechaInicio = fields.DateTime()
+    fechaFinal = fields.DateTime()
+    finalizado = fields.Boolean()
+    montoInicial = fields.Float(
+        required=True,
+        error_messages={"required": {"message": "Es necesario un montoInicial. Este campo no puede estar vacío.", "code": 400}},
+    )
+    conclusion = fields.Str()

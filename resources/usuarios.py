@@ -1,9 +1,15 @@
-from models.usuario import Usuario,  UsuarioSchema, Permiso
+from models.mysql.usuario import Usuario, UsuarioSchema, Permiso
 from flask_restful import Resource,Api
 from flask_jwt import jwt_required
 from flask import jsonify, request
 from db import db
 import json
+
+class UsuariosProyecto(Resource):
+    
+    def get(self):
+        usuarios = Usuario.find_usuarios_Proyecto()
+        return jsonify(UsuarioSchema().dump(usuarios, many=True))
 class Usuarios(Resource):
 
     def get(self):
