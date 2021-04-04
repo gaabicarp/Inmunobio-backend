@@ -5,6 +5,7 @@ from bson import ObjectId
 from dateutil import parser
 from flask import jsonify
 class Proyecto(dbMongo.Document):
+
     idProyecto = dbMongo.SequenceField()
     codigoProyecto = dbMongo.StringField()
     nombre = dbMongo.StringField()
@@ -14,7 +15,7 @@ class Proyecto(dbMongo.Document):
     finalizado = dbMongo.BooleanField(default=False)
     montoInicial = dbMongo.DecimalField()
     conclusion = dbMongo.StringField()
-    participantes = dbMongo.FieldList(dbMongo.IntField())
+    participantes = dbMongo.ListField(dbMongo.IntField())
     idDirectorProyecto = dbMongo.IntField()
 
     def guardar(self):
@@ -27,7 +28,9 @@ class Proyecto(dbMongo.Document):
 
     @classmethod
     def find_all(cls):
-        return cls.objects.filter(finalizado=False).all()
+        #return jsonify(UsuarioSchema().dump(usuarios, many=True))
+        return jsonify(ProyectoSchema().dump(cls.objects.filter(finalizado=False).all(), many=True))
+        
 
     @classmethod
     def find_by_id(cls, id):
@@ -41,7 +44,8 @@ class Proyecto(dbMongo.Document):
     def cerrarProyecto(cls, _idProyecto, conclusion):
         proyecto = cls.objects(idProyecto = _idProyecto).first()
         proyecto.conclusion = conclusion
-        proyecto.
+        proyecto.fechaFinal = default=parser.parse(str(datetime.datetime.utcnow()))
+        proyecto.finalizado = True
 
     def json(self):
         proyectoSchema = ProyectoSchema()
