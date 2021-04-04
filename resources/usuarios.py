@@ -4,12 +4,12 @@ from flask_jwt import jwt_required
 from flask import jsonify, request
 from db import db
 import json
-class Usuarios(Resource):
 
+class Usuarios(Resource):
     def get(self):
         usuarios = Usuario.find_usuarios_Habilitados()
         if usuarios:
-           return usuarios 
+           return jsonify(UsuarioSchema().dump(usuarios, many=True)) 
         return {'name': 'None'},404
         
 class UsuariosXIdUsuario(Resource):
@@ -113,4 +113,11 @@ class ActualizarPermisos(Resource):
                     return usuario.json()
         return {'name': 'None'}, 404
 
+
+class ObtenerUsuariosParaProyecto(Resource):
+
+    def get(self,id):
+       return jsonify(UsuarioSchema().dump(Usuario.find_usuarios_Proyecto(id), many=True))
+
+        
 

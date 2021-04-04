@@ -4,6 +4,8 @@ from marshmallow import Schema, fields, post_load, ValidationError
 from bson import ObjectId
 from dateutil import parser
 from flask import jsonify
+from models.usuario import Usuario
+ 
 class Proyecto(dbMongo.Document):
 
     idProyecto = dbMongo.SequenceField()
@@ -28,7 +30,6 @@ class Proyecto(dbMongo.Document):
 
     @classmethod
     def find_all(cls):
-        #return jsonify(UsuarioSchema().dump(usuarios, many=True))
         return jsonify(ProyectoSchema().dump(cls.objects.filter(finalizado=False).all(), many=True))
         
 
@@ -50,6 +51,10 @@ class Proyecto(dbMongo.Document):
     def json(self):
         proyectoSchema = ProyectoSchema()
         return proyectoSchema.dump(self)
+    @classmethod
+    def agregarMiembros(self):
+        usuariosIdPermitidas = Usuario.find_usuarios_Habilitados()
+        return usuariosIdPermitidas
 
 #Schema.TYPE_MAPPING[ObjectId] = fields.String
 class ProyectoSchema(Schema):

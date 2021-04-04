@@ -20,6 +20,9 @@ class NuevoProyecto(Resource):
     def post(self):
         datos = request.get_json()
         if datos:
+            miembros = Proyecto.agregarMiembros()
+            for miembro in miembros :
+                print(miembro)
             schemaProyecto = ProyectoSchema()
             try:
                 dictProyecto = schemaProyecto.load(datos)
