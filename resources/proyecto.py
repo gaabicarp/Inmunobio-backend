@@ -1,4 +1,4 @@
-from models.mongo.proyecto import Proyecto
+from models.mongo.proyecto import Proyecto, ProyectoSchema
 from flask_restful import Resource,Api
 from flask_jwt import jwt_required
 from flask import jsonify, request
@@ -20,11 +20,23 @@ class NuevoProyecto(Resource):
         datos = request.get_json()
 
         if (datos):
-            nuevoProyecto = Proyecto()
-            nuevoProyecto.nombre = datos['nombre']
-            nuevoProyecto.descripcion = datos['descripcion']
-            nuevoProyecto.montoInicial = datos['montoInicial']
+            schemaProyecto = ProyectoSchema()
+            nuevoProyecto = schemaProyecto.load(datos)
+            #nuevoProyecto = Proyecto()
+            #nuevoProyecto.nombre = datos['nombre']
+            #nuevoProyecto.descripcion = datos['descripcion']
+            #nuevoProyecto.montoInicial = datos['montoInicial']
 
-            nuevoProyecto.guardar()
-            return {'Status':'ok', 'Proyecto':nuevoProyecto.json()},200
+            nuevoProyecto.save()
+            return {'Status':'ok'},200
         return {'name': datos},404
+
+class ProyectoID(Resource):
+
+    def get(self):
+        datos = request.get_json()
+        if datos:
+             proyecto = Proyecto.find_by_id(datos['id'])
+             if proyecto:
+                return proyecto.json(), 200
+        return {'name': f"No se encontró ningún proyecto con el ID {datos['id']}"},400

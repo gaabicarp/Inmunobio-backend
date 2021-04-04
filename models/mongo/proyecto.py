@@ -1,37 +1,43 @@
 from db import dbMongo
 import datetime
 from marshmallow import Schema, fields
+from bson import ObjectId
 from dateutil import parser
 from flask import jsonify
 class Proyecto(dbMongo.Document):
+    idProyecto = dbMongo.SequenceField()
+    codigoProyecto = dbMongo.StringField()
     nombre = dbMongo.StringField()
     descripcion = dbMongo.StringField()
     fechaInicio = dbMongo.DateTimeField(default=parser.parse(str(datetime.datetime.utcnow())))
-    fechaFinal = dbMongo.DateTimeField(required=False)
-    finalizado = dbMongo.BoolField(default=False)
-    montoInicial = dbMongo.FloatField()
-    conclusion = dbMongo.StringField(required=False)
+    fechaFinal = dbMongo.DateTimeField()
+    finalizado = dbMongo.BooleanField(default=False)
+    montoInicial = dbMongo.DecimalField()
+    conclusion = dbMongo.StringField()
 
     def guardar(self):
         self.save()
 
     @classmethod
     def find_all(cls):
-        return cls.query.filter_by(finalizado=False).all()
+        return cls.objects.filter(finalizado=False).all()
 
     @classmethod
     def find_by_id(cls, id):
-        return cls.query.filter_by(_id=str(id)).first()
+        return cls.objects.filter(idProyecto=id).first()
 
     @classmethod
     def find_by_nombre(cls, _nombre):
-        return cls.query.filter_by(nombre=_nombre).all()
+        return cls.objects(nombre = _nombre).first()
 
     def json(self):
         proyectoSchema = ProyectoSchema()
-        return jsonify(proyectoSchema.dump(self))
+        return proyectoSchema.dump(self)
+
+Schema.TYPE_MAPPING[ObjectId] = fields.String
 class ProyectoSchema(Schema):
-    _id = fields.Str(dump_only=True)
+    idProyecto = fields.Str()
+    codigoProyecto = fields.Str()
     nombre = fields.Str()
     descripcion = fields.Str()
     fechaInicio = fields.DateTime()
@@ -39,3 +45,7 @@ class ProyectoSchema(Schema):
     finalizado = fields.Boolean()
     montoInicial = fields.Float()
     conclusion = fields.Str()
+
+    class Meta:
+        model : Proyecto
+        #datetimeformat = '%Y-%m-%dT%H:%M:%SZ'

@@ -11,3 +11,4 @@ api.add_resource(NuevoUsuario, '/api/nuevoUsuario')
 
 api.add_resource(Proyectos, '/api/proyectos')
 api.add_resource(NuevoProyecto, '/api/nuevoProyecto')
+api.add_resource(ProyectoID, '/api/proyectoID')
