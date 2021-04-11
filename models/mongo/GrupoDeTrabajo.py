@@ -1,21 +1,23 @@
 from db import dbMongo
-
+"""
 class Blog(EmbeddedDocument):
     fecha = DateTimeField()
     detalle = StringField()
     id_usuario = IntField()
-class Stock(EmbeddedDocument):
+
+ class Stock(EmbeddedDocument):
     lote = StringField()#Charlar stock y lote
     detalleUbicacion = StringField()
     unidad = IntField()
     fechaVencimiento = DateTimeField()
     id_espacioFisico = ReferenciasField(EspacioFisico, required=True)
-    codigoContenedor = StringField()
-class GrupoDeTrabajo(Document):
+    codigoContenedor = StringField() """
+""" class GrupoDeTrabajo(Document):
     nombre = StringField()
     jefeDeGrupo = IntField()
     integrantes = ListField()
-    stock = EmbeddedDocumentListField('Stock')
+    stock = EmbeddedDocumentListField('Stock') 
+
 class Herramienta(EmbeddedDocument):
     nombre = StringField()
     detalle_protocolo = StringField()
@@ -38,6 +40,7 @@ class Jaula(EmbeddedDocument):
     tipo = ReferenciasField(TipoDeJaula, required=True)#Consultar
     animales = EmbeddedDocumentListField('Animal')
     blogs = EmbeddedDocumentListField('Blog')
+
 class EspacioFisico(Document):
     nombre = StringField()
     piso = StringField()
@@ -102,3 +105,4 @@ class GrupoExperimental(EmbeddedDocument):
     descripcion = StringField()
 class Experimento(Document):
     gruposExperimentales = EmbeddedDocumentListField('GrupoExperimental')
+"""

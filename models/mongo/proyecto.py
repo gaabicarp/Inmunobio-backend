@@ -64,7 +64,7 @@ class Proyecto(dbMongo.Document):
         return usuariosIdPermitidas
 
 class ProyectoSchema(Schema):
-    idProyecto = fields.Str()
+    idProyecto = fields.Integer()
     codigoProyecto = fields.Str(
         required=True,
         error_messages={"required": {"message": "Se necesita el código del proyecto", "code": 400}},
@@ -90,7 +90,7 @@ class ProyectoSchema(Schema):
         return Proyecto(**data)
     
 class ProyectoCerradoSchema(Schema):
-    idProyecto = fields.Str(
+    idProyecto = fields.Integer(
         required=True,
         error_messages={"required": {"message": "Es necesario el idProyecto", "code:": 400}},
     )
@@ -109,7 +109,7 @@ class ProyectoCerradoSchema(Schema):
     )
 
 class ProyectoModificarSchema(Schema):
-    idProyecto = fields.Str(
+    idProyecto = fields.Integer(
         required=True,
         error_messages={"required": {"message": "Es necesario el idProyecto. Este campo no puede estar vacío", "code:": 400}},
     )
