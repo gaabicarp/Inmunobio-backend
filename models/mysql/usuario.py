@@ -55,9 +55,6 @@ class Usuario(db.Model):
         return Usuario.query.filter(~Usuario.id_permisos.any(Permiso.id.in_([idPermiso])))
      
         
-
-
-
 class Permiso(db.Model):
     
     __tablename__='permisos'
