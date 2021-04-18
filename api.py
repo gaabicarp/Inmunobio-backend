@@ -2,7 +2,7 @@ from flask_restful import Api
 from resources.usuarios import Usuarios,UsuarioxUsername,UsuariosXIdUsuario,NuevoUsuario, ActualizarPermisos,ObtenerUsuariosParaProyecto
 from resources.proyecto import *
 
-from resources.grupoDeTrabajo import NuevoGrupoDeTrabajo,GrupoDeTrabajoPorId
+from resources.grupoDeTrabajo import NuevoGrupoDeTrabajo,GrupoDeTrabajo,GruposDeTrabajo
 
 from resources.experimento import ExperimentoResource, Experimentos
 api = Api()
@@ -18,9 +18,12 @@ api.add_resource(NuevoProyecto, '/api/nuevoProyecto')
 api.add_resource(ProyectoID, '/api/proyectoID')
 api.add_resource(CerrarProyecto, '/api/cerrarProyecto')
 api.add_resource(ModificarProyecto, '/api/modificarProyecto')
+
 #Grupo de trabajo
 api.add_resource(NuevoGrupoDeTrabajo, '/api/nuevoGrupoDeTrabajo')
-api.add_resource(GrupoDeTrabajoPorId, '/api/GrupoDeTrabajoPorId/<int:id>')
+api.add_resource(GrupoDeTrabajo, '/api/GrupoDeTrabajo/<int:id>')
+api.add_resource(GruposDeTrabajo, '/api/GruposDeTrabajo')
+
 
 
 api.add_resource(Experimentos, '/api/proyecto/<int:idProyecto>/experimentos')

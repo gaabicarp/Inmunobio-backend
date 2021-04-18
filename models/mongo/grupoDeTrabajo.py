@@ -10,13 +10,8 @@ class GrupoDeTrabajo(dbMongo.Document):
     integrantes = dbMongo.ListField(dbMongo.IntField()) #ver duplicados en integrantes
     stock = dbMongo.ListField(dbMongo.EmbeddedDocumentField('Stock'))
  
-    def json(self):
-        grupoSchema = GrupoDeTrabajoSchema()
-        #return grupoSchema.dump(self)
-        return jsonify(grupoSchema.dump(self))
-
 class GrupoDeTrabajoSchema(Schema):
-    idProyecto = fields.Integer()
+    idGrupoDeTrabajo = fields.Integer()
     nombre = fields.Str()
     jefeDeGrupo = fields.Integer(required=True,
     error_messages={"required": {"message": "Debe indicarse Jefe de Grupo", "code": 400}}
