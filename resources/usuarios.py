@@ -115,7 +115,8 @@ class ActualizarPermisos(Resource):
 
 
 class ObtenerUsuariosParaProyecto(Resource):
-
+    #aca el 4 representa la id del permiso director de proyecto,ya que no hay visibilidad
+    #entre un director de proyecto y otro con mismo permiso.
     def get(self):
        return jsonify(UsuarioSchema().dump(Usuario.usuariosSinElPermiso(4), many=True))
 

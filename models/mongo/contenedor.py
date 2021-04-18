@@ -1,7 +1,6 @@
 from db import dbMongo
 import datetime
 from marshmallow import Schema, fields, post_load, ValidationError
-
 class Contenedor(Document):
     id_contenedor = dbMongo.SequenceField()
     codigo = dbMongo.StringField()
@@ -14,7 +13,6 @@ class Contenedor(Document):
     fichaTecnica = dbMongo.StringField()
     disponible = booleanField(default=true)
     parent = dbMongo.Integer(default = 0)
-
 class ContenedorSchema(Schema):
     id_contenedor = fields.Integer()
     codigo = fields.Str()
@@ -25,3 +23,6 @@ class ContenedorSchema(Schema):
     disponible = fields.Boolean()
     parent = fields.Integer()
     
+    @post_load
+    def make_Proyecto(self, data, **kwargs):
+        return Contenedor(**data)
