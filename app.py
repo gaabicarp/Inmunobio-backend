@@ -6,12 +6,12 @@ from db import db, dbMongo
 from api import api
 from security import authenticate, identity
 
-
 app= Flask(__name__)
 app.config.from_object(config)
 
 ############################db configuracion
 db.init_app(app)
+
 with app.app_context():
     db.create_all()
 	
