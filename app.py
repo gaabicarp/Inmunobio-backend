@@ -35,12 +35,13 @@ def Prueba():
 	f = Usuario.find_usuarios_Habilitados()
 	return f"{f}"
 
+#ejecutar esta funcion una unica vez para crear las tablas y los permisos
 @app.route('/llenar_msyql')
 def llenar_msyql():
 	from models.sql_script import MysqlScript
-	p = MysqlScript
-	p.ScriptLlenarTablas()
-
+	MysqlScript.ScriptLlenarTablas()
+	return {'Status':'ok'}
+	
 if __name__ == "__main__":
 	if app.config['DEBUG']:
 		@app.before_first_request

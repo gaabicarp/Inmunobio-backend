@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy import DateTime, Integer, String, Text, Float, Boolean
 from db import db
 from flask import jsonify
+from marshmallow import Schema, fields, post_load, ValidationError
 
 permisoXUsuario = db.Table('permisosxUsuarios', 
     db.Column('usuario_id', db.Integer, db.ForeignKey('usuarios.id')),
@@ -23,37 +24,19 @@ class Usuario(db.Model):
     telefono = db.Column(String(120))
     id_permisos = db.relationship('Permiso',secondary =permisoXUsuario, backref = db.backref('permisos'),lazy = 'dynamic')
     
-    def __init__(self, nombre, username, mail, password,direccion,telefono):
+    def __init__(self, nombre, username, mail, password,direccion,telefono,id_permisos):
         self.nombre = nombre
         self.username = username
         self.mail = mail
         self.password = password
         self.direccion = direccion
         self.telefono = telefono
-        
+
     def __repr__(self):
         return f"{self.id}||Nombre:{self.nombre} \r\n direccion:{self.direccion} \r\n  Telefono:{self.telefono} \r\n Username: {self.username} \r\n password: {self.password}, Permisos: {self.id_permisos[0]}"
-
-    def json(self):
-        usuarioSchema = UsuarioSchema()
-        return jsonify(usuarioSchema.dump(self))
-
-    @classmethod
-    def find_by_username(cls, username):
-        return cls.query.filter_by(username=username).first()
-
-    @classmethod
-    def find_by_id(cls, _id):
-        return cls.query.filter_by(id=_id).first()
-        
-    @classmethod
-    def find_usuarios_Habilitados(cls):
-        return  cls.query.filter_by(habilitado=1).all()
+    def setPermiso(self,permiso):
+        self.id_permisos = permiso
     
-    @classmethod
-    def usuariosSinElPermiso(cls,idPermiso):
-        return Usuario.query.filter(~Usuario.id_permisos.any(Permiso.id.in_([idPermiso])))
-     
         
 class Permiso(db.Model):
     
@@ -66,34 +49,79 @@ class Permiso(db.Model):
         self.descripcion = descripcion
 
     def __repr__(self):
-        return f"El permiso es {self.descripcion} y tiene su número de id es {self.id}"
+        return f"El permiso es {self.descripcion} y  su número de id es {self.id}"
     
-    def json(self):
-        permisoSchema = PermisoSchema()
-        return jsonify(permisoSchema.dump(self))
-
-    @classmethod
-    def find_by_id(cls, _id):
-        return cls.query.filter_by(id=_id).first()
-        
-    @classmethod
-    def all_permisos(cls):
-        permisos = cls.query.all()
-        return jsonify(Permisoschema().dump(permisos, many=True))
-
 
 from marshmallow import Schema, fields
 class PermisoSchema(Schema):
-    id = fields.Str()
+    id = fields.Integer()
     descripcion = fields.Str()
-
+   
+class PermisoExistenteSchema(PermisoSchema):
+    id = fields.Integer( 
+        required=True,
+        error_messages={"required": {"message": "Debe indicarse el id del permiso", "code": 400}},
+    )
+    descripcion = fields.Str( 
+        required=True,
+        error_messages={"required": {"message": "Debe indicarse la descripcion del permiso", "code": 400}},
+    )
 class UsuarioSchema(Schema):
-    id = fields.Str(dump_only=True)
+    id = fields.Integer(dump_only=True)
     username = fields.Str()
     mail = fields.Str()
     nombre = fields.Str()
-    password = fields.Str()
-    habilitado = fields.Int()
+    password = fields.Str()    
+    habilitado = fields.Boolean(default=True)
     direccion = fields.Str()
     telefono = fields.Str()
     id_permisos = fields.Nested(PermisoSchema, many=True)
+
+class UsuarioNuevoSchema(UsuarioSchema):
+    username = fields.Str(
+        required=True,
+        error_messages={"required": {"message": "Se necesita el username", "code": 400}},
+        )
+    mail = fields.Str( 
+        required=True,
+        error_messages={"required": {"message": "Se necesita ingresar el mail", "code": 400}},
+    )
+    nombre = fields.Str( 
+        required=True,
+        error_messages={"required": {"message": "Se necesita ingresar el nombre del usuario", "code": 400}},
+    )
+    password = fields.Str(
+         required=True,
+        error_messages={"required": {"message": "Se necesita ingresar el password", "code": 400}},
+    )
+    direccion = fields.Str (
+        required=True,
+        error_messages={"required": {"message": "Se necesita ingresar la direccion", "code": 400}},
+    )
+    telefono = fields.Str( required=True,
+        error_messages={"required": {"message": "Se necesita ingresar  el telefono", "code": 400}},
+    )
+    habilitado = fields.Int()
+    id_permisos = fields.Nested(PermisoExistenteSchema, many=True, required=True,
+        error_messages={"required": {"message": "Se necesita asignar permisos", "code": 400}},
+    )
+    @post_load
+    def make_Usuario(self, data, **kwargs):
+        return Usuario(**data)
+
+class UsuarioSchemaModificar(Schema):
+    id = fields.Integer(load_only=True)
+    mail = fields.Str()
+    password = fields.Str()    
+    direccion = fields.Str()
+    telefono = fields.Str()
+
+class UsuarioSchemaModificarPermisos(UsuarioSchema):
+    id = fields.Integer( 
+        required=True,
+        error_messages={"required": {"message": "Debe indicarse id Usuario", "code": 400}},
+    )
+    id_permisos = fields.Nested(PermisoSchema, many=True,required=True,
+    error_messages={"required": {"message": "Debe indicarse permisos al Usuario", "code": 400}},
+    )
+

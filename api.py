@@ -1,16 +1,19 @@
 from flask_restful import Api
-from resources.usuarios import Usuarios,UsuarioxUsername,UsuariosXIdUsuario,NuevoUsuario, ActualizarPermisos,ObtenerUsuariosParaProyecto
+from resources.usuariosResource import ActualizarPermisos, Usuarios,UsuariosXIdUsuario,NuevoUsuario, ActualizarPermisos,ObtenerUsuariosParaProyecto
 from resources.proyecto import *
-
+from resources.permisosResource import Permisos,ObtenerPermisoPorId
 from resources.grupoDeTrabajo import NuevoGrupoDeTrabajo,GrupoDeTrabajo,GruposDeTrabajo
-
 from resources.experimento import ExperimentoResource, Experimentos
-api = Api()
 
-api.add_resource(Usuarios, '/api/usuarios')
-api.add_resource(UsuarioxUsername, '/api/usuario/<string:username>')
-api.add_resource(UsuariosXIdUsuario, '/api/usuario/<int:id>')
-api.add_resource(NuevoUsuario, '/api/nuevoUsuario')
+api = Api()
+#permisos
+api.add_resource(ObtenerPermisoPorId, '/api/v1/permisoId')
+api.add_resource(Permisos, '/api/v1/permisos')
+
+api.add_resource(ActualizarPermisos, '/api/v1/usuariosPermisos')
+api.add_resource(Usuarios, '/api/v1/usuarios')
+api.add_resource(UsuariosXIdUsuario, '/api/v1/usuario')
+api.add_resource(NuevoUsuario, '/api/v1/nuevoUsuario')
 api.add_resource(ObtenerUsuariosParaProyecto, '/api/UsuariosParaProyecto')
 
 api.add_resource(Proyectos, '/api/proyectos')
