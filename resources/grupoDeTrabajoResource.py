@@ -50,6 +50,7 @@ class GrupoDeTrabajo(Resource):
         return {'name': datos},404
 
     def delete(self):
+        #ok
         datos = request.get_json()
         if (datos):
             return GrupoDeTrabajoService.removerGrupo(datos)

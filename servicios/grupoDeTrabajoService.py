@@ -39,11 +39,11 @@ class GrupoDeTrabajoService:
             return {'error':'Grupo inexistente'},404
         except ValidationError as err:
             return {'error': err.messages},404
-
-    def nuevoGrupo(datos):
+    @classmethod
+    def nuevoGrupo(cls,datos):
         try:
             grupoCreado = NuevoGrupoDeTrabajoSchema().load(datos)
-            if(validarMiembros([grupoCreado.jefeDeGrupo])):
+            if(cls.validarMiembros([grupoCreado.jefeDeGrupo])):
                 grupoCreado.save()
                 return {'Status':'ok'},200  
             return {'error':'No existe usuario con id '+str(datos['jefeDeGrupo'])},404
@@ -52,8 +52,6 @@ class GrupoDeTrabajoService:
 
     @classmethod
     def removerGrupo(cls,datos):
-        #falta ver que pasa con los roles de un jefe cuando se borra el grupo 
-        #falta ver que no sea grupo general
         try:
             BorrarGrupoDeTrabajoSchema().load(datos)
             grupoABorrar = GrupoDeTrabajoService.find_by_id(datos['id_grupoDeTrabajo'])
@@ -61,7 +59,7 @@ class GrupoDeTrabajoService:
                 if(cls.validarDelete(grupoABorrar)):
                     grupoABorrar.delete()
                     return {'Status':'ok'},200
-                return {'Status': 'El grupo no puede ser dado de baja por contener stock activo'}
+                return {'Status': 'El grupo no puede ser dado de baja por contener stock activo o ser grupo general'}
             return {'Status': 'No existe el grupo'}
         except ValidationError as err:
             return {'error': err.messages},404
@@ -77,7 +75,7 @@ class GrupoDeTrabajoService:
             return {'error': err.messages},404
 
     def validarDelete(grupo):
-        return len(grupo.stock) == 0
+        return len(grupo.stock) == 0 and not grupo.grupoGral
 
     def validarMiembros(integrantes):
         '''recibe una listacon id de usuarios devuelve true si todos existen o false en caso contrario'''
@@ -85,7 +83,6 @@ class GrupoDeTrabajoService:
             if(not UsuarioService.find_by_id(idIntegrante)):
                 print("id"+ str(idIntegrante) + "no existe")
                 return False
-        print("se encontraron todos los usuarios")
         return True
 
     def json(datos):
