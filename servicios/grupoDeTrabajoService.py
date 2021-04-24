@@ -1,6 +1,6 @@
 from db import dbMongo
 import json
-from models.mongo.grupoDeTrabajo import GrupoDeTrabajoSchema,GrupoDeTrabajo,NuevoGrupoDeTrabajoSchema,BorrarGrupoDeTrabajoSchema
+from models.mongo.grupoDeTrabajo import ModificarGrupoDeTrabajoSchema,GrupoDeTrabajoSchema,GrupoDeTrabajo,NuevoGrupoDeTrabajoSchema,BorrarGrupoDeTrabajoSchema
 from marshmallow import Schema, ValidationError
 from flask import jsonify, request
 from servicios.usuarioService import UsuarioService
@@ -15,19 +15,21 @@ class GrupoDeTrabajoService:
     @classmethod
     def modificarMiembrosGrupo(cls,datos):
         try:
-            GrupoDeTrabajoSchema().load(datos)
+            ModificarGrupoDeTrabajoSchema().load(datos)
             grupoAModificar = cls.find_by_id(datos['id_grupoDeTrabajo'])
-            if(cls.validarMiembros(grupoAModificar.integrantes)):
-                grupoAModificar.update(integrantes=datos['integrantes'])
-                return {'Status':'ok'},200  
-            return {'error':'Usuario/s miembros invalidos'},404
+            if(grupoAModificar): 
+                if (cls.validarMiembros(datos['integrantes'])) :
+                    grupoAModificar.update(integrantes=datos['integrantes'])
+                    return {'Status':'ok'},200  
+                return {'error':'Usuario/s miembros invalidos'},404
+            return {'error':'El grupo no existe '},404
         except ValidationError as err:
             return {'error': err.messages},404
 
     @classmethod
     def modificarJefeGrupo(cls,datos):
         try:
-            GrupoDeTrabajoSchema().load(datos)
+            jefeDeGrupoSchema().load(datos)
             grupoAModificar = cls.find_by_id(datos['id_grupoDeTrabajo'])
             if(grupoAModificar):
                 if(cls.validarMiembros[grupoAModificar.jefeDeGrupo]):
@@ -74,7 +76,9 @@ class GrupoDeTrabajoService:
         '''recibe una listacon id de usuarios devuelve true si todos existen o false en caso contrario'''
         for idIntegrante in integrantes:
             if(not UsuarioService.find_by_id(idIntegrante)):
+                print("id"+ str(idIntegrante) + "no existe")
                 return False
+        print("se encontraron todos los usuarios")
         return True
 
     def json(datos):

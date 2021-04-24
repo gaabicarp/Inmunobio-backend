@@ -32,12 +32,12 @@ class RenombrarJefeGrupo(Resource):
 
 class GrupoDeTrabajo(Resource):
     def put(self):
-
+        #ok
         '''edita miembros de un grupo de trabajo, esta accion solo puede realizarla el jefe del grupo.
         recibe id de grupo y miembros por json.'''
         datos = request.get_json()
         if datos:
-                return GrupoDeTrabajoService.modificarMiembrosGrupo(datos)
+            return GrupoDeTrabajoService.modificarMiembrosGrupo(datos)
         return {'name': datos},404
 
     def get(self):

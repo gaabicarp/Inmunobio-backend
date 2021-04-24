@@ -11,15 +11,29 @@ class GrupoDeTrabajo(dbMongo.Document):
     stock = dbMongo.ListField(dbMongo.EmbeddedDocumentField('Stock'))
     grupoGral = dbMongo.BooleanField(default=False)
 
+
+
+#schemas
 class BorrarGrupoDeTrabajoSchema(Schema):
     id_grupoDeTrabajo = fields.Integer(required=True,
     error_messages={"required": {"message": "Debe indicarse id de grupo", "code": 400}}
     ) 
 
-class GrupoDeTrabajoSchema(BorrarGrupoDeTrabajoSchema):
-    integrantes = fields.List(fields.Integer,required=True,
+
+class ModificarGrupoDeTrabajoSchema(BorrarGrupoDeTrabajoSchema):
+    integrantes = fields.List(fields.Integer,required=True,many=True,
     error_messages={"required": {"message": "Deben indicarse los miembros del grupo", "code": 400}}
     )
+class jefeDeGrupoSchema(BorrarGrupoDeTrabajoSchema):
+    jefeDeGrupo = fields.Integer(required=True,
+    error_messages={"required": {"message": "Debe indicarse id jefe de grupo", "code": 400}}
+    ) 
+
+
+    
+    
+
+
 
 
 class GrupoDeTrabajoSchema(Schema):
