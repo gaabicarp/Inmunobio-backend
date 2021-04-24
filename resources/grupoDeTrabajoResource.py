@@ -9,42 +9,44 @@ class NuevoGrupoDeTrabajo(Resource):
     def post(self):
         datos = request.get_json()
         if datos:
-            try:
-                nuevoGrupo = GrupoDeTrabajoService.nuevoGrupo(datos)
-                return {'Status':'ok'},200  
-            except ValidationError as err:
-                return {'error': err.messages},400
+            return GrupoDeTrabajoService.nuevoGrupo(datos)
         return {'name': datos},404
-
 
 
 class GruposDeTrabajo(Resource):
     def get(self):
+        #ok
         gruposConsulta= GrupoDeTrabajoService.obtenerTodosLosGrupos()
         if(gruposConsulta):
             return GrupoDeTrabajoService.jsonMany(gruposConsulta)
         return  {'error':'No existen grupos de trabajo '},404     
 
+class RenombrarJefeGrupo(Resource):
+    def put(self):
+            '''edita jefe de grupo de trabajo, esta accion solo puede realizarla usuario nivel 2.
+            recibe id de grupo e id de jefe nuevo por json'''
+            datos = request.get_json()
+            if datos:
+                return GrupoDeTrabajoService.modificarJefeGrupo(datos)
+            return {'name': datos},404
+
 class GrupoDeTrabajo(Resource):
-    def put(self,id):
-        #edita miembros de un grupo de trabajo, esta accion solo puede realizarla el jefe del grupo.
-        #recibe id por parametro y miembros por json.
-        # to-do: ver si es necesario pasar todo x json
+    def put(self):
+
+        '''edita miembros de un grupo de trabajo, esta accion solo puede realizarla el jefe del grupo.
+        recibe id de grupo y miembros por json.'''
         datos = request.get_json()
         if datos:
-            grupoAModif = GrupoDeTrabajoService.find_by_id(id)
-            if (grupoAModif):
-                GrupoDeTrabajoService.modificarGrupo(datos,grupoAModif)
-                return {'Status':'ok'},200   
-            return  {'error':'El grupo de trabajo no existe'},404
+                return GrupoDeTrabajoService.modificarMiembrosGrupo(datos)
         return {'name': datos},404
 
-    def get(self,id):
+    def get(self):
+        #ok
         #dado un id de grupo de trabajo devuelve todos los datos del grupo de GrupoDeTrabajo si lo encuentra
-        grupoConsulta= GrupoDeTrabajoService.find_by_id(id)
-        if (grupoConsulta):
-            return GrupoDeTrabajoService.json(grupoConsulta)
-        return  {'error':'El grupo de trabajo no existe'},404    
+        datos = request.get_json()
+        if (datos):
+            return GrupoDeTrabajoService.obtenerGrupoPorId(datos)
+        return {'name': datos},404
 
     def delete(self,id):
         grupoABorrar = GrupoDeTrabajoService.find_by_id(id)

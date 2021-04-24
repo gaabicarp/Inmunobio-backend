@@ -1,8 +1,9 @@
 from db import dbMongo
 import json
-from models.mongo.grupoDeTrabajo import GrupoDeTrabajoSchema,GrupoDeTrabajo
+from models.mongo.grupoDeTrabajo import GrupoDeTrabajoSchema,GrupoDeTrabajo,NuevoGrupoDeTrabajoSchema,BorrarGrupoDeTrabajoSchema
 from marshmallow import Schema, ValidationError
 from flask import jsonify, request
+from servicios.usuarioService import UsuarioService
 
 class GrupoDeTrabajoService:
     def find_by_id(id):
@@ -10,27 +11,44 @@ class GrupoDeTrabajoService:
 
     def find_by_nombre(_nombre):
         return GrupoDeTrabajo.objects(nombre = _nombre).first()
-    
-    def modificarGrupo(datos,grupoAModificar):
-        #Si se pasa una lista de los nuevos miembros, y se pisa la anterior 
-        if 'integrantes' in datos.keys():
-            grupoAModificar.update(integrantes=datos['integrantes'])
-        if 'jefeDeGrupo' in datos.keys():
-            grupoAModificar.update(jefeDeGrupo=datos['jefeDeGrupo'])
-       
-    def json(datos):
-        return GrupoDeTrabajoSchema().dump(datos)
 
-    def jsonMany(datos):
-        return jsonify(GrupoDeTrabajoSchema().dump(datos,many=True))
+    @classmethod
+    def modificarMiembrosGrupo(cls,datos):
+        try:
+            GrupoDeTrabajoSchema().load(datos)
+            grupoAModificar = cls.find_by_id(datos['id_grupoDeTrabajo'])
+            if(cls.validarMiembros(grupoAModificar.integrantes)):
+                grupoAModificar.update(integrantes=datos['integrantes'])
+                return {'Status':'ok'},200  
+            return {'error':'Usuario/s miembros invalidos'},404
+        except ValidationError as err:
+            return {'error': err.messages},404
 
-    
-    def obtenerTodosLosGrupos():
-        return GrupoDeTrabajo.objects.all()
-        
+    @classmethod
+    def modificarJefeGrupo(cls,datos):
+        try:
+            GrupoDeTrabajoSchema().load(datos)
+            grupoAModificar = cls.find_by_id(datos['id_grupoDeTrabajo'])
+            if(grupoAModificar):
+                if(cls.validarMiembros[grupoAModificar.jefeDeGrupo]):
+                    grupoAModificar.update(jefeDeGrupo=datos['jefeDeGrupo'])
+                    return {'Status':'ok'},200  
+                return {'error':'Jefe de grupo inexistente'},404
+            return {'error':'Grupo inexistente'},404
+        except ValidationError as err:
+            return {'error': err.messages},404
+
+
     def nuevoGrupo(datos):
-            grupoCreado = GrupoDeTrabajoSchema().load(datos)
-            grupoCreado.save()
+        try:
+            grupoCreado = NuevoGrupoDeTrabajoSchema().load(datos)
+            if(validarMiembros([grupoCreado.jefeDeGrupo])):
+                grupoCreado.save()
+                return {'Status':'ok'},200  
+            return {'error':'No existe usuario con id '+str(datos['jefeDeGrupo'])},404
+        except ValidationError as err:
+            return {'error': err.messages},404
+
     @classmethod
     def removerGrupo(cls,grupo):
         #falta ver que pasa con los roles de un jefe cuando se borra el grupo 
@@ -39,6 +57,31 @@ class GrupoDeTrabajoService:
             return {'Status':'ok'},200
         return {'Status': 'El grupo no puede ser dado de baja por contener stock activo'}
 
+    def obtenerGrupoPorId(datos):
+        try:
+            BorrarGrupoDeTrabajoSchema().load(datos)
+            grupoConsulta= GrupoDeTrabajoService.find_by_id(datos['id_grupoDeTrabajo'])
+            if (grupoConsulta):
+                return GrupoDeTrabajoService.json(grupoConsulta)
+            return  {'error':'El grupo de trabajo no existe'},404    
+        except ValidationError as err:
+            return {'error': err.messages},404
+
     def validarDelete(grupo):
         return len(grupo.stock) == 0
-              
+
+    def validarMiembros(integrantes):
+        '''recibe una listacon id de usuarios devuelve true si todos existen o false en caso contrario'''
+        for idIntegrante in integrantes:
+            if(not UsuarioService.find_by_id(idIntegrante)):
+                return False
+        return True
+
+    def json(datos):
+        return GrupoDeTrabajoSchema().dump(datos)
+
+    def jsonMany(datos):
+        return jsonify(GrupoDeTrabajoSchema().dump(datos,many=True))
+
+    def obtenerTodosLosGrupos():
+        return GrupoDeTrabajo.objects.all()

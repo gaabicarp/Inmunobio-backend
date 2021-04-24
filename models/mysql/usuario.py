@@ -3,8 +3,8 @@ from sqlalchemy import Boolean, Column, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy import DateTime, Integer, String, Text, Float, Boolean
 from db import db
-from flask import jsonify
 from marshmallow import Schema, fields, post_load, ValidationError
+
 
 permisoXUsuario = db.Table('permisosxUsuarios', 
     db.Column('usuario_id', db.Integer, db.ForeignKey('usuarios.id')),
@@ -34,8 +34,8 @@ class Usuario(db.Model):
 
     def __repr__(self):
         return f"{self.id}||Nombre:{self.nombre} \r\n direccion:{self.direccion} \r\n  Telefono:{self.telefono} \r\n Username: {self.username} \r\n password: {self.password}, Permisos: {self.id_permisos[0]}"
-    def setPermiso(self,permiso):
-        self.id_permisos = permiso
+    def setPermiso(self,permisos):
+        self.id_permisos = permisos
     
         
 class Permiso(db.Model):
@@ -52,7 +52,6 @@ class Permiso(db.Model):
         return f"El permiso es {self.descripcion} y  su número de id es {self.id}"
     
 
-from marshmallow import Schema, fields
 class PermisoSchema(Schema):
     id = fields.Integer()
     descripcion = fields.Str()

@@ -54,7 +54,8 @@ class UsuarioService():
 
     @classmethod
     def find_by_id(cls, _id):
-        return Usuario.query.filter_by(id=_id).first()
+        '''modif para que devuelva habilitados solamente'''
+        return Usuario.query.filter_by(id=_id,habilitado=True).first()
         
     @classmethod
     def find_usuarios_Habilitados(cls):

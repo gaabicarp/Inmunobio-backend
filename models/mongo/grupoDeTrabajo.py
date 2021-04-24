@@ -11,15 +11,34 @@ class GrupoDeTrabajo(dbMongo.Document):
     stock = dbMongo.ListField(dbMongo.EmbeddedDocumentField('Stock'))
     grupoGral = dbMongo.BooleanField(default=False)
 
+class BorrarGrupoDeTrabajoSchema(Schema):
+    id_grupoDeTrabajo = fields.Integer(required=True,
+    error_messages={"required": {"message": "Debe indicarse id de grupo", "code": 400}}
+    ) 
+
+class GrupoDeTrabajoSchema(BorrarGrupoDeTrabajoSchema):
+    integrantes = fields.List(fields.Integer,required=True,
+    error_messages={"required": {"message": "Deben indicarse los miembros del grupo", "code": 400}}
+    )
+
+
 class GrupoDeTrabajoSchema(Schema):
     id_grupoDeTrabajo = fields.Integer()
     nombre = fields.Str()
-    jefeDeGrupo = fields.Integer(required=True,
-    error_messages={"required": {"message": "Debe indicarse Jefe de Grupo", "code": 400}}
-    ) 
+    jefeDeGrupo = fields.Integer()
     integrantes = fields.List(fields.Int())
     stock = fields.Nested(StockSchema, many=True)
     grupoGral = fields.Boolean()
+
+  
+class NuevoGrupoDeTrabajoSchema(Schema):
+    nombre = fields.Str(required=True,
+    error_messages={"required": {"message": "Debe indicarse nombre de grupo", "code": 400}}
+    ) 
+    jefeDeGrupo = fields.Integer(required=True,
+    error_messages={"required": {"message": "Debe indicarse Jefe de Grupo", "code": 400}}
+    ) 
+    grupoGral = fields.Boolean(default=False)
 
     @post_load
     def make_Grupo(self, data, **kwargs):

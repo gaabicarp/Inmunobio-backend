@@ -61,6 +61,8 @@ class NuevoUsuario(Resource):
      
 
 class ActualizarPermisos(Resource):
+    '''dado un id de usuario y una lista con dic de permisos , actualiza los permisos
+    del usuario con dicha lista'''
     #@jwt_required()
     def put(self):
         datos = request.get_json()
