@@ -1,6 +1,6 @@
 from db import dbMongo
 import json
-from models.mongo.grupoDeTrabajo import ModificarGrupoDeTrabajoSchema,GrupoDeTrabajoSchema,GrupoDeTrabajo,NuevoGrupoDeTrabajoSchema,BorrarGrupoDeTrabajoSchema
+from models.mongo.grupoDeTrabajo import jefeDeGrupoSchema,ModificarGrupoDeTrabajoSchema,GrupoDeTrabajoSchema,GrupoDeTrabajo,NuevoGrupoDeTrabajoSchema,BorrarGrupoDeTrabajoSchema
 from marshmallow import Schema, ValidationError
 from flask import jsonify, request
 from servicios.usuarioService import UsuarioService
@@ -32,14 +32,13 @@ class GrupoDeTrabajoService:
             jefeDeGrupoSchema().load(datos)
             grupoAModificar = cls.find_by_id(datos['id_grupoDeTrabajo'])
             if(grupoAModificar):
-                if(cls.validarMiembros[grupoAModificar.jefeDeGrupo]):
+                if(cls.validarMiembros([datos['jefeDeGrupo']])):
                     grupoAModificar.update(jefeDeGrupo=datos['jefeDeGrupo'])
                     return {'Status':'ok'},200  
                 return {'error':'Jefe de grupo inexistente'},404
             return {'error':'Grupo inexistente'},404
         except ValidationError as err:
             return {'error': err.messages},404
-
 
     def nuevoGrupo(datos):
         try:
@@ -52,12 +51,20 @@ class GrupoDeTrabajoService:
             return {'error': err.messages},404
 
     @classmethod
-    def removerGrupo(cls,grupo):
+    def removerGrupo(cls,datos):
         #falta ver que pasa con los roles de un jefe cuando se borra el grupo 
-        if(cls.validarDelete(grupo)):
-            grupo.delete()
-            return {'Status':'ok'},200
-        return {'Status': 'El grupo no puede ser dado de baja por contener stock activo'}
+        #falta ver que no sea grupo general
+        try:
+            BorrarGrupoDeTrabajoSchema().load(datos)
+            grupoABorrar = GrupoDeTrabajoService.find_by_id(datos['id_grupoDeTrabajo'])
+            if(grupoABorrar):
+                if(cls.validarDelete(grupoABorrar)):
+                    grupoABorrar.delete()
+                    return {'Status':'ok'},200
+                return {'Status': 'El grupo no puede ser dado de baja por contener stock activo'}
+            return {'Status': 'No existe el grupo'}
+        except ValidationError as err:
+            return {'error': err.messages},404
 
     def obtenerGrupoPorId(datos):
         try:

@@ -35,8 +35,6 @@ api.add_resource(GrupoDeTrabajo, '/api/v1/GrupoDeTrabajo')
 api.add_resource(GruposDeTrabajo, '/api/v1/GruposDeTrabajo')
 api.add_resource(RenombrarJefeGrupo, '/api/v1/NuevoJefeDeGrupo')
 
-
-
 api.add_resource(Experimentos, '/api/v1/proyecto/<int:idProyecto>/experimentos')
 api.add_resource(ExperimentoResource, '/api/v1/experimento/<int:idExperimiento>', endpoint='experimento')
 api.add_resource(ExperimentoResource, '/api/v1/nuevoExperimento', endpoint='nuevo_experimento')

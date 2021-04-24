@@ -23,6 +23,7 @@ class GruposDeTrabajo(Resource):
 
 class RenombrarJefeGrupo(Resource):
     def put(self):
+        #ok
             '''edita jefe de grupo de trabajo, esta accion solo puede realizarla usuario nivel 2.
             recibe id de grupo e id de jefe nuevo por json'''
             datos = request.get_json()
@@ -48,9 +49,8 @@ class GrupoDeTrabajo(Resource):
             return GrupoDeTrabajoService.obtenerGrupoPorId(datos)
         return {'name': datos},404
 
-    def delete(self,id):
-        grupoABorrar = GrupoDeTrabajoService.find_by_id(id)
-        if (grupoABorrar):
-            return GrupoDeTrabajoService.removerGrupo(grupoABorrar)
-        return  {'error':'El grupo de trabajo no existe'},404    
-        
+    def delete(self):
+        datos = request.get_json()
+        if (datos):
+            return GrupoDeTrabajoService.removerGrupo(datos)
+        return {'name': datos},404        
