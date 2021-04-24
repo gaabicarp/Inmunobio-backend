@@ -1,10 +1,10 @@
 from flask_restful import Api
 
 from resources.usuariosResource import ActualizarPermisos, Usuarios,UsuariosXIdUsuario,NuevoUsuario, ActualizarPermisos,ObtenerUsuariosParaProyecto
-from resources.proyecto import *
+from resources.proyectoResource import *
 from resources.permisosResource import Permisos,ObtenerPermisoPorId
 from resources.grupoDeTrabajo import NuevoGrupoDeTrabajo,GrupoDeTrabajo,GruposDeTrabajo
-from resources.experimento import ExperimentoResource, Experimentos
+from resources.experimentoResource import ExperimentoResource, Experimentos
 
 from resources.proyectoResource import *
 from resources.experimentoResource import ExperimentoResource, Experimentos, CerrarExperimento

@@ -20,7 +20,7 @@ class UsuarioService():
     def modificarUsuario(cls,usuario,modificaciones):        
         try:
             cls.validarTipoDatos(modificaciones) # falta ver extra fields
-            updateAtributes(usuario,modificaciones)
+            cls.updateAtributes(usuario,modificaciones)
             return {'Status':'ok'},200
         except ValidationError as err:
             return {'error': err.messages}, 404
@@ -31,7 +31,6 @@ class UsuarioService():
         si pudo encontrar los permisos en la base actualiza al usuario, sino devuelve
         mensaje de error.'''
         permisosObject = PermisosService.permisosById(permisosDicts)
-        print("bsuca los permsisos")
         if (permisosObject):
             usuario.setPermiso(permisosObject)
             db.session.add(usuario)

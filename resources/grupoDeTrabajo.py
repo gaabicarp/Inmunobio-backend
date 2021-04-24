@@ -1,19 +1,22 @@
 from db import dbMongo
 from marshmallow import Schema,  ValidationError
-#from bson import ObjectId
-#from dateutil import parser
 from models.mongo.grupoDeTrabajo import GrupoDeTrabajoSchema,GrupoDeTrabajo
 from flask_restful import Resource,Api
 from flask import request
-from servicios.GrupoDeTrabajoService import GrupoDeTrabajoService
+from servicios.grupoDeTrabajoService import GrupoDeTrabajoService
  
 class NuevoGrupoDeTrabajo(Resource):
     def post(self):
         datos = request.get_json()
         if datos:
-            nuevoGrupo = GrupoDeTrabajoService.nuevoGrupo()
-            return {'Status':'ok'},200  
+            try:
+                nuevoGrupo = GrupoDeTrabajoService.nuevoGrupo(datos)
+                return {'Status':'ok'},200  
+            except ValidationError as err:
+                return {'error': err.messages},400
         return {'name': datos},404
+
+
 
 class GruposDeTrabajo(Resource):
     def get(self):
@@ -46,8 +49,6 @@ class GrupoDeTrabajo(Resource):
     def delete(self,id):
         grupoABorrar = GrupoDeTrabajoService.find_by_id(id)
         if (grupoABorrar):
-            #agregar
-            GrupoDeTrabajoService.removerGrupo(grupoABorrar)
-            return {'Status':'ok'},200
+            return GrupoDeTrabajoService.removerGrupo(grupoABorrar)
         return  {'error':'El grupo de trabajo no existe'},404    
         

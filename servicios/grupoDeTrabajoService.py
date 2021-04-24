@@ -1,17 +1,12 @@
 from db import dbMongo
-#from marshmallow import Schema, fields, post_load, ValidationError
-#from bson import ObjectId
-#from dateutil import parser
-#from flask import jsonify
 import json
 from models.mongo.grupoDeTrabajo import GrupoDeTrabajoSchema,GrupoDeTrabajo
 from marshmallow import Schema, ValidationError
-#from flask_restful import Resource,Api
 from flask import jsonify, request
 
 class GrupoDeTrabajoService:
     def find_by_id(id):
-        return GrupoDeTrabajo.objects.filter(idGrupoDeTrabajo=id).first()
+        return GrupoDeTrabajo.objects.filter(id_grupoDeTrabajo=id).first()
 
     def find_by_nombre(_nombre):
         return GrupoDeTrabajo.objects(nombre = _nombre).first()
@@ -28,14 +23,22 @@ class GrupoDeTrabajoService:
 
     def jsonMany(datos):
         return jsonify(GrupoDeTrabajoSchema().dump(datos,many=True))
-    def removerGrupo(grupo):
-        #falta ver que pasa con los roles de un jefe cuando se borra el grupo 
-        return grupo.delete()
 
+    
     def obtenerTodosLosGrupos():
         return GrupoDeTrabajo.objects.all()
+        
     def nuevoGrupo(datos):
             grupoCreado = GrupoDeTrabajoSchema().load(datos)
             grupoCreado.save()
-            return grupoCreado
-            
+    @classmethod
+    def removerGrupo(cls,grupo):
+        #falta ver que pasa con los roles de un jefe cuando se borra el grupo 
+        if(cls.validarDelete(grupo)):
+            grupo.delete()
+            return {'Status':'ok'},200
+        return {'Status': 'El grupo no puede ser dado de baja por contener stock activo'}
+
+    def validarDelete(grupo):
+        return len(grupo.stock) == 0
+              
