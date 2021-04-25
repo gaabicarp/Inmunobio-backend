@@ -39,11 +39,13 @@ class GrupoDeTrabajoService:
             return {'error':'Grupo inexistente'},404
         except ValidationError as err:
             return {'error': err.messages},404
+            
     @classmethod
     def nuevoGrupo(cls,datos):
         try:
             grupoCreado = NuevoGrupoDeTrabajoSchema().load(datos)
             if(cls.validarMiembros([grupoCreado.jefeDeGrupo])):
+                #falta ver si tiene permisos nivel 4 
                 grupoCreado.save()
                 return {'Status':'ok'},200  
             return {'error':'No existe usuario con id '+str(datos['jefeDeGrupo'])},404

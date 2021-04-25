@@ -3,12 +3,13 @@ from marshmallow import Schema, fields, post_load, ValidationError
 from flask import jsonify
 
 class Stock(dbMongo.EmbeddedDocument):
-    lote = dbMongo.StringField()#Charlar stock y lote
+    lote = dbMongo.StringField()
     detalleUbicacion = dbMongo.StringField()
     unidad = dbMongo.IntField()
     fechaVencimiento = dbMongo.DateTimeField()
     id_espacioFisico = dbMongo.IntField()
-    codigoContenedor = dbMongo.StringField() 
+    codigoContenedor = dbMongo.StringField() #opcional
+
 
 class StockSchema(Schema):
     lote = fields.Integer()

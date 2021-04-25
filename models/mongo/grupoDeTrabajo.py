@@ -11,8 +11,6 @@ class GrupoDeTrabajo(dbMongo.Document):
     stock = dbMongo.ListField(dbMongo.EmbeddedDocumentField('Stock'))
     grupoGral = dbMongo.BooleanField(default=False)
 
-
-
 #schemas
 class BorrarGrupoDeTrabajoSchema(Schema):
     id_grupoDeTrabajo = fields.Integer(required=True,
