@@ -22,11 +22,7 @@ Migrate(app,db,compare_type=True)
 nojwt = JWT(app, authenticate, identity) 
 
 CORS(app)
-cors = CORS(app,resources={
-	r"/api/*":{
-		"origins":"*"
-	}
-})
+cors = CORS(app,resources={r"/api/*":{"origins":"*"}})
 
 ############################ Api configuracion
 api.init_app(app)
