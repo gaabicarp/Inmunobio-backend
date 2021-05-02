@@ -1,15 +1,15 @@
 from db import dbMongo
 from marshmallow import Schema, fields, post_load, ValidationError
 from flask import jsonify
-from models.mongo.stock import Stock,StockSchema,NuevoStockSchema
+from models.mongo.productosStock import ProductosStockSchema,NuevoProductosStockSchema,ProductosStock
+
 
 class GrupoDeTrabajo(dbMongo.Document):
     id_grupoDeTrabajo = dbMongo.SequenceField()
     nombre = dbMongo.StringField()
     jefeDeGrupo = dbMongo.IntField()
     integrantes = dbMongo.ListField(dbMongo.IntField()) #ver duplicados en integrantes
-    stock = dbMongo.ListField(dbMongo.EmbeddedDocumentField('Stock'))
-    #stock = lista embebida de productos
+    stock = dbMongo.ListField(dbMongo.EmbeddedDocumentField('ProductosStock'))
     grupoGral = dbMongo.BooleanField(default=False)
 
 #schemas
@@ -33,7 +33,7 @@ class GrupoDeTrabajoSchema(Schema):
     nombre = fields.Str()
     jefeDeGrupo = fields.Integer()
     integrantes = fields.List(fields.Int())
-    stock = fields.Nested(StockSchema, many=True)
+    stock = fields.Nested(ProductosStockSchema, many=True)
     grupoGral = fields.Boolean()
   
 class NuevoGrupoDeTrabajoSchema(Schema):
@@ -51,5 +51,5 @@ class NuevoGrupoDeTrabajoSchema(Schema):
   
 
 class NuevoStockGrupoSchema(GrupoDeTrabajoIDSchema):
-    stock = fields.Nested(NuevoStockSchema)
+    stock = fields.Nested(NuevoProductosStockSchema)
   

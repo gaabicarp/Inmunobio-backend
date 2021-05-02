@@ -7,5 +7,6 @@ class GrupoExperimental(Document):
     tipo = StringField()
     fuentesExperimentales = IntegerListField()
     muestras = IntegerListField()
+    id_espacioFisico = fields.Integer()
     parent = IntegerField(default = 0)
     habilitado = BooleanField(default = False)

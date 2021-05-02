@@ -9,7 +9,7 @@ from servicios.stockService import StockService
 class NuevoStock(Resource):
     def post(self):
         """Recibe un json con id_grupoDeTrabajo,lote,  detalleUbicacion(opc)
-        unidad (opc) fechaVencimiento(opc) id_espacioFisico ,codigoContenedor(opc)"""
+        unidad (opc) fechaVencimiento(opc) id_espacioFisico ,codigoContenedor e id de producto"""
         datos = request.get_json()
         if(datos):
             return StockService.altaStock(datos)

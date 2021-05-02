@@ -2,7 +2,7 @@ from dateutil import parser
 import datetime
 from marshmallow import Schema, ValidationError
 from flask import jsonify, request
-from models.mongo.stock import Stock,NuevoStockSchema,StockSchema
+from models.mongo.productosStock import Stock,NuevoStockSchema,StockSchema
 from models.mongo.grupoDeTrabajo import NuevoStockGrupoSchema,GrupoDeTrabajoIDSchema
 from servicios.grupoDeTrabajoService import GrupoDeTrabajoService
 
