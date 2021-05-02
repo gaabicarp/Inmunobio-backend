@@ -75,6 +75,16 @@ class Producto(Document):
     detallesTecnicos = StringField() #Se sube archivo .txt
     protocolo = StringField() #Se sube archivo
     id_distribuidora = ReferenciasField(required=True)
+    id_producto-> agregar
+
+class Productob(embebido):
+    nombre
+    id_producto <- id_producto
+    unidad = dbMongo.IntField()
+    
+
+    
+
 class Distribuidora(Document):
     nombre = StringField()
     direccion = StringField()

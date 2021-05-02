@@ -12,7 +12,6 @@ class NuevoGrupoDeTrabajo(Resource):
             return GrupoDeTrabajoService.nuevoGrupo(datos)
         return {'name': datos},404
 
-
 class GruposDeTrabajo(Resource):
     def get(self):
         #ok
@@ -55,3 +54,17 @@ class GrupoDeTrabajo(Resource):
         if (datos):
             return GrupoDeTrabajoService.removerGrupo(datos)
         return {'name': datos},404        
+
+class Stock(Resource):
+    def post(self):
+        datos = request.get_json()
+        if datos:
+            return GrupoDeTrabajoService.nuevoGrupo(datos)
+        return {'name': datos},404
+
+
+  
+
+
+
+

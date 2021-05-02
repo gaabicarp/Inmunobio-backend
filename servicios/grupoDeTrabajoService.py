@@ -1,6 +1,6 @@
 from db import dbMongo
 import json
-from models.mongo.grupoDeTrabajo import jefeDeGrupoSchema,ModificarGrupoDeTrabajoSchema,GrupoDeTrabajoSchema,GrupoDeTrabajo,NuevoGrupoDeTrabajoSchema,BorrarGrupoDeTrabajoSchema
+from models.mongo.grupoDeTrabajo import jefeDeGrupoSchema,ModificarGrupoDeTrabajoSchema,GrupoDeTrabajoSchema,GrupoDeTrabajo,NuevoGrupoDeTrabajoSchema,GrupoDeTrabajoIDSchema
 from marshmallow import Schema, ValidationError
 from flask import jsonify, request
 from servicios.usuarioService import UsuarioService
@@ -55,7 +55,7 @@ class GrupoDeTrabajoService:
     @classmethod
     def removerGrupo(cls,datos):
         try:
-            BorrarGrupoDeTrabajoSchema().load(datos)
+            GrupoDeTrabajoIDSchema().load(datos)
             grupoABorrar = GrupoDeTrabajoService.find_by_id(datos['id_grupoDeTrabajo'])
             if(grupoABorrar):
                 if(cls.validarDelete(grupoABorrar)):
@@ -68,13 +68,15 @@ class GrupoDeTrabajoService:
 
     def obtenerGrupoPorId(datos):
         try:
-            BorrarGrupoDeTrabajoSchema().load(datos)
+            GrupoDeTrabajoIDSchema().load(datos)
             grupoConsulta= GrupoDeTrabajoService.find_by_id(datos['id_grupoDeTrabajo'])
             if (grupoConsulta):
                 return GrupoDeTrabajoService.json(grupoConsulta)
             return  {'error':'El grupo de trabajo no existe'},404    
         except ValidationError as err:
             return {'error': err.messages},404
+
+  
 
     def validarDelete(grupo):
         return len(grupo.stock) == 0 and not grupo.grupoGral

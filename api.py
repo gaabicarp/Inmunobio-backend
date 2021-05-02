@@ -5,10 +5,10 @@ from resources.proyectoResource import *
 from resources.permisosResource import Permisos,ObtenerPermisoPorId
 from resources.grupoDeTrabajoResource import NuevoGrupoDeTrabajo,GrupoDeTrabajo,GruposDeTrabajo,RenombrarJefeGrupo
 from resources.experimentoResource import ExperimentoResource, Experimentos
-
 from resources.proyectoResource import *
 from resources.experimentoResource import ExperimentoResource, Experimentos, CerrarExperimento
 from resources.contenedorResource import Contenedor, ContenedorProyecto, ContenedorParent
+from resources.stockResource import NuevoStock
 
 api = Api()
 
@@ -34,6 +34,11 @@ api.add_resource(NuevoGrupoDeTrabajo, '/api/v1/nuevoGrupoDeTrabajo')
 api.add_resource(GrupoDeTrabajo, '/api/v1/GrupoDeTrabajo')
 api.add_resource(GruposDeTrabajo, '/api/v1/GruposDeTrabajo')
 api.add_resource(RenombrarJefeGrupo, '/api/v1/NuevoJefeDeGrupo')
+
+#stock
+api.add_resource(NuevoStock, '/api/v1/NuevoStock')
+
+
 
 api.add_resource(Experimentos, '/api/v1/proyecto/<int:idProyecto>/experimentos')
 api.add_resource(ExperimentoResource, '/api/v1/experimento/<int:idExperimiento>', endpoint='experimento')

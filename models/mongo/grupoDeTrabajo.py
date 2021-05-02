@@ -1,7 +1,7 @@
 from db import dbMongo
 from marshmallow import Schema, fields, post_load, ValidationError
 from flask import jsonify
-from models.mongo.stock import Stock,StockSchema
+from models.mongo.stock import Stock,StockSchema,NuevoStockSchema
 
 class GrupoDeTrabajo(dbMongo.Document):
     id_grupoDeTrabajo = dbMongo.SequenceField()
@@ -9,31 +9,25 @@ class GrupoDeTrabajo(dbMongo.Document):
     jefeDeGrupo = dbMongo.IntField()
     integrantes = dbMongo.ListField(dbMongo.IntField()) #ver duplicados en integrantes
     stock = dbMongo.ListField(dbMongo.EmbeddedDocumentField('Stock'))
+    #stock = lista embebida de productos
     grupoGral = dbMongo.BooleanField(default=False)
 
 #schemas
-class BorrarGrupoDeTrabajoSchema(Schema):
+class GrupoDeTrabajoIDSchema(Schema):
     id_grupoDeTrabajo = fields.Integer(required=True,
     error_messages={"required": {"message": "Debe indicarse id de grupo", "code": 400}}
     ) 
 
 
-class ModificarGrupoDeTrabajoSchema(BorrarGrupoDeTrabajoSchema):
+class ModificarGrupoDeTrabajoSchema(GrupoDeTrabajoIDSchema):
     integrantes = fields.List(fields.Integer,required=True,many=True,
     error_messages={"required": {"message": "Deben indicarse los miembros del grupo", "code": 400}}
     )
-class jefeDeGrupoSchema(BorrarGrupoDeTrabajoSchema):
+class jefeDeGrupoSchema(GrupoDeTrabajoIDSchema):
     jefeDeGrupo = fields.Integer(required=True,
     error_messages={"required": {"message": "Debe indicarse id jefe de grupo", "code": 400}}
     ) 
-
-
-    
-    
-
-
-
-
+  
 class GrupoDeTrabajoSchema(Schema):
     id_grupoDeTrabajo = fields.Integer()
     nombre = fields.Str()
@@ -41,7 +35,6 @@ class GrupoDeTrabajoSchema(Schema):
     integrantes = fields.List(fields.Int())
     stock = fields.Nested(StockSchema, many=True)
     grupoGral = fields.Boolean()
-
   
 class NuevoGrupoDeTrabajoSchema(Schema):
     nombre = fields.Str(required=True,
@@ -57,3 +50,6 @@ class NuevoGrupoDeTrabajoSchema(Schema):
         return GrupoDeTrabajo(**data)
   
 
+class NuevoStockGrupoSchema(GrupoDeTrabajoIDSchema):
+    stock = fields.Nested(NuevoStockSchema)
+  
