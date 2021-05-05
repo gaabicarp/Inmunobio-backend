@@ -21,10 +21,10 @@ class GrupoDeTrabajoService:
                 if (cls.validarMiembros(datos['integrantes'])) :
                     grupoAModificar.update(integrantes=datos['integrantes'])
                     return {'Status':'ok'},200  
-                return {'error':'Usuario/s miembros invalidos'},404
-            return {'error':'El grupo no existe '},404
+                return {'error':'Usuario/s miembros invalidos'},400
+            return {'error':'El grupo no existe '},400
         except ValidationError as err:
-            return {'error': err.messages},404
+            return {'error': err.messages},400
 
     @classmethod
     def modificarJefeGrupo(cls,datos):
@@ -35,10 +35,10 @@ class GrupoDeTrabajoService:
                 if(cls.validarMiembros([datos['jefeDeGrupo']])):
                     grupoAModificar.update(jefeDeGrupo=datos['jefeDeGrupo'])
                     return {'Status':'ok'},200  
-                return {'error':'Jefe de grupo inexistente'},404
-            return {'error':'Grupo inexistente'},404
+                return {'error':'Jefe de grupo inexistente'},400
+            return {'error':'Grupo inexistente'},400
         except ValidationError as err:
-            return {'error': err.messages},404
+            return {'error': err.messages},400
             
     @classmethod
     def nuevoGrupo(cls,datos):
@@ -48,9 +48,9 @@ class GrupoDeTrabajoService:
                 #falta ver si tiene permisos nivel 4 
                 grupoCreado.save()
                 return {'Status':'ok'},200  
-            return {'error':'No existe usuario con id '+str(datos['jefeDeGrupo'])},404
+            return {'error':'No existe usuario con id jefeDeGrupo'},400
         except ValidationError as err:
-            return {'error': err.messages},404
+            return {'error': err.messages},400
 
     @classmethod
     def removerGrupo(cls,datos):
@@ -62,11 +62,11 @@ class GrupoDeTrabajoService:
                     grupoABorrar.delete()
                     return {'Status':'ok'},200
                 return {'Status': 'El grupo no puede ser dado de baja por contener stock activo o ser grupo general'}
-            return {'Status': 'No existe el grupo'}
+            return {'Status': 'No existe el grupo'},400
         except ValidationError as err:
-            return {'error': err.messages},404
+            return {'error': err.messages},400
 
-    def obtenerGrupoPorId(datos):
+"""   def obtenerGrupoPorId(datos):
         try:
             GrupoDeTrabajoIDSchema().load(datos)
             grupoConsulta= GrupoDeTrabajoService.find_by_id(datos['id_grupoDeTrabajo'])
@@ -75,8 +75,15 @@ class GrupoDeTrabajoService:
             return  {'error':'El grupo de trabajo no existe'},404    
         except ValidationError as err:
             return {'error': err.messages},404
-
-  
+"""
+      def obtenerGrupoPorId(idGrupoDeTrabajo):
+        try:
+            grupoConsulta= GrupoDeTrabajoService.find_by_id(id)
+            if (grupoConsulta):
+                return GrupoDeTrabajoService.json(grupoConsulta)
+            return  {'error':'El grupo de trabajo no existe'},400    
+        except ValidationError as err:
+            return {'error': err.messages},400
 
     def validarDelete(grupo):
         return len(grupo.stock) == 0 and not grupo.grupoGral

@@ -1,14 +1,14 @@
-from dateutil import parser
-import datetime
+#from dateutil import parser
+#import datetime
 from marshmallow import Schema, ValidationError
 from flask import jsonify, request
-from models.mongo.productosStock import Stock,NuevoStockSchema,StockSchema
-from models.mongo.grupoDeTrabajo import NuevoStockGrupoSchema,GrupoDeTrabajoIDSchema
+from models.mongo.productosStock import ProductosStock,ProductosStockSchema,NuevoProductosStockSchema
+from models.mongo.grupoDeTrabajo import NuevoStockGrupoSchema
 from servicios.grupoDeTrabajoService import GrupoDeTrabajoService
 
 class StockService:
     @classmethod
-    def altaStock(cls,datos):
+    def altaProductoEnStock(cls,datos):
         try:
             NuevoStockGrupoSchema().load(datos)
             grupoBuscado = GrupoDeTrabajoService.find_by_id(datos['id_grupoDeTrabajo'])     
@@ -28,25 +28,24 @@ class StockService:
             cls.aumentarUnidades(stockAgrupable)
         else:
             print('creo el stock y lo agrego al grupo')
-            grupoTrabajo.stock.append(cls.crearStock(datos))
+            nuevoProductoStock = cls.crearProductoEnStock(datos))
+            
             grupoTrabajo.save()
         return {'Status':'ok'},200 
   
     @classmethod
-    def busquedaEnStock(cls,stocks,datos):
-        '''Recibe lista con stocks y stock a dar de alta, devuelva un stock que coincida con los datos
-        del stock a dar de alta,o null si no encuentra'''
-        for 
-
+    def busquedaEnStock(cls,productos,datos):
+        '''Recibe lista con stocks y stock a dar de alta, devuelva un stock que coincida con id_producto
+        a dar de alta,o [] si no encuentra'''
+        return filter(lambda x: x.id_producto == datos['id_producto'], productos)
     @classmethod
     def aumentarUnidades(cls,stock):
         pass
 
     @classmethod
-    def crearStock(cls,datos):
-        datos.pop('id_grupoDeTrabajo')
+    def crearProductoEnStock(cls,datos):
         print(datos)
-        return NuevoStockSchema().load(datos['stock'])
+        return NuevoProductosStockSchema().load(datos,unknown=EXCLUDE)
 
 
 
