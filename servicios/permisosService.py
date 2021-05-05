@@ -12,8 +12,8 @@ class PermisosService():
         return jsonify( PermisoSchema().dump(datos))
 
     @classmethod
-    def find_by_id(cls, _id):
-        return Permiso.query.filter_by(id=_id).first()
+    def find_by_id(cls, _id_permiso):
+        return Permiso.query.filter_by(id_permiso=_id_permiso).first()
         
     @classmethod
     def all_permisos(cls):
@@ -39,10 +39,9 @@ class PermisosService():
         return None
 
     @classmethod
-    def obtenerPermisoPorId(cls,datos):
-        if('id' in datos):
-            permiso = PermisosService.find_by_id(datos['id'])
-            if permiso : return PermisosService.json(permiso)
-            return {'error':'No existen permisos con esa id'},404
-        return {'error': 'Debe especificarse id'},404
+    def obtenerPermisoPorId(cls,id_permiso):
+        permiso = PermisosService.find_by_id(id_permiso)
+        if permiso : 
+            return PermisosService.json(permiso)
+        return {'error':'No existen permisos con esa id'},400
 

@@ -1,6 +1,6 @@
 from flask_restful import Api
 
-from resources.usuariosResource import ActualizarPermisos, Usuarios,UsuariosXIdUsuario,NuevoUsuario, ActualizarPermisos,ObtenerUsuariosParaProyecto
+from resources.usuariosResource import ActualizarPermisos, Usuarios,ModificarUsuario,NuevoUsuario, BusquedaPorID,ObtenerUsuariosParaProyecto
 from resources.proyectoResource import *
 from resources.permisosResource import Permisos,ObtenerPermisoPorId
 from resources.grupoDeTrabajoResource import NuevoGrupoDeTrabajo,GrupoDeTrabajo,GruposDeTrabajo,RenombrarJefeGrupo
@@ -10,18 +10,20 @@ from resources.proyectoResource import *
 from resources.experimentoResource import ExperimentoResource, Experimentos, CerrarExperimento
 from resources.contenedorResource import Contenedor, ContenedorProyecto, ContenedorParent
 
-api = Api()
+
 
 api = Api()
 #permisos
-api.add_resource(ObtenerPermisoPorId, '/api/v1/permisoId')
+api.add_resource(ObtenerPermisoPorId, '/api/v1/permiso/<int:id_permiso>')
 api.add_resource(Permisos, '/api/v1/permisos')
 #usuarios
 api.add_resource(ActualizarPermisos, '/api/v1/usuariosPermisos')
 api.add_resource(Usuarios, '/api/v1/usuarios')
-api.add_resource(UsuariosXIdUsuario, '/api/v1/usuario')
+api.add_resource(ModificarUsuario, '/api/v1/usuario')
+api.add_resource(BusquedaPorID, '/api/v1/usuario/<int:id_usuario>')
 api.add_resource(NuevoUsuario, '/api/v1/nuevoUsuario')
 api.add_resource(ObtenerUsuariosParaProyecto, '/api/UsuariosParaProyecto')
+
 #proyectos
 api.add_resource(Proyectos, '/api/proyectos')
 api.add_resource(NuevoProyecto, '/api/nuevoProyecto')
