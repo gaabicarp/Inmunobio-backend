@@ -1,9 +1,9 @@
 from werkzeug.security import safe_str_cmp
 from models.mysql.usuario import Usuario
 
-
-def authenticate(username, password):
-    user = Usuario.find_by_username(username)
+#TO-DO: probar authenticate con email
+def authenticate(email, password):
+    user = Usuario.find_by_email(email)
     if user and safe_str_cmp(user.password, password):
         return user
 
