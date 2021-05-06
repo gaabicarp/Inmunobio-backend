@@ -23,7 +23,7 @@ class Usuario(db.Model):
     telefono = db.Column(String(120))
     id_permisos = db.relationship('Permiso',secondary =permisoXUsuario, backref = db.backref('permisos'),lazy = 'dynamic')
     
-    def __init__(self, nombre, mail, password,direccion,telefono,id_permisos):
+    def __init__(self, nombre, email, password,direccion,telefono,id_permisos):
         self.nombre = nombre
         self.email = email
         self.password = password
