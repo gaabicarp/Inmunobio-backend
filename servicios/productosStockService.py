@@ -15,9 +15,9 @@ class ProductosStockService():
             grupoBuscado = GrupoDeTrabajoService.find_by_id(datos['id_grupoDeTrabajo'])     
             if(grupoBuscado):
                 return cls.modificarStock(grupoBuscado,datos)
-            return  {'error':'Grupo de trabajo inexistente'},404
+            return  {'error':'Grupo de trabajo inexistente'},400
         except ValidationError as err:
-            return {'error': err.messages},404
+            return {'error': err.messages},400
 
 
     @classmethod
@@ -39,6 +39,7 @@ class ProductosStockService():
         '''Recibe lista con stocks y stock a dar de alta, devuelva un stock que coincida con id_producto
         a dar de alta,o [] si no encuentra'''
         return filter(lambda x: x.id_producto == datos['id_producto'], productos)
+
     @classmethod
     def aumentarUnidades(cls,stock):
         pass
@@ -47,6 +48,17 @@ class ProductosStockService():
     def crearProductoEnStock(cls,datos):
         print(datos)
         return NuevoProductosStockSchema().load(datos,unknown=EXCLUDE)
+    
+    def jsonMany(datos):
+          jsonify(ProductosStockSchema().dump(datos,many=True))
+
+    @classmethod
+    def obtenerProductos(cls,id_grupoDeTrabajo):
+        grupo = GrupoDeTrabajoService.find_by_id(id_grupoDeTrabajo)
+        if (grupo):
+            return cls.jsonMany(grupo.stock)
+        return  {'error':'Grupo de trabajo inexistente'},400
+
 
 
 

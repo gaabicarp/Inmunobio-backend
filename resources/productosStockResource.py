@@ -10,12 +10,9 @@ class NuevoStock(Resource):
         unidad (opc) fechaVencimiento(opc) id_espacioFisico(obligatorio),codigoContenedor(opc) e id de producto"""
         datos = request.get_json()
         if(datos):
-            return StockService.altaProductoEnStock(datos)
+            return ProductosStockService.altaProductoEnStock(datos)
         return {'name': 'None'},404
 
-class Stock(Resource):
-    def get(self):
-        datos = request.get_json()
-        if(datos):
-            return StockService.obtenerStock(datos)
-        return {'name': 'None'},404 
+class ObtenerProductosStock(Resource):
+    def get(self,id_grupoDeTrabajo):
+            return ProductosStockService.obtenerProductos(id_grupoDeTrabajo)

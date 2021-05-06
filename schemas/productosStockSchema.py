@@ -7,6 +7,7 @@ class ProductoEnStockSchema(Schema):
     detalleUbicacion = fields.String(default="")
     unidad = fields.Integer()
     codigoContenedor =  fields.Integer(null=True)
+
 class ProductosStockSchema(Schema):
     lote = fields.String()
     fechaVencimiento = fields.DateTime(null=True)
@@ -14,6 +15,7 @@ class ProductosStockSchema(Schema):
     id_producto = fields.Integer()  
     producto = fields.Nested(ProductoEnStockSchema, many=True)    
 class ProductoNuevoStockSchema(ProductoEnStockSchema):
+    
     id_espacioFisico = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse id_espaciofisico", "code": 400}})
 class NuevoProductosStockSchema(ProductosStockSchema):
     lote = fields.String(required=True, error_messages={"required": {"message" : "Debe indicarse lote", "code": 400}})
