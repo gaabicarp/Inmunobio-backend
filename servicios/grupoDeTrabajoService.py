@@ -1,6 +1,6 @@
 from db import dbMongo
 import json
-from models.mongo.grupoDeTrabajo import jefeDeGrupoSchema,ModificarGrupoDeTrabajoSchema,GrupoDeTrabajoSchema,GrupoDeTrabajo,NuevoGrupoDeTrabajoSchema,GrupoDeTrabajoIDSchema
+from schemas.grupoTrabajoSchema import jefeDeGrupoSchema,ModificarGrupoDeTrabajoSchema,GrupoDeTrabajoSchema,GrupoDeTrabajo,NuevoGrupoDeTrabajoSchema,GrupoDeTrabajoIDSchema
 from marshmallow import Schema, ValidationError
 from flask import jsonify, request
 from servicios.usuarioService import UsuarioService
@@ -66,7 +66,7 @@ class GrupoDeTrabajoService:
         except ValidationError as err:
             return {'error': err.messages},400
 
-"""   def obtenerGrupoPorId(datos):
+        """   def obtenerGrupoPorId(datos):
         try:
             GrupoDeTrabajoIDSchema().load(datos)
             grupoConsulta= GrupoDeTrabajoService.find_by_id(datos['id_grupoDeTrabajo'])
@@ -75,8 +75,8 @@ class GrupoDeTrabajoService:
             return  {'error':'El grupo de trabajo no existe'},404    
         except ValidationError as err:
             return {'error': err.messages},404
-"""
-      def obtenerGrupoPorId(idGrupoDeTrabajo):
+        """
+    def obtenerGrupoPorId(idGrupoDeTrabajo):
         try:
             grupoConsulta= GrupoDeTrabajoService.find_by_id(id)
             if (grupoConsulta):

@@ -2,11 +2,12 @@
 #import datetime
 from marshmallow import Schema, ValidationError
 from flask import jsonify, request
-from models.mongo.productosStock import ProductosStock,ProductosStockSchema,NuevoProductosStockSchema
-from models.mongo.grupoDeTrabajo import NuevoStockGrupoSchema
+from models.mongo.productosStock import ProductosStock
+from schemas.productosStockSchema import ProductosStockSchema,NuevoProductosStockSchema
+from schemas.grupoTrabajoSchema import NuevoStockGrupoSchema
 from servicios.grupoDeTrabajoService import GrupoDeTrabajoService
 
-class StockService:
+class ProductosStockService():
     @classmethod
     def altaProductoEnStock(cls,datos):
         try:
@@ -28,7 +29,7 @@ class StockService:
             cls.aumentarUnidades(stockAgrupable)
         else:
             print('creo el stock y lo agrego al grupo')
-            nuevoProductoStock = cls.crearProductoEnStock(datos))
+            nuevoProductoStock = cls.crearProductoEnStock(datos)
             
             grupoTrabajo.save()
         return {'Status':'ok'},200 

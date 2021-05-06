@@ -1,4 +1,4 @@
-from models.mongo.grupoDeTrabajo import grupoDeTrabajo
+from models.mongo.grupoDeTrabajo import GrupoDeTrabajo
 from schemas.productosStockSchema import ProductosStockSchema,NuevoProductosStockSchema
 from marshmallow import Schema, fields, post_load, ValidationError
 

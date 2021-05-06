@@ -2,7 +2,7 @@ from flask_restful import Resource,Api
 from flask_jwt import jwt_required
 from flask import request
 from dateutil import parser
-from servicios.stockService import StockService
+from servicios.productosStockService import  ProductosStockService
 
 class NuevoStock(Resource):
     def post(self):

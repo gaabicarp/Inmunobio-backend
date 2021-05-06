@@ -32,14 +32,14 @@ class ModificarGrupoDeTrabajo(Resource):
 
 
 class GrupoDeTrabajo(Resource):
-    def get(self,id):        
+    def get(self,id_grupoDeTrabajo):        
         datos = request.get_json()
         if (datos):
-            return GrupoDeTrabajoService.obtenerGrupoPorId(id)
+            return GrupoDeTrabajoService.obtenerGrupoPorId(id_grupoDeTrabajo)
         return {'name': datos},404
 
 
- class GruposDeTrabajo(Resource):
+class GruposDeTrabajo(Resource):
     def get(self):
         gruposConsulta= GrupoDeTrabajoService.obtenerTodosLosGrupos()
         if(gruposConsulta):
