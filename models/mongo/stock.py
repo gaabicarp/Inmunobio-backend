@@ -1,6 +1,7 @@
 from db import dbMongo
+from models.mongo.productoEnStock import ProductoEnStock
 
-class ProductosStock(dbMongo.EmbeddedDocument):
+class Stock(dbMongo.EmbeddedDocument):
     lote = dbMongo.StringField()
     fechaVencimiento = dbMongo.DateTimeField()
     producto = dbMongo.ListField(dbMongo.EmbeddedDocumentField('ProductoEnStock'))
@@ -8,10 +9,5 @@ class ProductosStock(dbMongo.EmbeddedDocument):
     id_producto = dbMongo.IntField()  #se toma de producto
 
 
-class ProductoEnStock(dbMongo.EmbeddedDocument):
-    id_espacioFisico = dbMongo.IntField()
-    codigoContenedor = dbMongo.IntField() #opcional
-    detalleUbicacion = dbMongo.StringField()
-    unidad = dbMongo.IntField()
 
    

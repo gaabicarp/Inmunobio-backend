@@ -1,5 +1,5 @@
 from models.mongo.grupoDeTrabajo import GrupoDeTrabajo
-from schemas.productosStockSchema import ProductosStockSchema,NuevoProductosStockSchema
+from schemas.stockSchema import StockSchema,NuevoStockSchema
 from marshmallow import Schema, fields, post_load, ValidationError
 
 #schemas
@@ -7,7 +7,6 @@ class GrupoDeTrabajoIDSchema(Schema):
     id_grupoDeTrabajo = fields.Integer(required=True,
     error_messages={"required": {"message": "Debe indicarse id de grupo", "code": 400}}
     ) 
-
 
 class ModificarGrupoDeTrabajoSchema(GrupoDeTrabajoIDSchema):
     integrantes = fields.List(fields.Integer,required=True,many=True,
@@ -23,7 +22,7 @@ class GrupoDeTrabajoSchema(Schema):
     nombre = fields.Str()
     jefeDeGrupo = fields.Integer()
     integrantes = fields.List(fields.Int())
-    stock = fields.Nested(ProductosStockSchema, many=True)
+    stock = fields.Nested(StockSchema, many=True)
     grupoGral = fields.Boolean()
   
 class NuevoGrupoDeTrabajoSchema(Schema):
@@ -41,5 +40,5 @@ class NuevoGrupoDeTrabajoSchema(Schema):
   
 
 class NuevoStockGrupoSchema(GrupoDeTrabajoIDSchema):
-    stock = fields.Nested(NuevoProductosStockSchema)
+    stock = fields.Nested(NuevoStockSchema)
   

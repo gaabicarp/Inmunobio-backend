@@ -78,8 +78,8 @@ class GrupoDeTrabajoService:
         """
     def obtenerGrupoPorId(idGrupoDeTrabajo):
         try:
-            grupoConsulta= GrupoDeTrabajoService.find_by_id(id)
-            if (grupoConsulta):
+            grupoConsulta= GrupoDeTrabajoService.find_by_id(idGrupoDeTrabajo)
+            if(grupoConsulta):
                 return GrupoDeTrabajoService.json(grupoConsulta)
             return  {'error':'El grupo de trabajo no existe'},400    
         except ValidationError as err:

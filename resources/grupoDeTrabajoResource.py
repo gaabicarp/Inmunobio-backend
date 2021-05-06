@@ -35,6 +35,7 @@ class GrupoDeTrabajo(Resource):
     def get(self,id_grupoDeTrabajo):        
         datos = request.get_json()
         if (datos):
+            print('entro a datos')
             return GrupoDeTrabajoService.obtenerGrupoPorId(id_grupoDeTrabajo)
         return {'name': datos},404
 
@@ -44,7 +45,8 @@ class GruposDeTrabajo(Resource):
         gruposConsulta= GrupoDeTrabajoService.obtenerTodosLosGrupos()
         if(gruposConsulta):
             return GrupoDeTrabajoService.jsonMany(gruposConsulta)
-        return  {'error':'No existen grupos de trabajo '},404     
+
+        return{'error':'No existen grupos de trabajo '},400
 
 
 
