@@ -41,7 +41,7 @@ class ExperimentoResource(Resource):
         datos = request.get_json()
         if datos:
             try:
-                ExperimentoService.modificarGruposExperimentalesDelExperimento(datos)
+                ExperimentoService.modificarExperimento(datos)
                 return {"Status":"ok"}, 201
             except ValidationError as err:
                 return {'error': err.messages},400

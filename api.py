@@ -23,8 +23,8 @@ api.add_resource(UsuariosXIdUsuario, '/api/v1/usuario')
 api.add_resource(NuevoUsuario, '/api/v1/nuevoUsuario')
 api.add_resource(ObtenerUsuariosParaProyecto, '/api/UsuariosParaProyecto')
 #proyectos
-api.add_resource(Proyectos, '/api/proyectos')
-api.add_resource(NuevoProyecto, '/api/nuevoProyecto')
+api.add_resource(Proyectos, '/api/v1/proyectos')
+api.add_resource(NuevoProyecto, '/api/v1/nuevoProyecto')
 api.add_resource(ProyectoID, '/api/proyectoID')
 api.add_resource(CerrarProyecto, '/api/cerrarProyecto')
 api.add_resource(ModificarProyecto, '/api/modificarProyecto')
@@ -35,13 +35,13 @@ api.add_resource(GrupoDeTrabajo, '/api/v1/GrupoDeTrabajo')
 api.add_resource(GruposDeTrabajo, '/api/v1/GruposDeTrabajo')
 api.add_resource(RenombrarJefeGrupo, '/api/v1/NuevoJefeDeGrupo')
 
-
-
+#Experimento
 api.add_resource(Experimentos, '/api/v1/proyecto/<int:idProyecto>/experimentos')
 api.add_resource(ExperimentoResource, '/api/v1/experimento/<int:idExperimiento>', endpoint='experimento')
 api.add_resource(ExperimentoResource, '/api/v1/nuevoExperimento', endpoint='nuevo_experimento')
-api.add_resource(ExperimentoResource, '/api/v1/experimento/gruposExperimentales', endpoint='agregar_grupos_experimentales')
 api.add_resource(CerrarExperimento, '/api/v1/cerrarExperimento', endpoint='cerrar_experimento')
+api.add_resource(ExperimentoResource, '/api/v1/modificarExperimento', endpoint='modificar_experimento')
+
 
 api.add_resource(Contenedor, '/api/v1/contenedores', endpoint='contenedores')
 api.add_resource(Contenedor, '/api/v1/nuevoContenedor', endpoint='nuevo_contenedore')

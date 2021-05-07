@@ -31,6 +31,8 @@ class ProyectoService:
             fechaFinal = parser.parse(str(datetime.datetime.utcnow()))
         )
     
+
+    #Agregar modificar Participantes
     @classmethod
     def modificarProyecto(cls, datos):
         proyecto = ProyectoModificarSchema().load(datos)
