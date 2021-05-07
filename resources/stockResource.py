@@ -10,7 +10,7 @@ class NuevoProductoEnStock(Resource):
         unidad (opc) fechaVencimiento(opc) id_espacioFisico(obligatorio),codigoContenedor(opc) e id de producto"""
         datos = request.get_json()
         if(datos):
-            return StockService.altaStock(datos)
+            return StockService.nuevoStock(datos)
         return {'name': 'None'},400
 
 class ObtenerProductosStock(Resource):
