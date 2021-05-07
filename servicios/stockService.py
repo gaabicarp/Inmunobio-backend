@@ -32,40 +32,41 @@ class StockService():
 
     @classmethod
     def modificarStock(cls,grupoTrabajo,datos):
-        stockProducto = cls.busquedaEnStock(grupoTrabajo.stock,datos)
-        print('imprimo stock del grupo')
-        print(grupoTrabajo.stock)
+        stockProducto = cls.busquedaEnStock(grupoTrabajo.stock,datos['stock'])
         if(stockProducto):
             #aumento stock
             print('aumentosto unidades')
-            cls.aumentarUnidades(stockProducto)
+            cls.aumentarUnidades(stockProducto,datos['stock'])
         else:
-            print('creo el stock y lo agrego al grupo')
-            nuevoStock = cls.crearStock(datos)
-            print('PRINT NUEVO STOCK')
-            print(nuevoStock)
-            grupoTrabajo.stock.append(nuevoStock)
-            grupoTrabajo.save()
+           cls.crearStock(datos,grupoTrabajo)
+           
         return {'Status':'ok'},200 
   
     @classmethod
-    def busquedaEnStock(cls,productos,datos):
+    def busquedaEnStock(cls,stocks,datos):
         '''Recibe lista con stocks y stock a dar de alta, devuelve un stock que coincida con id_producto
         a dar de alta,o [] si no encuentra'''
-        print(list(filter(lambda x: x.id_producto == datos['id_producto'], productos)))
-        return list(filter(lambda x: x.id_producto == datos['id_producto'], productos))
+        return list(filter(lambda x: x.id_producto == datos['id_producto'], stocks))
+    
+    @classmethod
+    def busquedaEnProducto(cls,productos,datos):
+        return list(filter(lambda x: x.id_espacioFisico == datos['id_espacioFisico'], productos))
 
     @classmethod
-    def aumentarUnidades(cls,stock):
-        pass
+    def aumentarUnidades(cls,producto,datos):
+        if(cls.busquedaEnProducto(producto,datos['producto'][0]) ):
+            print('se encuentra stock con mismo lote y mismo id espacio fisico aumento unidade')
+        
 
     @classmethod
-    def crearStock(cls,datos):
-        print(datos)
-        return NuevoStockSchema().load(datos['stock'])
+    def crearStock(cls,datos,grupoTrabajo):
+        grupoTrabajo.stock.append(NuevoStockSchema().load(datos['stock']))
+        grupoTrabajo.save()
     
     def jsonMany(datos):
         return jsonify(StockSchema().dump(datos,many=True))
+    def json(datos):
+        return StockSchema().dump(datos)
 
     @classmethod
     def obtenerProductos(cls,id_grupoDeTrabajo):
