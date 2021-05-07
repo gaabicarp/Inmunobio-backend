@@ -46,8 +46,12 @@ class StockService():
     def busquedaEnStock(cls,stocks,datos):
         '''Recibe lista con stocks y stock a dar de alta, devuelve un stock que coincida con id_producto
         a dar de alta,o [] si no encuentra'''
-        return list(filter(lambda x: x.id_producto == datos['id_producto'], stocks))
+        return list(filter(lambda x: cls.criterioBusqueda(x,datos), stocks))
     
+
+    def criterioBusqueda(stock,stockNuevo):
+        return stock.id_producto == stockNuevo['id_producto'] and stock.lote == stockNuevo['lote']
+
     @classmethod
     def busquedaEnProducto(cls,productos,datos):
         return list(filter(lambda x: x.id_espacioFisico == datos['id_espacioFisico'], productos))
@@ -55,7 +59,7 @@ class StockService():
     @classmethod
     def aumentarUnidades(cls,producto,datos):
         if(cls.busquedaEnProducto(producto,datos['producto'][0]) ):
-            print('se encuentra stock con mismo lote y mismo id espacio fisico aumento unidade')
+            print('se encuentra stock con mismo lote y mismo id espacio fisico aumento unidades')
         
 
     @classmethod
