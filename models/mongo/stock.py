@@ -7,6 +7,7 @@ class Stock(dbMongo.EmbeddedDocument):
     producto = dbMongo.ListField(dbMongo.EmbeddedDocumentField('ProductoEnStock'))
     nombre = dbMongo.StringField() #se toma de producto
     id_producto = dbMongo.IntField()  #se toma de producto
+    id_stock =  dbMongo.SequenceField()
 
 
 

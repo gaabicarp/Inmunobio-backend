@@ -13,6 +13,14 @@ class NuevoProductoEnStock(Resource):
             return StockService.nuevoStock(datos)
         return {'name': 'None'},400
 
+class ProductoEnStock(Resource):
+    def delete(self):
+        datos = request.get_json()
+        if(datos):
+            return StockService.borrarStock(datos)
+        return {'name': 'None'},400
+
+
 class ObtenerProductosStock(Resource):
     def get(self,id_grupoDeTrabajo):
             return StockService.obtenerProductos(id_grupoDeTrabajo)

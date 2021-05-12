@@ -1,8 +1,9 @@
 from models.mongo.stock import Stock
 from marshmallow import Schema, fields, post_load, ValidationError
-from schemas.productoEnStockSchema import ProductoEnStockSchema,NuevoProductoEnStockSchema
+from schemas.productoEnStockSchema import ProductoEnStockSchema,NuevoProductoEnStockSchema,busquedaProductoEnStockSchema
 
 class StockSchema(Schema):
+    id_stock = fields.Integer()
     lote = fields.String()
     fechaVencimiento = fields.DateTime(null=True)
     nombre = fields.String()
@@ -16,6 +17,10 @@ class NuevoStockSchema(StockSchema):
     @post_load
     def make_Stock(self, data, **kwargs):
         return Stock(**data)
+
+
+
+
 
 
 

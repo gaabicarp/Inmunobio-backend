@@ -49,4 +49,3 @@ class GruposDeTrabajo(Resource):
         return{'error':'No existen grupos de trabajo '},400
 
 
-

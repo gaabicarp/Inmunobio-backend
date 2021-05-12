@@ -4,7 +4,8 @@ from marshmallow import ValidationError,EXCLUDE
 from flask import jsonify, request
 from models.mongo.stock import Stock
 from schemas.stockSchema import StockSchema,NuevoStockSchema
-from schemas.grupoTrabajoSchema import NuevoStockGrupoSchema
+from schemas.productoEnStockSchema import NuevoProductoEnStockSchema
+from schemas.grupoTrabajoSchema import NuevoStockGrupoSchema,busquedaStocksSchema
 from servicios.grupoDeTrabajoService import GrupoDeTrabajoService
 
 class StockService():
@@ -56,8 +57,8 @@ class StockService():
         if(productoEnStock):
             print('hay coincidencia con espacio fisico y conteneredir')
             cls.modificarUnidades(productoEnStock[0],productoEnStock[0].unidad+nuevoProducto['unidad'])
-            #stockExistente.producto.append(productoEnStock[0]) -> ya se modif el objeto
         else:
+            cls.crearProductoEnStock(stockExistente,nuevoProducto)
             print('no hubo coincidencia con esp fisico o cont me creo una nueva instancia de prod')
         return {'Status':'ok'},200 
   
@@ -72,7 +73,13 @@ class StockService():
     def modificarUnidades(cls,producto,unidad):
         print('se encuentra stock con mismo lote y mismo id espacio fisico modif unidades')
         producto.unidad= unidad
-        
+    
+    #deberia en service de producto en stock
+    @classmethod
+    def crearProductoEnStock(cls,stockExistente,datos):
+        print(datos)
+        stockExistente.producto.append(NuevoProductoEnStockSchema().load(datos))
+
     @classmethod
     def crearStock(cls,datos,grupoTrabajo):
         grupoTrabajo.stock.append(NuevoStockSchema().load(datos['stock']))
@@ -89,8 +96,13 @@ class StockService():
             return cls.jsonMany(grupo.stock)
         return  {'error':'Grupo de trabajo inexistente'},400
 
+    #def busquedaPorId():
+    @classmethod
+    def borrarProductoEnStock(cls,datos):
+        '''recibe un json con id grupo de trabajo, id de stock e id de producto en stock,
+        si hay coincidencia lo borra'''
 
-
+        
 
 
 

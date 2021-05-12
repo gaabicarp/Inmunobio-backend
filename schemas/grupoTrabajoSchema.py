@@ -42,3 +42,6 @@ class NuevoGrupoDeTrabajoSchema(Schema):
 class NuevoStockGrupoSchema(GrupoDeTrabajoIDSchema):
     stock = fields.Nested(NuevoStockSchema)
   
+class busquedaStocksSchema(GrupoDeTrabajoIDSchema):
+    id_stock = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse id_stock", "code": 400}})
+    id_productoEnStock = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse id_productoEnStock", "code": 400}})
