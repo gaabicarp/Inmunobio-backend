@@ -18,5 +18,9 @@ class ProductoResource(Resource):
             return ProductoService().bajaProducto(datos)
         return {'name': 'None'},400
     
+class ObtenerProductosResource(Resource):
+    def get(self):
+        return ProductoService().obtenerProductos()
+
 
      

@@ -9,7 +9,7 @@ from resources.proyectoResource import *
 from resources.experimentoResource import ExperimentoResource, Experimentos, CerrarExperimento
 from resources.contenedorResource import Contenedor, ContenedorProyecto, ContenedorParent
 from resources.stockResource import ObtenerProductosStock,NuevoProductoEnStock
-from resources.productoResource import ProductoResource
+from resources.productoResource import ProductoResource,ObtenerProductosResource
 
 
 
@@ -45,6 +45,7 @@ api.add_resource(NuevoProductoEnStock, '/api/v1/nuevoProductoEnStock')
 
 #producto
 api.add_resource(ProductoResource, '/api/v1/producto')
+api.add_resource(ObtenerProductosResource, '/api/v1/obtenerProductos')
 
 
 

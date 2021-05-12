@@ -10,15 +10,16 @@ class ProductoService():
     def altaProducto(cls,datos):
         try:
             nuevoProducto = NuevoProductoSchema().load(datos)
-            if(cls.validacionProducto()):
-                nuevoProducto.save()
-                return {'Status':'ok'},200
-            return  {'error':'Datos incorrectos '},400
+            cls.validacionAltaProducto(datos['id_distribuidora'])
+            nuevoProducto.save()
+            return {'Status':'ok'},200
         except ValidationError as err:
             return {'error': err.messages},400
 
-    def validacionProducto():
-        return True
+    def validacionAltaProducto(id_distribuidora):
+        #valida que exista la distribuidora
+        #DistribuidoraService().find_by_id(id_distribuidora)
+        pass
 
     def find_by_id(id):
         producto =  Producto.objects(id_producto = id)
@@ -31,11 +32,16 @@ class ProductoService():
         try:
             IdProductoSchema().load(datos)
             producto = cls.find_by_id(datos['id_producto'])
-            producto.remove()
+            producto.delete()
             return {'Status':'ok'},200
         except ValidationError as err:
             return {'error': err.messages},400
         except ErrorProductoInexistente as err:
             return {'Error': err.message},400
+    
+    def jsonMany(datos):
+        return jsonify(ProductoSchema().dump(datos,many=True))
 
- 
+    @classmethod
+    def obtenerProductos(cls):
+        return cls.jsonMany(Producto.objects().all())
