@@ -1,6 +1,6 @@
 from models.mongo.stock import Stock
 from marshmallow import Schema, fields, post_load, ValidationError
-from schemas.productoEnStockSchema import ProductoEnStockSchema,NuevoProductoEnStockSchema,busquedaProductoEnStockSchema
+from schemas.productoEnStockSchema import ProductoEnStockSchema,NuevoProductoEnStockSchema
 
 class StockSchema(Schema):
     id_stock = fields.Integer()

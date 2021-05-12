@@ -8,36 +8,35 @@ class NuevoGrupoDeTrabajo(Resource):
         datos = request.get_json()
         if datos:
             return GrupoDeTrabajoService.nuevoGrupo(datos)
-        return {'name': datos},404
+        return {'name': 'None'},400
 
 class RenombrarJefeGrupo(Resource):
     def put(self):
             datos = request.get_json()
             if datos:
                 return GrupoDeTrabajoService.modificarJefeGrupo(datos)
-            return {'name': datos},404
+            return {'name': 'None'},400
 
 class ModificarGrupoDeTrabajo(Resource):
     def put(self):
         datos = request.get_json()
         if datos:
             return GrupoDeTrabajoService.modificarMiembrosGrupo(datos)
-        return {'name': datos},404
+        return {'name': 'None'},400
 
     def delete(self):
         datos = request.get_json()
         if (datos):
             return GrupoDeTrabajoService.removerGrupo(datos)
-        return {'name': datos},404        
+        return {'name': 'None'},400
 
 
 class GrupoDeTrabajo(Resource):
     def get(self,id_grupoDeTrabajo):        
         datos = request.get_json()
         if (datos):
-            print('entro a datos')
             return GrupoDeTrabajoService.obtenerGrupoPorId(id_grupoDeTrabajo)
-        return {'name': datos},404
+        return {'name': 'None'},400
 
 
 class GruposDeTrabajo(Resource):

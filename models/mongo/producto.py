@@ -1,4 +1,3 @@
-from marshmallow import Schema, fields, post_load, ValidationError
 from db import dbMongo
 
 class Producto(dbMongo.Document):
@@ -7,7 +6,7 @@ class Producto(dbMongo.Document):
     aka = dbMongo.StringField()
     marca = dbMongo.StringField()
     url = dbMongo.StringField()
-    unidadAgrupacion = dbMongo.StringField()
+    unidadAgrupacion = dbMongo.IntField()
     detallesTecnicos = dbMongo.StringField() #Se sube archivo .txt
     protocolo = dbMongo.StringField() #Se sube archivo
     id_distribuidora = dbMongo.IntField()
