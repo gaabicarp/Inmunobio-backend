@@ -1,9 +1,10 @@
-from marshmallow import ValidationError,EXCLUDE
-from flask import jsonify, request
+from marshmallow import ValidationError
+from flask import jsonify
 from models.mongo.distribuidora import Distribuidora
 from schemas.distribuidoraSchema import DistribuidoraSchema,NuevaDistribuidoraSchema,IdDistribuidoraSchema
 from exceptions.exception import ErrorDistribuidoraInexistente
 from servicios.commonService import CommonService
+
 class DistribuidoraService():
     @classmethod
     def altaDistribuidora(cls,datos):
@@ -18,8 +19,8 @@ class DistribuidoraService():
     def validacionDistribuidora(datos):
         #debe validar algo la distribuidora?
         pass
-
-    def find_by_id(id):
+    @classmethod    
+    def find_by_id(cls,id):
         distribuidora =  Distribuidora.objects(id_distribuidora = id)
         if(not distribuidora):
             raise ErrorDistribuidoraInexistente()

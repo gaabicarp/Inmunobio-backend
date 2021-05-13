@@ -1,9 +1,10 @@
-from marshmallow import ValidationError,EXCLUDE
-from flask import jsonify, request
+from marshmallow import ValidationError
+from flask import jsonify
 from models.mongo.producto import Producto
 from schemas.productoSchema import ProductoSchema,NuevoProductoSchema,IdProductoSchema,modificarProductoSchema
-
-from exceptions.exception import ErrorProductoInexistente
+from exceptions.exception import ErrorProductoInexistente,ErrorDistribuidoraInexistente
+from servicios.commonService import CommonService
+from servicios.distribuidoraService import DistribuidoraService
 class ProductoService():
 
     @classmethod
@@ -15,11 +16,14 @@ class ProductoService():
             return {'Status':'ok'},200
         except ValidationError as err:
             return {'error': err.messages},400
+        except ErrorDistribuidoraInexistente as err:
+            return {'error': err.message},400
+
 
     def validacionAltaProducto(id_distribuidora):
-        #valida que exista la distribuidora
-        #DistribuidoraService().find_by_id(id_distribuidora)
-        pass
+        #valida que exista la distribuidora y qué mas??
+        DistribuidoraService().find_by_id(id_distribuidora)
+        
 
     def find_by_id(id):
         producto =  Producto.objects(id_producto = id)
@@ -49,18 +53,12 @@ class ProductoService():
     def obtenerProductos(cls):
         return cls.jsonMany(Producto.objects().all())
 
-    def updateAtributes(datos,producto,atributos):
-        for clave,valor in atributos.items():
-                if hasattr(producto, clave) :
-                    setattr(producto, clave, valor)
-        producto.save()
-
     @classmethod
     def modificarProducto(cls,datos):
         try:
             modificarProductoSchema().load(datos)
             producto = cls.find_by_id(datos['id_producto'])
-            cls.updateAtributes(producto,datos)
+            CommonService.updateAtributes(producto,datos)
             return {'Status':'ok'},200
         except ValidationError as err:
             return {'error': err.messages},400
