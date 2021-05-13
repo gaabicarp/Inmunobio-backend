@@ -1,6 +1,6 @@
 from models.mongo.grupoDeTrabajo import GrupoDeTrabajo
 from schemas.stockSchema import StockSchema,NuevoStockSchema
-from marshmallow import Schema, fields, post_load, ValidationError
+from marshmallow import Schema, fields, post_load
 
 #schemas
 class GrupoDeTrabajoIDSchema(Schema):
@@ -43,5 +43,5 @@ class NuevoStockGrupoSchema(GrupoDeTrabajoIDSchema):
     stock = fields.Nested(NuevoStockSchema)
   
 class busquedaStocksSchema(GrupoDeTrabajoIDSchema):
-    id_stock = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse id_stock", "code": 400}})
+    id_espacioFisico = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse id_stock", "code": 400}})
     id_productoEnStock = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse id_productoEnStock", "code": 400}})

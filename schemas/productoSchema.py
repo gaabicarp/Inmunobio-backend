@@ -1,6 +1,6 @@
 
 from models.mongo.producto import Producto
-from marshmallow import Schema, fields, post_load, ValidationError
+from marshmallow import Schema, fields, post_load
 
 class IdProductoSchema(Schema):
     id_producto = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse el id de producto", "code": 400}})
