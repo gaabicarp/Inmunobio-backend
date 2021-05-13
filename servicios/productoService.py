@@ -1,7 +1,7 @@
 from marshmallow import ValidationError,EXCLUDE
 from flask import jsonify, request
 from models.mongo.producto import Producto
-from schemas.productoSchema import ProductoSchema,NuevoProductoSchema,IdProductoSchema
+from schemas.productoSchema import ProductoSchema,NuevoProductoSchema,IdProductoSchema,modificarProductoSchema
 
 from exceptions.exception import ErrorProductoInexistente
 class ProductoService():
@@ -38,10 +38,42 @@ class ProductoService():
             return {'error': err.messages},400
         except ErrorProductoInexistente as err:
             return {'Error': err.message},400
-    
+
+    def json(datos):
+        return ProductoSchema().dump(datos)
+
     def jsonMany(datos):
         return jsonify(ProductoSchema().dump(datos,many=True))
 
     @classmethod
     def obtenerProductos(cls):
         return cls.jsonMany(Producto.objects().all())
+
+    def updateAtributes(datos,producto,atributos):
+        for clave,valor in atributos.items():
+                if hasattr(producto, clave) :
+                    setattr(producto, clave, valor)
+        producto.save()
+
+    @classmethod
+    def modificarProducto(cls,datos):
+        try:
+            modificarProductoSchema().load(datos)
+            producto = cls.find_by_id(datos['id_producto'])
+            cls.updateAtributes(producto,datos)
+            return {'Status':'ok'},200
+        except ValidationError as err:
+            return {'error': err.messages},400
+        except ErrorProductoInexistente as err:
+            return {'Error': err.message},400
+
+    @classmethod        
+    def obtenerProducto(cls,id_producto):
+        try:
+            producto = cls.find_by_id(id_producto)
+            return cls.json(producto)
+        except ErrorProductoInexistente as err:
+            return {'Error': err.message},400
+        
+
+         

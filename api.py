@@ -9,7 +9,8 @@ from resources.proyectoResource import *
 from resources.experimentoResource import ExperimentoResource, Experimentos, CerrarExperimento
 from resources.contenedorResource import Contenedor, ContenedorProyecto, ContenedorParent
 from resources.stockResource import ObtenerProductosStock,NuevoProductoEnStock
-from resources.productoResource import ProductoResource,ObtenerProductosResource
+from resources.productoResource import ProductoResource,ObtenerProductosResource,ObtenerProductoResource
+from resources.distribuidoraResource import DistribuidoraResource,ObtenerDistribuidorasResource,ObtenerDistribuidoraResource
 
 
 
@@ -45,9 +46,13 @@ api.add_resource(NuevoProductoEnStock, '/api/v1/nuevoProductoEnStock')
 
 #producto
 api.add_resource(ProductoResource, '/api/v1/producto')
-api.add_resource(ObtenerProductosResource, '/api/v1/obtenerProductos')
+api.add_resource(ObtenerProductosResource, '/api/v1/getProductos')
+api.add_resource(ObtenerProductoResource, '/api/v1/getProducto/<int:id_producto>')
 
-
+#distribuidora
+api.add_resource(DistribuidoraResource, '/api/v1/distribuidora')
+api.add_resource(ObtenerDistribuidorasResource, '/api/v1/getDistribuidoras')
+api.add_resource(ObtenerDistribuidoraResource, '/api/v1/getDistribuidora/<int:id_distribuidora>')
 
 #experimentos
 api.add_resource(Experimentos, '/api/v1/proyecto/<int:idProyecto>/experimentos')

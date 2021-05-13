@@ -11,6 +11,13 @@ class ProductoResource(Resource):
             return ProductoService().altaProducto(datos)
         return {'name': 'None'},400
 
+    def put(self):
+        datos = request.get_json()
+        if(datos):
+            return ProductoService().modificarProducto(datos)
+        return {'name': 'None'},400
+    
+
     def delete(self):
         #ver: borramos el producto ¿que sucede con los productos activos en stock?
         datos = request.get_json()
@@ -21,6 +28,9 @@ class ProductoResource(Resource):
 class ObtenerProductosResource(Resource):
     def get(self):
         return ProductoService().obtenerProductos()
-
+    
+class ObtenerProductoResource(Resource):
+    def get(self,id_producto):
+        return ProductoService().obtenerProducto(id_producto)
 
      
