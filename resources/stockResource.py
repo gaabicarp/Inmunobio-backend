@@ -6,8 +6,8 @@ from servicios.stockService import  StockService
 
 class NuevoProductoEnStock(Resource):
     def post(self):
-        """Recibe un json con id_grupoDeTrabajo,lote, detalleUbicacion(opc)
-        unidad (opc) fechaVencimiento(opc) id_espacioFisico(obligatorio),codigoContenedor(opc) e id de producto"""
+        """Recibe un json con id_grupoDeTrabajo,lote(opc), detalleUbicacion(opc)
+        unidad (x default 1) fechaVencimiento(opc) id_espacioFisico(obligatorio),codigoContenedor(opc) e id de producto (obligatorio)"""
         datos = request.get_json()
         if(datos):
             return StockService.nuevoStock(datos)

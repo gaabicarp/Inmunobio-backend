@@ -4,10 +4,15 @@ from schemas.grupoTrabajoSchema import jefeDeGrupoSchema,ModificarGrupoDeTrabajo
 from marshmallow import Schema, ValidationError
 from flask import jsonify, request
 from servicios.usuarioService import UsuarioService
+from exceptions.exception import ErrorGrupoInexistente
 
 class GrupoDeTrabajoService:
     def find_by_id(id):
-        return GrupoDeTrabajo.objects.filter(id_grupoDeTrabajo=id).first()
+        grupo = GrupoDeTrabajo.objects.filter(id_grupoDeTrabajo=id).first()
+        if(not grupo):
+            raise ErrorGrupoInexistente()
+        return grupo
+
 
     def find_by_nombre(_nombre):
         return GrupoDeTrabajo.objects(nombre = _nombre).first()

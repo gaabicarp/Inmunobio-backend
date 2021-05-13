@@ -4,7 +4,6 @@ from marshmallow import Schema, fields, post_load
 class IdProductosSchema(Schema):
     id_productos =  fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse id_productos", "code": 400}})
 
-
 class ProductosSchema(Schema):
     id_productos =  fields.Integer(dump_only=True)
     codigoContenedor = fields.Integer()

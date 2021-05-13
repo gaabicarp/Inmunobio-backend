@@ -4,7 +4,7 @@ from schemas.productoEnStockSchema import ProductoEnStockSchema
 
 class StockSchema(Schema):
     id_espacioFisico = fields.Integer()  
-    producto = fields.Nested(ProductoEnStockSchema, many=True)  
+    productos = fields.Nested(ProductoEnStockSchema, many=True)  
       
 class NuevoStockSchema(StockSchema):
     id_espacioFisico = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse lote", "code": 400}})
