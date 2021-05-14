@@ -4,7 +4,7 @@ from flask import request
 from dateutil import parser
 from servicios.stockService import  StockService
 
-class NuevoProductoEnStock(Resource):
+class ProductoEnStock(Resource):
     def post(self):
         """Recibe un json con id_grupoDeTrabajo,lote(opc), detalleUbicacion(opc)
         unidad (x default 1) fechaVencimiento(opc) id_espacioFisico(obligatorio),codigoContenedor(opc) e id de producto (obligatorio)"""
@@ -13,16 +13,19 @@ class NuevoProductoEnStock(Resource):
             return StockService.nuevoStock(datos)
         return {'name': 'None'},400
 
-class ProductoEnStock(Resource):
+
     def delete(self):
         datos = request.get_json()
         if(datos):
-            return StockService.borrarStock(datos)
+            return StockService.borrarProductoEnStock(datos)
         return {'name': 'None'},400
 
 
 class ObtenerProductosStock(Resource):
+    def get(self,id_grupoDeTrabajo,id_espacioFisico):
+        return StockService.obtenerProductos(id_grupoDeTrabajo,id_espacioFisico)
+
+
+class ObtenerStocks(Resource):
     def get(self,id_grupoDeTrabajo):
-            return StockService.obtenerProductos(id_grupoDeTrabajo)
-
-
+        return StockService.obtenerStocks(id_grupoDeTrabajo)

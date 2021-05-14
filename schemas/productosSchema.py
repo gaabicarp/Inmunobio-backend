@@ -8,7 +8,7 @@ class ProductosSchema(Schema):
     id_productos =  fields.Integer(dump_only=True)
     codigoContenedor = fields.Integer()
     detalleUbicacion = fields.String(default="")
-    unidad =fields.Integer()
+    unidad =fields.Integer(default=0)
     lote = fields.String(default="")
     fechaVencimiento = fields.DateTime()
 

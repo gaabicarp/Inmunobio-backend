@@ -22,7 +22,7 @@ class GrupoDeTrabajoSchema(Schema):
     nombre = fields.Str()
     jefeDeGrupo = fields.Integer()
     integrantes = fields.List(fields.Int())
-    stock = fields.Nested(StockSchema, many=True)
+    #stock = fields.Nested(StockSchema, many=True)
     grupoGral = fields.Boolean()
   
 class NuevoGrupoDeTrabajoSchema(Schema):

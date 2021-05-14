@@ -9,7 +9,7 @@ class StockSchema(Schema):
 class NuevoStockSchema(StockSchema):
     id_espacioFisico = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse lote", "code": 400}})
     @post_load
-    def make_Stock(self, data, **kwargs):
+    def makeStock(self, data, **kwargs):
         return Stock(**data)
 
 

@@ -6,7 +6,7 @@ class ProductoEnStockSchema(Schema):
     id_productoEnStock = fields.Integer()
     id_producto = fields.Integer()  #se toma de producto
     nombre = fields.String() #se toma de producto
-    producto= fields.Nested(ProductosSchema,many=True)
+    producto = fields.Nested(ProductosSchema,many=True)
 
 class NuevoProductoEnStockSchema(ProductoEnStockSchema):
     id_producto = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse id_producto", "code": 400}})
