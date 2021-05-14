@@ -3,12 +3,6 @@ from flask_restful import Resource,Api
 from flask import request
 from servicios.grupoDeTrabajoService import GrupoDeTrabajoService
  
-class NuevoGrupoDeTrabajo(Resource):
-    def post(self):
-        datos = request.get_json()
-        if datos:
-            return GrupoDeTrabajoService.nuevoGrupo(datos)
-        return {'name': 'None'},400
 
 class RenombrarJefeGrupo(Resource):
     def put(self):
@@ -17,7 +11,13 @@ class RenombrarJefeGrupo(Resource):
                 return GrupoDeTrabajoService.modificarJefeGrupo(datos)
             return {'name': 'None'},400
 
-class ModificarGrupoDeTrabajo(Resource):
+class GrupoDeTrabajo(Resource):
+    def post(self):
+        datos = request.get_json()
+        if datos:
+            return GrupoDeTrabajoService.nuevoGrupo(datos)
+        return {'name': 'None'},400
+
     def put(self):
         datos = request.get_json()
         if datos:
@@ -31,7 +31,7 @@ class ModificarGrupoDeTrabajo(Resource):
         return {'name': 'None'},400
 
 
-class GrupoDeTrabajo(Resource):
+class ObtenerGrupoDeTrabajo(Resource):
     def get(self,id_grupoDeTrabajo):        
         datos = request.get_json()
         if (datos):

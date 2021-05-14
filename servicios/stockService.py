@@ -9,7 +9,7 @@ from schemas.productoEnStockSchema import NuevoProductoEnStockSchema
 from schemas.grupoTrabajoSchema import NuevoStockGrupoSchema,busquedaStocksSchema
 from servicios.grupoDeTrabajoService import GrupoDeTrabajoService
 from servicios.productoService import ProductoService
-from exceptions.exception import ErrorGrupoInexistente
+from exceptions.exception import ErrorGrupoInexistente,ErrorProductoInexistente
 
 class StockService():
     @classmethod
@@ -20,15 +20,19 @@ class StockService():
             return cls.altaStock(cls.obtenerGrupo(datos), datos)
         except ValidationError as err:
             return {'error': err.messages},400
+            #ver como anidar estos dos errores 
         except ErrorGrupoInexistente as err:
+            return {'error':err.message},400
+        except ErrorProductoInexistente as err:
             return {'error':err.message},400
 
     @classmethod
     def validarNuevoStock(cls,datos):
-        cls.obtenerProducto(datos)
+        #ver si espacio fisico queindifcan existe
+        cls.obtenerProducto(datos['stock']['productos'][0])
         #buscar y devolver es correcto? preguntar
         cls.obtenerGrupo(datos)
-        
+
     @classmethod
     def obtenerProducto(cls,datos):
         return ProductoService.find_by_id(datos['id_producto']) 
@@ -49,39 +53,43 @@ class StockService():
         return True
     @classmethod
     def busquedaEnStock(cls,objetos,datos,criterioBusqueda):
-        resultado = list(filter(lambda x: cls.criterioBusqueda(x,datos) , objetos))
-        if (resultado.is_empty): return resultado
+        resultado = list(filter(lambda x: criterioBusqueda(x,datos) , objetos))
+        if (not len(resultado)): return resultado
         return resultado[0]
 
     @classmethod
     def altaStock(cls,grupoTrabajo,datos):
-        stockProducto = cls.busquedaEnStock(grupoTrabajo.stock,datos['stock'],criterioBusquedaStock)
+        stockProducto = cls.busquedaEnStock(grupoTrabajo.stock,datos['stock'],cls.criterioBusquedaStock)
         if(not stockProducto):
             #antes de seguir creo el stock que corresponde a ese EspacioFisico
             stockProducto = cls.crearStock(datos,grupoTrabajo)      
         print(' modifico stock existente, hubo coincidencia con espacio fisico ')
-        cls.modificarStockExistente(stockProducto,datos['stock']['producto'][0])
+        cls.modificarStockExistente(stockProducto,datos['stock']['productos'][0])
         grupoTrabajo.save()
         return {'Status':'ok'},200 
     
     @classmethod
     def modificarStockExistente(cls,stockExistente,nuevoProducto):
-        productoEnStock = cls.busquedaEnStock(stockExistente.productos,nuevoProducto,criterioBusquedaProductoEnStock) 
+        productoEnStock = cls.busquedaEnStock(stockExistente.productos,nuevoProducto,cls.criterioBusquedaProductoEnStock) 
         if(not productoEnStock):
             print('no hubo coincidencia con id de producto, creo una nnueva instancia')
-            productoEnStock = cls.crearProductoEnStock(stockExistente,nuevoProducto)
+            productoEnStock = cls.crearProductoEnStock(stockExistente,nuevoProducto['productos'][0])
         print('hay coincidencia con id de producto')
         cls.modficarProductoExistente(productoEnStock,nuevoProducto)
    
     @classmethod
     def modficarProductoExistente(cls,productoEnStock,nuevoProducto):
-        productos = cls.busquedaEnStock(productoEnStock.productos,nuevoProducto,criterioBusquedaProductos) 
+        print(nuevoProducto)
+        print('ESTOY EN MODIFICAR PRODUCTO EXISTENEEEEEEEEEEEEE')
+        print(productoEnStock)
+        productos = cls.busquedaEnStock(productoEnStock.producto,nuevoProducto,cls.criterioBusquedaProductos) 
         if(not productoEnStock):
             print('no hubo coincidencia con otros productos, creo una nueva instancia')
             productoEnStock = cls.crearProductos(productoEnStock,nuevoProducto)
         print('hay coincidencia con otros productos')
         #cls.modficarProductoExistente(productoEnStock,nuevoProducto)
-        cls.modificarUnidades(productoEnStock,productos.unidad+nuevoProducto['unidad'])
+        print(productos)
+        cls.modificarUnidades(productoEnStock,productos.unidad+nuevoProducto['producto'][0]['unidad'])
 
     @classmethod
     def modificarUnidades(cls,producto,unidad):
@@ -116,10 +124,12 @@ class StockService():
 
     @classmethod
     def obtenerProductos(cls,id_grupoDeTrabajo):
-        grupo = GrupoDeTrabajoService.find_by_id(id_grupoDeTrabajo)
-        if (grupo):
-            return cls.jsonMany(grupo.stock)
-        return  {'error':'Grupo de trabajo inexistente'},400
+        try:
+            grupo = GrupoDeTrabajoService.find_by_id(id_grupoDeTrabajo)
+            if (grupo):
+                return cls.jsonMany(grupo.stock)
+        except ErrorGrupoInexistente as err:
+            return {'Error':err.message},400
 
     #def busquedaPorId():
     @classmethod

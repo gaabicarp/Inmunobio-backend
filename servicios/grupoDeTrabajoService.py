@@ -30,6 +30,8 @@ class GrupoDeTrabajoService:
             return {'error':'El grupo no existe '},400
         except ValidationError as err:
             return {'error': err.messages},400
+        except ErrorGrupoInexistente as err:
+            return {'Error':err.message},400
 
     @classmethod
     def modificarJefeGrupo(cls,datos):
@@ -44,6 +46,8 @@ class GrupoDeTrabajoService:
             return {'error':'Grupo inexistente'},400
         except ValidationError as err:
             return {'error': err.messages},400
+        except ErrorGrupoInexistente as err:
+            return {'Error':err.message},400
             
     @classmethod
     def nuevoGrupo(cls,datos):
@@ -56,6 +60,7 @@ class GrupoDeTrabajoService:
             return {'error':'No existe usuario con id jefeDeGrupo'},400
         except ValidationError as err:
             return {'error': err.messages},400
+
 
     @classmethod
     def removerGrupo(cls,datos):
@@ -70,6 +75,8 @@ class GrupoDeTrabajoService:
             return {'Status': 'No existe el grupo'},400
         except ValidationError as err:
             return {'error': err.messages},400
+        except ErrorGrupoInexistente as err:
+            return {'Error':err.message},400
 
         """   def obtenerGrupoPorId(datos):
         try:
@@ -87,8 +94,8 @@ class GrupoDeTrabajoService:
             if(grupoConsulta):
                 return GrupoDeTrabajoService.json(grupoConsulta)
             return  {'error':'El grupo de trabajo no existe'},400    
-        except ValidationError as err:
-            return {'error': err.messages},400
+        except ErrorGrupoInexistente as err:
+            return {'Error':err.message},400
 
     def validarDelete(grupo):
         return len(grupo.stock) == 0 and not grupo.grupoGral
