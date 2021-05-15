@@ -1,7 +1,6 @@
 #from dateutil import parser
 #import datetime
 from marshmallow import ValidationError,EXCLUDE
-from flask import jsonify
 from models.mongo.stock import Stock
 from schemas.stockSchema import StockSchema,NuevoStockSchema
 from schemas.productosSchema import NuevoProductosSchema
@@ -11,6 +10,7 @@ from servicios.grupoDeTrabajoService import GrupoDeTrabajoService
 from servicios.productoService import ProductoService
 from exceptions.exception import ErrorGrupoInexistente,ErrorProductoInexistente,ErrorStockEspacioFisicoInexistente
 from models.mongo.grupoDeTrabajo import GrupoDeTrabajo
+from servicios.commonService import CommonService
 class StockService():
     @classmethod
     def nuevoStock(cls,datos):
@@ -109,19 +109,13 @@ class StockService():
         nuevoProductos = NuevoProductosSchema().load(nuevoProducto,unknown=EXCLUDE )
         productoEnStock.producto.append(nuevoProductos)
 
-    def jsonMany(datos):
-        return jsonify(StockSchema().dump(datos,many=True))
-
-    def json(datos):
-        return StockSchema().dump(datos)
-
     @classmethod
     def obtenerProductos(cls,id_grupoDeTrabajo,id_espacioFisico):
         try:
             GrupoDeTrabajoService.find_by_id(id_grupoDeTrabajo) #valido q exista grupo
             #faltabuscar espaciofisico y si no encuentra lanza excep
             stock =  cls.stockSegunEspacioFisico(id_grupoDeTrabajo,id_espacioFisico)
-            return cls.json(stock)
+            return CommonService.json(stock,StockSchema)
         except ErrorGrupoInexistente as err:
             return {'Error':err.message},400
         except ErrorStockEspacioFisicoInexistente as err:
@@ -136,9 +130,8 @@ class StockService():
  
     @classmethod
     def obtenerStocks(cls,_id_grupoDeTrabajo):     
-        return cls.jsonMany(GrupoDeTrabajoService.find_by_id(_id_grupoDeTrabajo).stock)
+        return CommonService.jsonMany(GrupoDeTrabajoService.find_by_id(_id_grupoDeTrabajo).stock,StockSchema)
 
-    #def busquedaPorId():
     @classmethod
     def borrarProductoEnStock(cls,datos):
         '''recibe un json con id grupo de trabajo, id de stock e id de producto en stock,
