@@ -9,7 +9,7 @@ from schemas.productoEnStockSchema import NuevoProductoEnStockSchema
 from schemas.grupoTrabajoSchema import GrupoDeTrabajoSchema, NuevoStockGrupoSchema,busquedaStocksSchema
 from servicios.grupoDeTrabajoService import GrupoDeTrabajoService
 from servicios.productoService import ProductoService
-from exceptions.exception import ErrorGrupoInexistente,ErrorProductoInexistente
+from exceptions.exception import ErrorGrupoInexistente,ErrorProductoInexistente,ErrorStockEspacioFisicoInexistente
 from models.mongo.grupoDeTrabajo import GrupoDeTrabajo
 class StockService():
     @classmethod
@@ -52,6 +52,8 @@ class StockService():
         for key,value in productoNuevo.items():
             if hasattr(producto, key)and getattr(producto,key)!= value:return False
         return True
+    def filtrarPorEspacioFisico(stock,_id_espacioFisico):
+        return stock.id_espacioFisico == _id_espacioFisico
 
     @classmethod
     def busquedaEnStock(cls,objetos,datos,criterioBusqueda):
@@ -99,7 +101,6 @@ class StockService():
     #deberia en service de producto en stock
     @classmethod
     def crearProductoEnStock(cls,stockExistente,datos):
-        print(datos)
         nuevoProductoEnStock=NuevoProductoEnStockSchema().load(datos,unknown=EXCLUDE)
         stockExistente.productos.append(nuevoProductoEnStock)
 
@@ -117,23 +118,25 @@ class StockService():
     @classmethod
     def obtenerProductos(cls,id_grupoDeTrabajo,id_espacioFisico):
         try:
-            #faltabusca espaciofisico y si no encuentra lanza excep
-            grupo =  cls.stockSegunEspacioFisico(id_grupoDeTrabajo,id_espacioFisico)
-            return cls.jsonMany(grupo)
+            GrupoDeTrabajoService.find_by_id(id_grupoDeTrabajo) #valido q exista grupo
+            #faltabuscar espaciofisico y si no encuentra lanza excep
+            stock =  cls.stockSegunEspacioFisico(id_grupoDeTrabajo,id_espacioFisico)
+            return cls.json(stock)
         except ErrorGrupoInexistente as err:
             return {'Error':err.message},400
-
-    def stockSegunEspacioFisico(_id_grupoDeTrabajo,_id_espacioFisico):
-        grupo = GrupoDeTrabajo.objects.filter(id_grupoDeTrabajo=_id_grupoDeTrabajo).fields(stock = {'$elemMatch': {'id_espacioFisico': _id_espacioFisico}})
-        print(grupo)
-        return grupo
-        #Sku.objects(variants__match={ "name": "xxx", "value": "xxx" })
-
-
+        except ErrorStockEspacioFisicoInexistente as err:
+            return {'Error':err.message},400
+ 
+    @classmethod
+    def stockSegunEspacioFisico(cls,_id_grupoDeTrabajo,_id_espacioFisico):
+        grupo = GrupoDeTrabajo.objects.filter(id_grupoDeTrabajo=_id_grupoDeTrabajo,stock__id_espacioFisico= _id_espacioFisico).first()
+        if (not grupo):
+            raise ErrorStockEspacioFisicoInexistente()
+        return cls.busquedaEnStock(grupo.stock,_id_espacioFisico,cls.filtrarPorEspacioFisico)
+ 
     @classmethod
     def obtenerStocks(cls,_id_grupoDeTrabajo):     
         return cls.jsonMany(GrupoDeTrabajoService.find_by_id(_id_grupoDeTrabajo).stock)
-
 
     #def busquedaPorId():
     @classmethod

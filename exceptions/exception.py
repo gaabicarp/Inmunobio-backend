@@ -17,3 +17,9 @@ class ErrorGrupoInexistente(Exception):
         self.message = message
         super().__init__(self.message)
 
+
+class ErrorStockEspacioFisicoInexistente(Exception):
+    def __init__(self, message="No hay stock activo para este id de espacio fisico "):
+        self.message = message
+        super().__init__(self.message)
+
