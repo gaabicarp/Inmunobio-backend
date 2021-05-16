@@ -55,4 +55,3 @@ class CerrarExperimentoSchema(ExperimentoSchema):
     conclusiones = fields.Str(required=True, error_messages={"required": {"message": "El campo resultados es necesario, no puede estar vacío", "code": 400}})
 class ModificarExperimentoSchema(ExperimentoSchema):
     id_experimento = fields.Int(required=True, error_messages={"required": {"message": "El campo id_experimento es necesario, no puede estar vacío", "code": 400}})
-

@@ -19,7 +19,7 @@ class GruposDeTrabajo(Resource):
         gruposConsulta= GrupoDeTrabajoService.obtenerTodosLosGrupos()
         if(gruposConsulta):
             return GrupoDeTrabajoService.jsonMany(gruposConsulta)
-        return  {'error':'No existen grupos de trabajo '},404     
+        return  {'error':'No existen grupos de trabajo '},404
 
 class RenombrarJefeGrupo(Resource):
     def put(self):

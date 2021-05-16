@@ -12,7 +12,7 @@ class Muestra(dbMongo.Document):
     id_contenedor= dbMongo.IntegerField()
 
     def json(self):
-        return ExperimentoSchema().dump(self)
+        return MuestraSchema().dump(self)
 
 class MuestraSchema(Schema):
     id_muestras = fields.Int()

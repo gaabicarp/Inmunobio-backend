@@ -17,7 +17,7 @@ with app.app_context():
 	
 dbMongo.init_app(app)
 
-Migrate(app,db,compare_type=True)
+Migrate(app, db, compare_type=True)
 
 nojwt = JWT(app, authenticate, identity) 
 
@@ -29,7 +29,7 @@ api.init_app(app)
 
 @app.route("/")
 def Prueba():
-	from models.usuario import Usuario, Permiso
+	from models.mysql.usuario import Usuario, Permiso
 	u = Usuario.find_by_username('naye')
 	p = Permiso.query.limit(5).all()
 	f = Usuario.find_usuarios_Habilitados()
