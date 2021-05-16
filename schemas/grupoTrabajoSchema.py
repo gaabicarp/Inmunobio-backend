@@ -45,3 +45,4 @@ class NuevoStockGrupoSchema(GrupoDeTrabajoIDSchema):
 class busquedaStocksSchema(GrupoDeTrabajoIDSchema):
     id_espacioFisico = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse id_stock", "code": 400}})
     id_productoEnStock = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse id_productoEnStock", "code": 400}})
+    id_productos = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse id_productos", "code": 400}})

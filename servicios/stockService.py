@@ -3,7 +3,7 @@
 from marshmallow import ValidationError,EXCLUDE
 from models.mongo.stock import Stock
 from schemas.stockSchema import StockSchema,NuevoStockSchema
-from schemas.productosSchema import NuevoProductosSchema
+from schemas.productosSchema import NuevoProductosSchema, ProductosSchema
 from schemas.productoEnStockSchema import NuevoProductoEnStockSchema
 from schemas.grupoTrabajoSchema import GrupoDeTrabajoSchema, NuevoStockGrupoSchema,busquedaStocksSchema
 from servicios.grupoDeTrabajoService import GrupoDeTrabajoService
@@ -11,6 +11,7 @@ from servicios.productoService import ProductoService
 from exceptions.exception import ErrorGrupoInexistente,ErrorProductoInexistente,ErrorStockEspacioFisicoInexistente
 from models.mongo.grupoDeTrabajo import GrupoDeTrabajo
 from servicios.commonService import CommonService
+
 class StockService():
     @classmethod
     def nuevoStock(cls,datos):
@@ -52,8 +53,14 @@ class StockService():
         for key,value in productoNuevo.items():
             if hasattr(producto, key)and getattr(producto,key)!= value:return False
         return True
+
     def filtrarPorEspacioFisico(stock,_id_espacioFisico):
         return stock.id_espacioFisico == _id_espacioFisico
+    def filtrarPorIdProducto(producto,_id_producto):
+
+        return producto.id_productoEnStock == _id_producto
+    def filtrarPorIdProductos(productos,_id_productos):
+        return productos.id_productos == _id_productos
 
     @classmethod
     def busquedaEnStock(cls,objetos,datos,criterioBusqueda):
@@ -136,9 +143,24 @@ class StockService():
     def borrarProductoEnStock(cls,datos):
         '''recibe un json con id grupo de trabajo, id de stock e id de producto en stock,
         si hay coincidencia lo borra'''
-        grupo = GrupoDeTrabajoService.find_by_id(1)
-        grupo.stock = []
-        grupo.save()
+        try:
+            busquedaStocksSchema().load(datos)
+            grupo = cls.obtenerGrupo(datos)
+            #grupo = GrupoDeTrabajo.objects.filter(id_grupoDeTrabajo=datos['id_grupoDeTrabajo'],stock__id_espacioFisico= datos['id_espacioFisico']).first()
+            stock = cls.busquedaEnStock(grupo.stock,datos['id_espacioFisico'],cls.filtrarPorEspacioFisico)
+            #print('stock egun espacio fisico:', stock)
+            stockDeProducto = cls.busquedaEnStock(stock.productos,datos['id_productoEnStock'],cls.filtrarPorIdProducto)
+            producto = cls.busquedaEnStock(stockDeProducto.producto,datos['id_productos'],cls.filtrarPorIdProductos)
+            stockDeProducto.producto.remove(producto)
+
+            grupo.save()
+            return {'Status':'ok'},200 
+        except ValidationError as err:
+            return {'error': err.messages},400
+        except ErrorGrupoInexistente as err:
+            return {'Error':err.message},400
+        except ErrorStockEspacioFisicoInexistente as err:
+            return {'Error':err.message},400            
 
 
         

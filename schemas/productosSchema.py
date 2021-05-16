@@ -12,6 +12,7 @@ class ProductosSchema(Schema):
     lote = fields.String(default="")
     fechaVencimiento = fields.DateTime()
 
+
 class NuevoProductosSchema(ProductosSchema):
     unidad = fields.Integer(required=True, error_messages={"required": {"message" : "Deben indicarse unidades", "code": 400}})
     @post_load

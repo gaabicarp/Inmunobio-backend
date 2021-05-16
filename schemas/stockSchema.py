@@ -14,10 +14,6 @@ class NuevoStockSchema(StockSchema):
 
 
 
-
-
-
-
   
 
 
