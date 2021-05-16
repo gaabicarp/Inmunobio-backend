@@ -56,8 +56,8 @@ class StockService():
 
     def filtrarPorEspacioFisico(stock,_id_espacioFisico):
         return stock.id_espacioFisico == _id_espacioFisico
-    def filtrarPorIdProducto(producto,_id_producto):
 
+    def filtrarPorIdProducto(producto,_id_producto):
         return producto.id_productoEnStock == _id_producto
     def filtrarPorIdProductos(productos,_id_productos):
         return productos.id_productos == _id_productos
@@ -111,7 +111,6 @@ class StockService():
         nuevoProductoEnStock=NuevoProductoEnStockSchema().load(datos,unknown=EXCLUDE)
         stockExistente.productos.append(nuevoProductoEnStock)
 
-
     def crearProductos(productoEnStock,nuevoProducto):
         nuevoProductos = NuevoProductosSchema().load(nuevoProducto,unknown=EXCLUDE )
         productoEnStock.producto.append(nuevoProductos)
@@ -138,6 +137,20 @@ class StockService():
     @classmethod
     def obtenerStocks(cls,_id_grupoDeTrabajo):     
         return CommonService.jsonMany(GrupoDeTrabajoService.find_by_id(_id_grupoDeTrabajo).stock,StockSchema)
+    
+    @classmethod
+    def removerProductoEspecifico(cls,datos,grupo):
+        stock = cls.busquedaEnStock(grupo.stock,datos['id_espacioFisico'],cls.filtrarPorEspacioFisico)
+        if(stock):
+            stockDeProducto = cls.busquedaEnStock(stock.productos,datos['id_productoEnStock'],cls.filtrarPorIdProducto)
+            if(stockDeProducto):
+                producto = cls.busquedaEnStock(stockDeProducto.producto,datos['id_productos'],cls.filtrarPorIdProductos)
+                if(producto):
+                    stockDeProducto.producto.remove(producto)
+                    grupo.save()
+                    return {'Status':'ok'},200 
+            raise ErrorProductoInexistente()
+        raise ErrorStockEspacioFisicoInexistente()
 
     @classmethod
     def borrarProductoEnStock(cls,datos):
@@ -147,20 +160,17 @@ class StockService():
             busquedaStocksSchema().load(datos)
             grupo = cls.obtenerGrupo(datos)
             #grupo = GrupoDeTrabajo.objects.filter(id_grupoDeTrabajo=datos['id_grupoDeTrabajo'],stock__id_espacioFisico= datos['id_espacioFisico']).first()
-            stock = cls.busquedaEnStock(grupo.stock,datos['id_espacioFisico'],cls.filtrarPorEspacioFisico)
-            #print('stock egun espacio fisico:', stock)
-            stockDeProducto = cls.busquedaEnStock(stock.productos,datos['id_productoEnStock'],cls.filtrarPorIdProducto)
-            producto = cls.busquedaEnStock(stockDeProducto.producto,datos['id_productos'],cls.filtrarPorIdProductos)
-            stockDeProducto.producto.remove(producto)
-
-            grupo.save()
-            return {'Status':'ok'},200 
+            return cls.removerProductoEspecifico(datos,grupo)
         except ValidationError as err:
             return {'error': err.messages},400
         except ErrorGrupoInexistente as err:
             return {'Error':err.message},400
         except ErrorStockEspacioFisicoInexistente as err:
-            return {'Error':err.message},400            
+            return {'Error':err.message},400  
+        except ErrorProductoInexistente as err:
+            return {'Error':err.message},400  
+
+
 
 
         
