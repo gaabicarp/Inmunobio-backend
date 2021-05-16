@@ -1,0 +1,591 @@
+{
+	"info": {
+		"_postman_id": "b7810ccc-6233-40ce-a98f-4a1cecf3c9af",
+		"name": "Inmunobio",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Experimento",
+			"item": [
+				{
+					"name": "Nuevo experimento",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id_proyecto\" : 3,\n    \"metodologia\" : \"Una metodologia 1\",\n    \"objetivos\" : \"Un objetivo 1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080//api/v1/nuevoExperimento",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"",
+								"api",
+								"v1",
+								"nuevoExperimento"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Traer Experimento",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/experimento/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"experimento",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Experimentos de un proyecto",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/proyecto/3/experimentos",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"proyecto",
+								"3",
+								"experimentos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar experimento",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id_experimento\": 1,\n    \"id_proyecto\": 1,\n    \"fechaInicio\": \"2021-05-09T03:52:08.782000\",\n    \"finalizado\": false,\n    \"metodologia\": \"Una metodologia modificada\",\n    \"objetivos\": \"Un objetivo modificado\",\n    \"resultados\": \"Un resultado\",\n    \"muestrasExternas\": [],\n    \"conclusiones\": \"No se debería modificar\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/modificarExperimento",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"modificarExperimento"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cerrar Experimento",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"conclusiones\": \"Una conclusión. Campo obligatorio\",\n    \"id_experimento\": 1,\n    \"muestrasExternas\": [],\n    \"resultados\": \"Un resultado. Compo obligatorio\",\n    \"fechaInicio\": \"2021-05-09T03:52:08.782000\",\n    \"finalizado\": false,\n    \"metodologia\": \"Una metodologia modificada. No se modifica.\",\n    \"id_proyecto\": 1,\n    \"objetivos\": \"Un objetivo modificado. No se modifica.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/cerrarExperimento",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"cerrarExperimento"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Agregar muestras externas",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/modificarExperimento",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"modificarExperimento"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Grupo experimental",
+			"item": [
+				{
+					"name": "Nuevo grupo experimental",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id_experimento\" : 1,\n    \"codigo\" : \"EXP1_GRP1 (obligatorio)\",\n    \"descripcion\" : \"Una descripcion (no obligatorio)\" ,\n    \"tipo\" : \"Animal (obligatorio)\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/nuevoGrupoExperimental",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"nuevoGrupoExperimental"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Traer experimento",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/grupoExperimental/2",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"grupoExperimental",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Grupos de un experimento",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/experimento/1/gruposExperimentales",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"experimento",
+								"1",
+								"gruposExperimentales"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Jaula",
+			"item": [
+				{
+					"name": "Nueva Jaula",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id_espacio_fisico\" : 1,\n    \"codigo\" : \"JM01 (Obligatorio)\",\n    \"rack\" : 1,\n    \"estante\" : 2,\n    \"tipo\" : \"Metal\",\n    \"capacidad\" : 5\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/nuevaJaula",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"nuevaJaula"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Asignar proyecto a una jaula",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"tipo\": \"Metal\",\n    \"habilitado\": true,\n    \"rack\": 1,\n    \"estante\": 2,\n    \"id_proyecto\": 1,\n    \"blogs\": [],\n    \"codigo\": \"JM01 (Obligatorio)\",\n    \"id_jaula\": 1,\n    \"nombre_proyecto\": \"Proyecto 1\",\n    \"capacidad\": 5,\n    \"id_espacio_fisico\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/asignarJaulaAProyecto",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"asignarJaulaAProyecto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Jaula por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/jaula/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"jaula",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Jaulas sin proyecto",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/jaulasDisponibles",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"jaulasDisponibles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Jaulas del proyecto",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/proyecto/1/jaulasDelProyecto",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"proyecto",
+								"1",
+								"jaulasDelProyecto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Bajar jaula",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/bajarJaula/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"bajarJaula",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "FuenteExperimental",
+			"item": [
+				{
+					"name": "Fuente experimental por id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/fuenteExperimental/2",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"fuenteExperimental",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Animal",
+			"item": [
+				{
+					"name": "Animales",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/animales",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"animales"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Nuevo Animal",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"especie\" : \"Una especie\",\n    \"sexo\" : \"Macho\",\n    \"cepa\" : \"Una cepa\",\n    \"tipo\" : \"Animal\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/nuevoAnimal",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"nuevoAnimal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Animales sin jaula",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/animalesSinJaula",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"animalesSinJaula"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Animales de la jaula",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/jaula/1/animales",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"jaula",
+								"1",
+								"animales"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Animal por id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/animal/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"animal",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Baja animal",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/bajaAnimal/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"bajaAnimal",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Asignar jaulas a los animales",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"sexo\": \"Macho\",\n        \"cepa\": \"Una cepa\",\n        \"id_jaula\": \"2\",\n        \"baja\": false,\n        \"tipo\": \"Animal\",\n        \"especie\": \"Una especie\",\n        \"id_fuenteExperimental\": 3\n    },\n    {\n        \"sexo\": \"Macho\",\n        \"cepa\": \"Una cepa\",\n        \"id_jaula\": \"3\",\n        \"baja\": false,\n        \"tipo\": \"Animal\",\n        \"especie\": \"Una especie\",\n        \"id_fuenteExperimental\": 4\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/asignarJaulas",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"asignarJaulas"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
