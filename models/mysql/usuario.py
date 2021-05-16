@@ -7,16 +7,15 @@ from marshmallow import Schema, fields, post_load, ValidationError
 
 
 permisoXUsuario = db.Table('permisosxUsuarios', 
-    db.Column('usuario_id', db.Integer, db.ForeignKey('usuarios.id')),
-    db.Column('permiso_id', db.Integer, db.ForeignKey('permisos.id'))
+    db.Column('usuario_id', db.Integer, db.ForeignKey('usuarios.id_usuario')),
+    db.Column('permiso_id', db.Integer, db.ForeignKey('permisos.id_permiso'))
     )
 
 class Usuario(db.Model):
     __tablename__ = 'usuarios'
     __table_args__ = {'mysql_engine':'InnoDB','mysql_charset':'utf8','mysql_collate':'utf8_general_ci'}
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(20))
-    mail = db.Column(db.String(60))
+    id_usuario = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(60))
     nombre = db.Column(String(30))
     password = db.Column(String(30))
     habilitado = db.Column(db.Boolean, default = True, nullable=True)
@@ -24,16 +23,15 @@ class Usuario(db.Model):
     telefono = db.Column(String(120))
     id_permisos = db.relationship('Permiso',secondary =permisoXUsuario, backref = db.backref('permisos'),lazy = 'dynamic')
     
-    def __init__(self, nombre, username, mail, password,direccion,telefono,id_permisos):
+    def __init__(self, nombre, mail, password,direccion,telefono,id_permisos):
         self.nombre = nombre
-        self.username = username
-        self.mail = mail
+        self.email = email
         self.password = password
         self.direccion = direccion
         self.telefono = telefono
 
     def __repr__(self):
-        return f"{self.id}||Nombre:{self.nombre} \r\n direccion:{self.direccion} \r\n  Telefono:{self.telefono} \r\n Username: {self.username} \r\n password: {self.password}, Permisos: {self.id_permisos[0]}"
+        return f"{self.id_usuario}||Nombre:{self.nombre} \r\n direccion:{self.direccion} \r\n  Telefono:{self.telefono} \r\n  password: {self.password}, Permisos: {self.id_permisos[0]}"
     def setPermiso(self,permisos):
         self.id_permisos = permisos
     
@@ -42,22 +40,22 @@ class Permiso(db.Model):
     
     __tablename__='permisos'
     __table_args__ = {'mysql_engine':'InnoDB','mysql_charset':'utf8','mysql_collate':'utf8_general_ci' }
-    id = db.Column(db.Integer, primary_key=True)
+    id_permiso = db.Column(db.Integer, primary_key=True)
     descripcion = db.Column(String(70))
 
     def __init__(self, descripcion):
         self.descripcion = descripcion
 
     def __repr__(self):
-        return f"El permiso es {self.descripcion} y  su número de id es {self.id}"
+        return f"El permiso es {self.descripcion} y  su número de id es {self.id_permiso}"
     
 
 class PermisoSchema(Schema):
-    id = fields.Integer()
+    id_permiso = fields.Integer()
     descripcion = fields.Str()
    
 class PermisoExistenteSchema(PermisoSchema):
-    id = fields.Integer( 
+    id_permiso = fields.Integer( 
         required=True,
         error_messages={"required": {"message": "Debe indicarse el id del permiso", "code": 400}},
     )
@@ -66,9 +64,8 @@ class PermisoExistenteSchema(PermisoSchema):
         error_messages={"required": {"message": "Debe indicarse la descripcion del permiso", "code": 400}},
     )
 class UsuarioSchema(Schema):
-    id = fields.Integer(dump_only=True)
-    username = fields.Str()
-    mail = fields.Str()
+    id_usuario = fields.Integer(dump_only=True)
+    email = fields.Str()
     nombre = fields.Str()
     password = fields.Str()    
     habilitado = fields.Boolean(default=True)
@@ -77,11 +74,7 @@ class UsuarioSchema(Schema):
     id_permisos = fields.Nested(PermisoSchema, many=True)
 
 class UsuarioNuevoSchema(UsuarioSchema):
-    username = fields.Str(
-        required=True,
-        error_messages={"required": {"message": "Se necesita el username", "code": 400}},
-        )
-    mail = fields.Str( 
+    email = fields.Str( 
         required=True,
         error_messages={"required": {"message": "Se necesita ingresar el mail", "code": 400}},
     )
@@ -109,14 +102,17 @@ class UsuarioNuevoSchema(UsuarioSchema):
         return Usuario(**data)
 
 class UsuarioSchemaModificar(Schema):
-    id = fields.Integer(load_only=True)
-    mail = fields.Str()
+    """ class Meta:
+        unknown = EXCLUDE """
+
+    id_usuario = fields.Integer(load_only=True)
+    email = fields.Str()
     password = fields.Str()    
     direccion = fields.Str()
     telefono = fields.Str()
 
 class UsuarioSchemaModificarPermisos(UsuarioSchema):
-    id = fields.Integer( 
+    id_usuario = fields.Integer( 
         required=True,
         error_messages={"required": {"message": "Debe indicarse id Usuario", "code": 400}},
     )

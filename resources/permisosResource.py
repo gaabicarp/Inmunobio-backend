@@ -9,8 +9,5 @@ class Permisos(Resource):
         return  PermisosService.all_permisos()
 
 class ObtenerPermisoPorId(Resource):
-    def get(self):
-        datos = request.get_json()
-        if (datos):
-            return PermisosService.obtenerPermisoPorId(datos)
-        return {'name': 'None'},404
+    def get(self,id_permiso):
+       return PermisosService.obtenerPermisoPorId(id_permiso)

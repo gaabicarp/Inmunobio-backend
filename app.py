@@ -5,7 +5,8 @@ from flask_jwt import JWT
 from db import db, dbMongo
 from api import api
 from security import authenticate, identity
-
+from flask_cors import CORS
+from servicios.usuarioService import UsuarioService
 app= Flask(__name__)
 app.config.from_object(config)
 
@@ -21,22 +22,24 @@ Migrate(app, db, compare_type=True)
 
 nojwt = JWT(app, authenticate, identity) 
 
+CORS(app)
+cors = CORS(app,resources={r"/api/*":{"origins":"*"}})
+
 ############################ Api configuracion
 api.init_app(app)
 
 ############################
-
 
 @app.route("/")
 def Prueba():
 	from models.mysql.usuario import Usuario, Permiso
 	u = Usuario.find_by_username('naye')
 	p = Permiso.query.limit(5).all()
-	f = Usuario.find_usuarios_Habilitados()
+	f = UsuarioService.findUsuariosHabilitados()
 	return f"{f}"
 
 #ejecutar esta funcion una unica vez para crear las tablas y los permisos
-@app.route('/llenar_msyql')
+@app.route('/llenar_mysql')
 def llenar_msyql():
 	from models.sql_script import MysqlScript
 	MysqlScript.ScriptLlenarTablas()

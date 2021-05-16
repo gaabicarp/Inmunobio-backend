@@ -19,11 +19,11 @@ class UsuarioService():
     @classmethod
     def modificarUsuario(cls,usuario,modificaciones):        
         try:
-            cls.validarTipoDatos(modificaciones) # falta ver extra fields
+            cls.validarTipoDatos(modificaciones) 
             cls.updateAtributes(usuario,modificaciones)
             return {'Status':'ok'},200
         except ValidationError as err:
-            return {'error': err.messages}, 404
+            return {'error': err.messages}, 400
 
     @classmethod
     def asignarPermisos(cls,usuario,permisosDicts):
@@ -31,12 +31,12 @@ class UsuarioService():
         si pudo encontrar los permisos en la base actualiza al usuario, sino devuelve
         mensaje de error.'''
         permisosObject = PermisosService.permisosById(permisosDicts)
-        if (permisosObject):
+        if (permisosObject is not None):
             usuario.setPermiso(permisosObject)
             db.session.add(usuario)
             db.session.commit()
             return {'Status':'ok'},200
-        return {'error': 'Permisos invalidos'},404
+        return {'error': 'Permisos invalidos'},400
             
 
     @classmethod
@@ -46,24 +46,24 @@ class UsuarioService():
             usuario = UsuarioNuevoSchema().load(datos) 
             return cls.asignarPermisos(usuario,datos['id_permisos'])
         except ValidationError as err:
-            return {'error': err.messages},404
+            return {'error': err.messages},400
 
     @classmethod
-    def find_by_username(cls, username):
-        return Usuario.query.filter_by(username=username).first()
+    def find_by_email(cls, _email):
+        return Usuario.query.filter_by(email=_email).first()
 
     @classmethod
     def find_by_id(cls, _id):
-        '''modif para que devuelva habilitados solamente'''
-        return Usuario.query.filter_by(id=_id,habilitado=True).first()
+        '''dada una id de usuario devuelve usuario si esta habilitado '''
+        return Usuario.query.filter_by(id_usuario=_id,habilitado=True).first()
         
     @classmethod
-    def find_usuarios_Habilitados(cls):
+    def findUsuariosHabilitados(cls):
         return  Usuario.query.filter_by(habilitado=1).all()
     
     @classmethod
-    def usuariosSinElPermiso(cls,idPermiso):
-        user = Usuario.query.filter(~Usuario.id_permisos.any(Permiso.id.in_([idPermiso])))
+    def usuariosSinElPermiso(cls,id_permiso):
+        user = Usuario.query.filter(~Usuario.id_permisos.any(Permiso.id_permiso.in_([id_permiso])))
         if (user):
             return cls.jsonMany(user)
         return {}
@@ -76,39 +76,28 @@ class UsuarioService():
         
     
     def validarTipoDatos(datos):
+        print('entro a validar')
         return UsuarioSchemaModificar().load(datos)
 
-    def busquedaValidada(datos):
-        '''recibe un diccionario , verifica que se pase como key una id de usuario,
-        y devuelve el usuario habilitado en la base con esa id o nada si no existe o esta deshabilitado
-        '''
-        if('id' in datos):
-            usuario = UsuarioService.find_by_id(datos['id'])
-            if (usuario and usuario.habilitado):
-                return usuario
-            return None
-        return None
 
     @classmethod
     def actualizarPermisos(cls,datos):
         try:
             UsuarioSchemaModificarPermisos().load(datos)
-            print("se validaron sfiedls")
-            usuario = cls.busquedaValidada(datos)
-            print(usuario)
+            usuario = cls.find_by_id(datos['id_usuario'])
             if(usuario):
-                print("asigno permisos")
                 return cls.asignarPermisos(usuario,datos['id_permisos'])
-            return {'error':'no existe el usuario'},404
+            return {'error':'no existe el usuario'},400
         except ValidationError as err:
-            return {'error': err.messages},404
+            return {'error': err.messages},400
 
     @classmethod
     def deshabilitarUsuario(cls,datos):
         """recibe un usuario valido y modifica su estado habilitado a false"""
-        usuario = UsuarioService.busquedaValidada(datos)
+        #agregar schema de id usuario para verificar que se pase
+        usuario = UsuarioService.find_by_id(datos['id_usuario'])
         if(usuario):
             cls.updateAtributes(usuario,{'habilitado': False})
             return {'Status':'ok'},200
-        return {'error':'No existe usuario'},404
+        return {'error':'No existe usuario'},400
 

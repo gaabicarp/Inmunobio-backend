@@ -1,6 +1,6 @@
 from db import dbMongo
 import json
-from models.mongo.grupoDeTrabajo import GrupoDeTrabajoSchema,GrupoDeTrabajo,NuevoGrupoDeTrabajoSchema,BorrarGrupoDeTrabajoSchema
+from models.mongo.grupoDeTrabajo import jefeDeGrupoSchema,ModificarGrupoDeTrabajoSchema,GrupoDeTrabajoSchema,GrupoDeTrabajo,NuevoGrupoDeTrabajoSchema,BorrarGrupoDeTrabajoSchema
 from marshmallow import Schema, ValidationError
 from flask import jsonify, request
 from servicios.usuarioService import UsuarioService
@@ -15,34 +15,37 @@ class GrupoDeTrabajoService:
     @classmethod
     def modificarMiembrosGrupo(cls,datos):
         try:
-            GrupoDeTrabajoSchema().load(datos)
+            ModificarGrupoDeTrabajoSchema().load(datos)
             grupoAModificar = cls.find_by_id(datos['id_grupoDeTrabajo'])
-            if(cls.validarMiembros(grupoAModificar.integrantes)):
-                grupoAModificar.update(integrantes=datos['integrantes'])
-                return {'Status':'ok'},200  
-            return {'error':'Usuario/s miembros invalidos'},404
+            if(grupoAModificar): 
+                if (cls.validarMiembros(datos['integrantes'])) :
+                    grupoAModificar.update(integrantes=datos['integrantes'])
+                    return {'Status':'ok'},200  
+                return {'error':'Usuario/s miembros invalidos'},404
+            return {'error':'El grupo no existe '},404
         except ValidationError as err:
             return {'error': err.messages},404
 
     @classmethod
     def modificarJefeGrupo(cls,datos):
         try:
-            GrupoDeTrabajoSchema().load(datos)
+            jefeDeGrupoSchema().load(datos)
             grupoAModificar = cls.find_by_id(datos['id_grupoDeTrabajo'])
             if(grupoAModificar):
-                if(cls.validarMiembros[grupoAModificar.jefeDeGrupo]):
+                if(cls.validarMiembros([datos['jefeDeGrupo']])):
                     grupoAModificar.update(jefeDeGrupo=datos['jefeDeGrupo'])
                     return {'Status':'ok'},200  
                 return {'error':'Jefe de grupo inexistente'},404
             return {'error':'Grupo inexistente'},404
         except ValidationError as err:
             return {'error': err.messages},404
-
-
-    def nuevoGrupo(datos):
+            
+    @classmethod
+    def nuevoGrupo(cls,datos):
         try:
             grupoCreado = NuevoGrupoDeTrabajoSchema().load(datos)
-            if(validarMiembros([grupoCreado.jefeDeGrupo])):
+            if(cls.validarMiembros([grupoCreado.jefeDeGrupo])):
+                #falta ver si tiene permisos nivel 4 
                 grupoCreado.save()
                 return {'Status':'ok'},200  
             return {'error':'No existe usuario con id '+str(datos['jefeDeGrupo'])},404
@@ -50,12 +53,18 @@ class GrupoDeTrabajoService:
             return {'error': err.messages},404
 
     @classmethod
-    def removerGrupo(cls,grupo):
-        #falta ver que pasa con los roles de un jefe cuando se borra el grupo 
-        if(cls.validarDelete(grupo)):
-            grupo.delete()
-            return {'Status':'ok'},200
-        return {'Status': 'El grupo no puede ser dado de baja por contener stock activo'}
+    def removerGrupo(cls,datos):
+        try:
+            BorrarGrupoDeTrabajoSchema().load(datos)
+            grupoABorrar = GrupoDeTrabajoService.find_by_id(datos['id_grupoDeTrabajo'])
+            if(grupoABorrar):
+                if(cls.validarDelete(grupoABorrar)):
+                    grupoABorrar.delete()
+                    return {'Status':'ok'},200
+                return {'Status': 'El grupo no puede ser dado de baja por contener stock activo o ser grupo general'}
+            return {'Status': 'No existe el grupo'}
+        except ValidationError as err:
+            return {'error': err.messages},404
 
     def obtenerGrupoPorId(datos):
         try:
@@ -68,12 +77,13 @@ class GrupoDeTrabajoService:
             return {'error': err.messages},404
 
     def validarDelete(grupo):
-        return len(grupo.stock) == 0
+        return len(grupo.stock) == 0 and not grupo.grupoGral
 
     def validarMiembros(integrantes):
         '''recibe una listacon id de usuarios devuelve true si todos existen o false en caso contrario'''
         for idIntegrante in integrantes:
             if(not UsuarioService.find_by_id(idIntegrante)):
+                print("id"+ str(idIntegrante) + "no existe")
                 return False
         return True
 
