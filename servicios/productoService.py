@@ -59,6 +59,7 @@ class ProductoService():
             modificarProductoSchema().load(datos)
             producto = cls.find_by_id(datos['id_producto'])
             CommonService.updateAtributes(producto,datos)
+            producto.save()
             return {'Status':'ok'},200
         except ValidationError as err:
             return {'error': err.messages},400

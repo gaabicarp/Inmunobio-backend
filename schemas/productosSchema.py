@@ -18,3 +18,4 @@ class NuevoProductosSchema(ProductosSchema):
     @post_load
     def makeProductos(self, data, **kwargs):
         return Productos(**data)
+

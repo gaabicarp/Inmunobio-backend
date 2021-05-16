@@ -3,9 +3,9 @@
 from marshmallow import ValidationError,EXCLUDE
 from models.mongo.stock import Stock
 from schemas.stockSchema import StockSchema,NuevoStockSchema
-from schemas.productosSchema import NuevoProductosSchema, ProductosSchema
+from schemas.productosSchema import NuevoProductosSchema
 from schemas.productoEnStockSchema import NuevoProductoEnStockSchema
-from schemas.grupoTrabajoSchema import GrupoDeTrabajoSchema, NuevoStockGrupoSchema,busquedaStocksSchema
+from schemas.grupoTrabajoSchema import ModificarProducto, NuevoStockGrupoSchema,busquedaStocksSchema
 from servicios.grupoDeTrabajoService import GrupoDeTrabajoService
 from servicios.productoService import ProductoService
 from exceptions.exception import ErrorGrupoInexistente,ErrorProductoInexistente,ErrorStockEspacioFisicoInexistente
@@ -137,20 +137,28 @@ class StockService():
     @classmethod
     def obtenerStocks(cls,_id_grupoDeTrabajo):     
         return CommonService.jsonMany(GrupoDeTrabajoService.find_by_id(_id_grupoDeTrabajo).stock,StockSchema)
-    
     @classmethod
-    def removerProductoEspecifico(cls,datos,grupo):
+    def obtenerProductosEspecificos(cls,datos,grupo):
         stock = cls.busquedaEnStock(grupo.stock,datos['id_espacioFisico'],cls.filtrarPorEspacioFisico)
         if(stock):
             stockDeProducto = cls.busquedaEnStock(stock.productos,datos['id_productoEnStock'],cls.filtrarPorIdProducto)
             if(stockDeProducto):
                 producto = cls.busquedaEnStock(stockDeProducto.producto,datos['id_productos'],cls.filtrarPorIdProductos)
                 if(producto):
-                    stockDeProducto.producto.remove(producto)
-                    grupo.save()
-                    return {'Status':'ok'},200 
+                    return producto,stockDeProducto,stock
             raise ErrorProductoInexistente()
         raise ErrorStockEspacioFisicoInexistente()
+
+    @classmethod
+    def removerProductoEspecifico(cls,datos,grupo):
+        producto,stockDeProducto,stock= cls.obtenerProductosEspecificos(datos,grupo)
+        stockDeProducto.producto.remove(producto)
+        if(not len(stockDeProducto.producto)):
+            stock.productos.remove(stockDeProducto)
+        if(not len(stock.productos)):
+            grupo.stock.remove(stock)
+        grupo.save()
+        return {'Status':'ok'},200 
 
     @classmethod
     def borrarProductoEnStock(cls,datos):
@@ -159,7 +167,6 @@ class StockService():
         try:
             busquedaStocksSchema().load(datos)
             grupo = cls.obtenerGrupo(datos)
-            #grupo = GrupoDeTrabajo.objects.filter(id_grupoDeTrabajo=datos['id_grupoDeTrabajo'],stock__id_espacioFisico= datos['id_espacioFisico']).first()
             return cls.removerProductoEspecifico(datos,grupo)
         except ValidationError as err:
             return {'error': err.messages},400
@@ -171,9 +178,24 @@ class StockService():
             return {'Error':err.message},400  
 
 
+    @classmethod    
+    def modificarProductoEnStock(cls,datos):
+        try:
+            ModificarProducto().load(datos)
+            grupo = cls.obtenerGrupo(datos)
+            producto,stockDeProducto,stock= cls.obtenerProductosEspecificos(datos,grupo)
+            CommonService.updateAtributes(producto,datos,'id_productos')
+            grupo.save()
 
+        except ValidationError as err:
+            return {'error': err.messages},400
+        except ErrorGrupoInexistente as err:
+            return {'Error':err.message},400
+        except ErrorStockEspacioFisicoInexistente as err:
+            return {'Error':err.message},400  
+        except ErrorProductoInexistente as err:
+            return {'Error':err.message},400  
 
-        
 
 
 

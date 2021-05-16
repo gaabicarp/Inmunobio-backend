@@ -55,6 +55,7 @@ class DistribuidoraService():
             NuevaDistribuidoraSchema().load(datos)
             distribuidora = cls.find_by_id(datos['id_distribuidora'])
             CommonService.updateAtributes(distribuidora,datos)
+            distribuidora.save()
             return {'Status':'ok'},200
         except ValidationError as err:
             return {'error': err.messages},400

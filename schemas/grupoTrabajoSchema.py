@@ -46,3 +46,9 @@ class busquedaStocksSchema(GrupoDeTrabajoIDSchema):
     id_espacioFisico = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse id_stock", "code": 400}})
     id_productoEnStock = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse id_productoEnStock", "code": 400}})
     id_productos = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse id_productos", "code": 400}})
+class ModificarProducto(busquedaStocksSchema):
+    codigoContenedor = fields.Integer()
+    detalleUbicacion = fields.String(default="")
+    unidad =fields.Integer()
+    lote = fields.String(default="")
+    fechaVencimiento = fields.DateTime()
