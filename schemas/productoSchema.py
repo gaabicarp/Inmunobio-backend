@@ -19,7 +19,7 @@ class ProductoSchema(Schema):
     aka =  fields.String()
     marca =  fields.String()
     url = fields.String()
-    #sin obligacion multiplicaar unidades en stock aclarar valor por default!
+    #sin obligacion de pasarlo multiplicaar unidades en stock aclarar valor por default!
     unidadAgrupacion =  fields.Integer(default=1)
     detallesTecnicos =  fields.String()#Se sube archivo .txt
     protocolo = fields.String() #Se sube archivo
@@ -30,8 +30,7 @@ class NuevoProductoSchema(ProductoSchema):
     nombre = fields.String(required=True, error_messages={"required": {"message" : "Debe indicarse el nombre de producto", "code": 400}})
     marca =  fields.String(required=True, error_messages={"required": {"message" : "Debe indicarse la marca del producto", "code": 400}})
     #opcional 
-    id_distribuidora =  fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse el id de distribuidora", "code": 400}})
-    
+    #id_distribuidora =  fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse el id de distribuidora", "code": 400}})
     @post_load
     def makeProducto(self, data, **kwargs):
         return Producto(**data)

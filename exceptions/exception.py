@@ -23,3 +23,7 @@ class ErrorStockEspacioFisicoInexistente(Exception):
         self.message = message
         super().__init__(self.message)
 
+class ErrorProductoEnStockInexistente(Exception):
+    def __init__(self, message="No hay productos asociados con esa id_productos/id_productosEnStock  "):
+        self.message = message
+        super().__init__(self.message)

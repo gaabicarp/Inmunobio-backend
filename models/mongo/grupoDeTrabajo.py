@@ -6,6 +6,6 @@ class GrupoDeTrabajo(dbMongo.Document):
     nombre = dbMongo.StringField()
     jefeDeGrupo = dbMongo.IntField()
     integrantes = dbMongo.ListField(dbMongo.IntField()) #ver duplicados en integrantes
-    stock = dbMongo.ListField(dbMongo.EmbeddedDocumentField('Stock'))
+    #stock = dbMongo.ListField(dbMongo.EmbeddedDocumentField('Stock'))
     grupoGral = dbMongo.BooleanField(default=False)
 
