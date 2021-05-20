@@ -26,7 +26,7 @@ class ProductoService():
         
 
     def find_by_id(id):
-        producto =  Producto.objects(id_producto = id)
+        producto =  Producto.objects(id_producto = id).first()
         if(not producto):
             raise ErrorProductoInexistente()
         return producto     

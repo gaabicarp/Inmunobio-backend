@@ -34,3 +34,8 @@ class ObtenerProductosStock(Resource):
 class ObtenerStocks(Resource):
     def get(self,id_grupoDeTrabajo):
         return StockService.obtenerStocks(id_grupoDeTrabajo)
+
+class BorrarTodoStock(Resource):
+    def delete(self,id_grupoDeTrabajo):
+        return StockService.borrarTodo(id_grupoDeTrabajo)
+

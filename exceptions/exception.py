@@ -6,6 +6,11 @@ class ErrorProductoInexistente(Exception):
         super().__init__(self.message)
 
 
+class ErrorStockInexistente(Exception):
+    def __init__(self, message="Stock con id_productos inexistente"):
+        self.message = message
+        super().__init__(self.message)
+
 class ErrorDistribuidoraInexistente(Exception):
     def __init__(self, message="Distribuidora inexistente"):
         self.message = message
@@ -24,6 +29,6 @@ class ErrorStockEspacioFisicoInexistente(Exception):
         super().__init__(self.message)
 
 class ErrorProductoEnStockInexistente(Exception):
-    def __init__(self, message="No hay productos asociados con esa id_productos/id_productosEnStock  "):
+    def __init__(self, message="No hay productos asociados con esa id_productos  "):
         self.message = message
         super().__init__(self.message)
