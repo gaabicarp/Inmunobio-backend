@@ -1,6 +1,6 @@
 from models.mongo.stock import Stock
 from marshmallow import Schema, fields, post_load
-from schemas.productosEnStockSchema import ProductosEnStockSchema
+from schemas.productosEnStockSchema import ProductosEnStockSchema,ModificarProductoEnStock
 
 class StockSchema(Schema):
     id_productoEnStock = fields.Integer()
@@ -20,14 +20,8 @@ class NuevoStockSchema(StockSchema):
         return Stock(**data)
 
 class busquedaStocksSchema(Schema):
-    #id_espacioFisico = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse id_stock", "code": 400}})
     id_productoEnStock = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse id_productoEnStock", "code": 400}})
     id_productos = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse id_productos", "code": 400}})
-    #id_grupoDeTrabajo = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse id_grupoDeTrabajo", "code": 400}})
 
 class ModificarProducto(busquedaStocksSchema):
-    codigoContenedor = fields.Integer()
-    detalleUbicacion = fields.String(default="")
-    unidad =fields.Integer()
-    lote = fields.String(default="")
-    fechaVencimiento = fields.DateTime()
+    producto = fields.Nested(ModificarProductoEnStock)
