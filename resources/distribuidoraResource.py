@@ -18,7 +18,6 @@ class DistribuidoraResource(Resource):
             return DistribuidoraService().modificarDistribuidora(datos)
         return {'name': 'None'},400
     
-
     def delete(self):
         #ver: borramos el producto ¿que sucede con los productos activos en stock?
         datos = request.get_json()

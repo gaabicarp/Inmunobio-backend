@@ -32,3 +32,18 @@ class ErrorProductoEnStockInexistente(Exception):
     def __init__(self, message="No hay productos asociados con esa id_productos  "):
         self.message = message
         super().__init__(self.message)
+
+class ErrorPermisoInexistente(Exception):
+    def __init__(self,id_permiso, message="No hay permisos asociados con id "):
+        self.message = message + str(id_permiso)
+        super().__init__(self.message)
+
+class ErrorPermisosInexistentes(Exception):
+    def __init__(self, message="No hay permisos activos"):
+        self.message = message 
+        super().__init__(self.message)
+
+class ErrorUsuarioInexistente(Exception):
+    def __init__(self,id_usuario, message="No hay usuario asociados con id "):
+        self.message = message + str(id_usuario)
+        super().__init__(self.message)
