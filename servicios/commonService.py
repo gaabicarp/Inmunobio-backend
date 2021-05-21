@@ -4,11 +4,10 @@ class CommonService():
     
     def updateAtributes(object,atribute,keyExclude = ""):
         for key,value in atribute.items():
-            print(key,value)
+            #print(key,value)
             if keyExclude != key and hasattr(object, key) :
                 setattr(object, key, value)
-        #object.save()
-
+  
     def comparar(objeto,otroObjeto,atributos):
         for att in atributos:
             if (getattr(objeto,att) != getattr(otroObjeto,att)): return False

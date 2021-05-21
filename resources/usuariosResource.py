@@ -1,21 +1,22 @@
+from warnings import catch_warnings
 from servicios.usuarioService import UsuarioService
 from servicios.permisosService import PermisosService
 from flask_restful import Resource,Api
 from flask_jwt import jwt_required
 from flask import jsonify, request
 from db import db
-import json
+from exceptions.exception import ErrorPermisosInexistentes
 
-class Usuarios(Resource):
+class ObtenerUsuariosResource(Resource):
     '''devuelve todos los usuarios de la base que se encuentren habilitados 
     '''
     def get(self):
-        usuarios = UsuarioService.findUsuariosHabilitados()
-        if usuarios:
-           return UsuarioService.jsonMany(usuarios) 
-        return {'name': 'None'},400
+        try:
+            return UsuarioService.findUsuariosHabilitados() 
+        except ErrorPermisosInexistentes as err:
+            return {'Error': err.message},400
         
-class ModificarUsuario(Resource): 
+class UsuarioResource(Resource): 
     #@jwt_required()
     def put(self):
         ''' recibe: un idUsuario y/o direccion y/o telefono y/o mail y/o contraseña en formato json.
@@ -38,6 +39,13 @@ class ModificarUsuario(Resource):
         if datos:
                 return UsuarioService.deshabilitarUsuario(datos)
         return {'name': 'None'},400
+    # @jwt_required()
+    def post(self):
+        datos = request.get_json()
+        if (datos ):
+          return UsuarioService.nuevoUsuario(datos)
+        return {'name': 'None'},400
+     
 
 class BusquedaPorID(Resource):
  #@jwt_required()
@@ -46,20 +54,8 @@ class BusquedaPorID(Resource):
             devuelve: el usuario,si hay match con esa id y ademas esta habilitado, 
            en formato json.
         '''
-        usuario = UsuarioService.find_by_id(id_usuario)
-        if usuario:
-                return UsuarioService.json(usuario)
-        return {'error':'No existe el usuario'},400
+        return UsuarioService.busquedaUsuario(id_usuario)
    
-
-class NuevoUsuario(Resource):
-   # @jwt_required()
-    def post(self):
-        datos = request.get_json()
-        if (datos ):
-          return UsuarioService.nuevoUsuario(datos)
-        return {'name': 'None'},400
-     
 
 class ActualizarPermisos(Resource):
     '''dado un id de usuario y una lista con dic de permisos , actualiza los permisos

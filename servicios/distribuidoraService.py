@@ -1,7 +1,7 @@
 from marshmallow import ValidationError
 from flask import jsonify
 from models.mongo.distribuidora import Distribuidora
-from schemas.distribuidoraSchema import DistribuidoraSchema,NuevaDistribuidoraSchema,IdDistribuidoraSchema
+from schemas.distribuidoraSchema import DistribuidoraSchema,ModificarDistribuidora,NuevaDistribuidoraSchema,IdDistribuidoraSchema
 from exceptions.exception import ErrorDistribuidoraInexistente
 from servicios.commonService import CommonService
 
@@ -21,7 +21,7 @@ class DistribuidoraService():
         pass
     @classmethod    
     def find_by_id(cls,id):
-        distribuidora =  Distribuidora.objects(id_distribuidora = id)
+        distribuidora =  Distribuidora.objects(id_distribuidora = id).first()
         if(not distribuidora):
             raise ErrorDistribuidoraInexistente()
         return distribuidora     
@@ -39,22 +39,16 @@ class DistribuidoraService():
         except ErrorDistribuidoraInexistente as err:
           return {'Error': err.message},400
 
-    def json(datos):
-        return DistribuidoraSchema().dump(datos)
-
-    def jsonMany(datos):
-        return jsonify(DistribuidoraSchema().dump(datos,many=True))
-
     @classmethod
     def obtenerDistribuidoras(cls):
-        return cls.jsonMany(Distribuidora.objects().all())
+        return CommonService.jsonMany(Distribuidora.objects().all(),DistribuidoraSchema)
 
     @classmethod
     def modificarDistribuidora(cls,datos):
         try:
-            NuevaDistribuidoraSchema().load(datos)
+            ModificarDistribuidora().load(datos)
             distribuidora = cls.find_by_id(datos['id_distribuidora'])
-            CommonService.updateAtributes(distribuidora,datos)
+            CommonService.updateAtributes(distribuidora,datos,'id_distribuidora')
             distribuidora.save()
             return {'Status':'ok'},200
         except ValidationError as err:
@@ -66,7 +60,7 @@ class DistribuidoraService():
     def obtenerDistribuidora(cls,id_distribuidora):
         try:
             distribuidora = cls.find_by_id(id_distribuidora)
-            return cls.json(distribuidora)
+            return CommonService.json(distribuidora,DistribuidoraSchema)
         except ErrorDistribuidoraInexistente as err:
             return {'Error': err.message},400
 
