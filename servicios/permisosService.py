@@ -1,11 +1,11 @@
 from db import db
 import json
-from models.mysql.usuario import Permiso,PermisoSchema
+from models.mysql.permiso import Permiso
 from marshmallow import Schema, ValidationError
 from flask import jsonify, request
-
-
-
+from schemas.permisosSchema import PermisoSchema
+from servicios.commonService import CommonService
+from exceptions.exception import ErrorPermisoInexistente
 class PermisosService():
     @classmethod
     def json(cls,datos):
@@ -18,7 +18,7 @@ class PermisosService():
     @classmethod
     def all_permisos(cls):
         permisos = Permiso.query.all()
-        return jsonify(PermisoSchema().dump(permisos, many=True))
+        return CommonService().jsonMany(permisos,PermisoSchema)
 
 
     @classmethod
@@ -30,18 +30,16 @@ class PermisosService():
         permisos = []
         print("entro a ver permisos")
         for dictonary in permisosDict:
-            for key,value in dictonary.items():
-                permiso = cls.find_by_id(value)
-                if(permiso):
-                    permisos.append(permiso)
-        if(len(permisos) == len(permisosDict) and len(permisos)>0):
-            return permisos
-        return None
+            permiso = cls.find_by_id(dictonary['id_permiso'])
+            if(permiso):
+                permisos.append(permiso)
+            else: raise ErrorPermisoInexistente(dictonary['id_permiso'])
+        return permisos
 
     @classmethod
     def obtenerPermisoPorId(cls,id_permiso):
         permiso = PermisosService.find_by_id(id_permiso)
         if permiso : 
-            return PermisosService.json(permiso)
+            return CommonService().json(permiso,PermisoSchema)
         return {'error':'No existen permisos con esa id'},400
 
