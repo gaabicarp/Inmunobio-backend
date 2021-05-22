@@ -1,7 +1,6 @@
 from marshmallow import ValidationError
-from flask import jsonify
 from models.mongo.producto import Producto
-from schemas.productoSchema import ProductoSchema,NuevoProductoSchema,IdProductoSchema,modificarProductoSchema
+from schemas.productoSchema import ProductoSchema,NuevoProductoSchema,IdProductoSchema,ModificarProductoSchema
 from exceptions.exception import ErrorProductoInexistente,ErrorDistribuidoraInexistente
 from servicios.commonService import CommonService
 from servicios.distribuidoraService import DistribuidoraService
@@ -19,7 +18,6 @@ class ProductoService():
         except ErrorDistribuidoraInexistente as err:
             return {'error': err.message},400
 
-
     def validacionAltaProducto(id_distribuidora):
         #valida que exista la distribuidora y qué mas??
         DistribuidoraService().find_by_id(id_distribuidora)
@@ -28,7 +26,7 @@ class ProductoService():
     def find_by_id(id):
         producto =  Producto.objects(id_producto = id).first()
         if(not producto):
-            raise ErrorProductoInexistente()
+            raise ErrorProductoInexistente(id)
         return producto     
 
     @classmethod
@@ -43,22 +41,17 @@ class ProductoService():
         except ErrorProductoInexistente as err:
             return {'Error': err.message},400
 
-    def json(datos):
-        return ProductoSchema().dump(datos)
-
-    def jsonMany(datos):
-        return jsonify(ProductoSchema().dump(datos,many=True))
 
     @classmethod
     def obtenerProductos(cls):
-        return cls.jsonMany(Producto.objects().all())
+        return CommonService.jsonMany(Producto.objects(),ProductoSchema)
 
     @classmethod
     def modificarProducto(cls,datos):
         try:
-            modificarProductoSchema().load(datos)
+            ModificarProductoSchema().load(datos)
             producto = cls.find_by_id(datos['id_producto'])
-            CommonService.updateAtributes(producto,datos)
+            CommonService.updateAtributes(producto,datos,'id_producto')
             producto.save()
             return {'Status':'ok'},200
         except ValidationError as err:
@@ -66,11 +59,10 @@ class ProductoService():
         except ErrorProductoInexistente as err:
             return {'Error': err.message},400
 
-    @classmethod        
     def obtenerProducto(cls,id_producto):
         try:
             producto = cls.find_by_id(id_producto)
-            return cls.json(producto)
+            return CommonService.json(producto,ProductoSchema)
         except ErrorProductoInexistente as err:
             return {'Error': err.message},400
         

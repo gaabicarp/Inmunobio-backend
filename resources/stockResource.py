@@ -1,7 +1,6 @@
-from flask_restful import Resource,Api
+from flask_restful import Resource
 from flask_jwt import jwt_required
 from flask import request
-from dateutil import parser
 from servicios.stockService import  StockService
 
 class ProductoEnStock(Resource):
@@ -30,12 +29,16 @@ class ObtenerProductosStock(Resource):
     def get(self,id_grupoDeTrabajo,id_espacioFisico):
         return StockService.obtenerProductos(id_grupoDeTrabajo,id_espacioFisico)
 
-
-class ObtenerStocks(Resource):
-    def get(self,id_grupoDeTrabajo):
-        return StockService.obtenerStocks(id_grupoDeTrabajo)
-
 class BorrarTodoStock(Resource):
     def delete(self,id_grupoDeTrabajo):
         return StockService.borrarTodo(id_grupoDeTrabajo)
 
+class ConsumirStockResource(Resource):
+    def put(self):
+        datos = request.get_json()
+        if(datos):
+            return StockService.consumirStock(datos)
+        return {'name': 'None'},400
+
+        
+        
