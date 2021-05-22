@@ -1,26 +1,18 @@
 from db import db
-import json
-from models.mysql.usuario import UsuarioSchema,UsuarioSchemaModificar,Usuario,UsuarioNuevoSchema,UsuarioSchemaModificarPermisos
+from models.mysql.usuario import Usuario
+from schemas.usuarioSchema import UsuarioSchema,UsuarioSchemaModificar,UsuarioNuevoSchema,UsuarioSchemaModificarPermisos,usuarioIDSchema
 from marshmallow import Schema, ValidationError
-from flask import jsonify, request
 from servicios.permisosService import PermisosService,Permiso
-
-
+from exceptions.exception import ErrorPermisoInexistente,ErrorUsuarioInexistente,ErrorPermisosInexistentes
+from servicios.commonService import CommonService
 class UsuarioService():
-    @classmethod
-    def updateAtributes(cls,usuario,atributos):
-        """recibe un diccionario con atributo - valor , si el usuario tiene esos atributos
-        los actualiza y guarda los cambios enla base"""
-        for clave,valor in atributos.items():
-                if hasattr(usuario, clave) :
-                    setattr(usuario, clave, valor)
-        db.session.commit()
 
     @classmethod
     def modificarUsuario(cls,usuario,modificaciones):        
         try:
-            cls.validarTipoDatos(modificaciones) 
-            cls.updateAtributes(usuario,modificaciones)
+            UsuarioSchemaModificar().load(modificaciones) 
+            CommonService.updateAtributes(usuario,modificaciones)
+            db.session.commit()
             return {'Status':'ok'},200
         except ValidationError as err:
             return {'error': err.messages}, 400
@@ -30,13 +22,14 @@ class UsuarioService():
         '''recibe una lista con diccionarios de permisos y un usuario de la base
         si pudo encontrar los permisos en la base actualiza al usuario, sino devuelve
         mensaje de error.'''
-        permisosObject = PermisosService.permisosById(permisosDicts)
-        if (permisosObject is not None):
+        try:
+            permisosObject = PermisosService.permisosById(permisosDicts)
             usuario.setPermiso(permisosObject)
             db.session.add(usuario)
             db.session.commit()
             return {'Status':'ok'},200
-        return {'error': 'Permisos invalidos'},400
+        except ErrorPermisoInexistente as err:
+            return {'Error': err.message},400
             
 
     @classmethod
@@ -44,7 +37,7 @@ class UsuarioService():
         #minimo un permiso  el 5, aun no esta validado , solo valida que sean permisos que existen
         try:
             usuario = UsuarioNuevoSchema().load(datos) 
-            return cls.asignarPermisos(usuario,datos['id_permisos'])
+            return cls.asignarPermisos(usuario,datos['permisos'])
         except ValidationError as err:
             return {'error': err.messages},400
 
@@ -55,49 +48,53 @@ class UsuarioService():
     @classmethod
     def find_by_id(cls, _id):
         '''dada una id de usuario devuelve usuario si esta habilitado '''
-        return Usuario.query.filter_by(id_usuario=_id,habilitado=True).first()
+        resultado = Usuario.query.filter_by(id_usuario=_id,habilitado=True).first()
+        if not resultado: raise ErrorUsuarioInexistente(_id)
+        return resultado
         
     @classmethod
     def findUsuariosHabilitados(cls):
-        return  Usuario.query.filter_by(habilitado=1).all()
+        resultado = Usuario.query.filter_by(habilitado=1).all()
+        if not resultado : raise ErrorPermisosInexistentes()
+        return CommonService.jsonMany(resultado,UsuarioSchema) 
     
     @classmethod
     def usuariosSinElPermiso(cls,id_permiso):
         user = Usuario.query.filter(~Usuario.id_permisos.any(Permiso.id_permiso.in_([id_permiso])))
         if (user):
-            return cls.jsonMany(user)
-        return {}
-    
-    def json(datos):
-        return UsuarioSchema().dump(datos)
-
-    def jsonMany(datos):
-        return jsonify(UsuarioSchema().dump(datos,many=True))    
-        
-    
-    def validarTipoDatos(datos):
-        print('entro a validar')
-        return UsuarioSchemaModificar().load(datos)
-
+            return CommonService.jsonMany(user,UsuarioSchema)
+        return user
 
     @classmethod
     def actualizarPermisos(cls,datos):
         try:
             UsuarioSchemaModificarPermisos().load(datos)
             usuario = cls.find_by_id(datos['id_usuario'])
-            if(usuario):
-                return cls.asignarPermisos(usuario,datos['id_permisos'])
-            return {'error':'no existe el usuario'},400
+            return cls.asignarPermisos(usuario,datos['permisos'])
         except ValidationError as err:
             return {'error': err.messages},400
+        except (ErrorPermisoInexistente,ErrorUsuarioInexistente) as err:
+            return {'error': err.message},400
+
 
     @classmethod
     def deshabilitarUsuario(cls,datos):
         """recibe un usuario valido y modifica su estado habilitado a false"""
         #agregar schema de id usuario para verificar que se pase
-        usuario = UsuarioService.find_by_id(datos['id_usuario'])
-        if(usuario):
-            cls.updateAtributes(usuario,{'habilitado': False})
+        try:
+            usuarioIDSchema().load(datos)
+            usuario = UsuarioService.find_by_id(datos['id_usuario'])
+            CommonService.updateAtributes(usuario,{'habilitado': False}) # -> oh por dios corregir esto hardcodeado esto en algun momento 
             return {'Status':'ok'},200
-        return {'error':'No existe usuario'},400
+        except ValidationError as err:
+            return {'error': err.messages},400
+        except ErrorUsuarioInexistente as err:
+            return {'Error':err.message},400
 
+    @classmethod
+    def busquedaUsuario(cls,_id_usuario):
+        try:
+            usuario = UsuarioService.find_by_id(_id_usuario)
+            return CommonService.json(usuario,UsuarioSchema)
+        except ErrorUsuarioInexistente as err:
+            return {'Error': err.message},400

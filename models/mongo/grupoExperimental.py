@@ -67,3 +67,4 @@ class AltaGrupoExperimentalSchema(GrupoExperimentalSchema):
     id_experimento = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar el id del experimento", "code": 400}})
     codigo = fields.Str( required=True, error_messages={"required": {"message": "Es necesario indicar el codigo del grupo experimental", "code": 400}})
     tipo = fields.Str(required=True, error_messages={"required": {"message": "Es necesario indicar el tipo del grupo experimental", "code": 400}})
+

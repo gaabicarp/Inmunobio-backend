@@ -1,20 +1,13 @@
 from db import dbMongo
-from marshmallow import Schema, fields, post_load, ValidationError
-from flask import jsonify
+from models.mongo.productosEnStock import ProductosEnStock
 
-class Stock(dbMongo.EmbeddedDocument):
-    lote = dbMongo.StringField()
-    detalleUbicacion = dbMongo.StringField()
-    unidad = dbMongo.IntField()
-    fechaVencimiento = dbMongo.DateTimeField()
+class Stock(dbMongo.Document):
+    id_productoEnStock =  dbMongo.SequenceField()
+    nombre = dbMongo.StringField() #se toma de producto
+    id_producto = dbMongo.IntField()  #se toma de producto
     id_espacioFisico = dbMongo.IntField()
-    codigoContenedor = dbMongo.StringField() #opcional
+    id_grupoDeTrabajo = dbMongo.IntField()
+    producto = dbMongo.ListField(dbMongo.EmbeddedDocumentField('ProductosEnStock'))
+    #TO-DO:unidades totales puede ser calculado ver
+  
 
-
-class StockSchema(Schema):
-    lote = fields.Integer()
-    detalleUbicacion = fields.String()
-    unidad = fields.Integer()
-    fechaVencimiento = fields.DateTime()
-    id_espacioFisico = fields.Integer()
-    codigoContenedor =  fields.String()
