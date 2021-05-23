@@ -24,10 +24,15 @@ class ProductoService():
             return {'Error': err.message},400 
     @classmethod
     def asociarArchivo(cls,archivo,_id_producto):
-        filename = FileService.upload(archivo)
-        
+        try:
+            producto = cls.find_by_id(_id_producto)
+            filename = FileService.upload(archivo)
+            producto.update_one(set__detallesTecnicos = filename)
+            producto.reload() 
+        except ErrorProductoInexistente as err:
+            return {'Error': err.message},400
 
-
+   
     def validacionAltaProducto(id_distribuidora):
         #valida que exista la distribuidora y qué mas??
         DistribuidoraService().find_by_id(id_distribuidora)

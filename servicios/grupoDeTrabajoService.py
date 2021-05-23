@@ -1,7 +1,7 @@
 from schemas.grupoTrabajoSchema import jefeDeGrupoSchema,ModificarGrupoDeTrabajoSchema,GrupoDeTrabajoSchema,GrupoDeTrabajo,NuevoGrupoDeTrabajoSchema,GrupoDeTrabajoIDSchema
 from marshmallow import  ValidationError
 from servicios.usuarioService import UsuarioService
-from exceptions.exception import ErrorGrupoInexistente
+from exceptions.exception import ErrorGrupoInexistente,ErrorUsuarioInexistente
 from servicios.commonService import CommonService
 
 class GrupoDeTrabajoService:
@@ -19,13 +19,12 @@ class GrupoDeTrabajoService:
         try:
             ModificarGrupoDeTrabajoSchema().load(datos)
             grupoAModificar = cls.find_by_id(datos['id_grupoDeTrabajo'])
-            if (cls.validarMiembros(datos['integrantes'])) :
-                grupoAModificar.update(integrantes=datos['integrantes'])
-                return {'Status':'ok'},200  
-            return {'error':'Usuario/s miembros invalidos'},400
+            cls.validarMiembros(datos['integrantes'])
+            grupoAModificar.update(integrantes=datos['integrantes'])
+            return {'Status':'ok'},200  
         except ValidationError as err:
             return {'error': err.messages},400
-        except ErrorGrupoInexistente as err:
+        except (ErrorGrupoInexistente,ErrorUsuarioInexistente) as err:
             return {'Error':err.message},400
 
     @classmethod
@@ -46,13 +45,15 @@ class GrupoDeTrabajoService:
     def nuevoGrupo(cls,datos):
         try:
             grupoCreado = NuevoGrupoDeTrabajoSchema().load(datos)
-            if(cls.validarMiembros([grupoCreado.jefeDeGrupo])):
-                #falta ver si tiene permisos nivel 4 
-                grupoCreado.save()
-                return {'Status':'ok'},200  
-            return {'error':'No existe usuario con id jefeDeGrupo'},400
+            cls.validarMiembros([grupoCreado.jefeDeGrupo])
+            cls.validarMiembros(datos['integrantes'])
+            #falta ver si tiene permisos nivel 4 
+            grupoCreado.save()
+            return {'Status':'ok'},200  
         except ValidationError as err:
             return {'error': err.messages},400
+        except ErrorUsuarioInexistente as err:
+            return {'Error': err.message},400
 
     @classmethod
     def removerGrupo(cls,datos):
@@ -68,7 +69,6 @@ class GrupoDeTrabajoService:
         except ErrorGrupoInexistente as err:
             return {'Error':err.message},400
 
-   
     def obtenerGrupoPorId(idGrupoDeTrabajo):
         try:
             grupoConsulta= GrupoDeTrabajoService.find_by_id(idGrupoDeTrabajo)
@@ -84,8 +84,7 @@ class GrupoDeTrabajoService:
         for idIntegrante in integrantes:
             if(not UsuarioService.find_by_id(idIntegrante)):
                 print("id"+ str(idIntegrante) + "no existe")
-                return False
-        return True
-
+                raise ErrorUsuarioInexistente(idIntegrante)
+                
     def obtenerTodosLosGrupos():
         return CommonService.jsonMany(GrupoDeTrabajo.objects.all(),GrupoDeTrabajoSchema)

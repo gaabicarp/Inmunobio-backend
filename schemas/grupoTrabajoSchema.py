@@ -18,13 +18,13 @@ class GrupoDeTrabajoSchema(Schema):
     nombre = fields.Str()
     jefeDeGrupo = fields.Integer()
     integrantes = fields.List(fields.Int())
-    #stock = fields.Nested(StockSchema, many=True)
     grupoGral = fields.Boolean()
   
 class NuevoGrupoDeTrabajoSchema(Schema):
     nombre = fields.Str(required=True,error_messages={"required": {"message": "Debe indicarse nombre de grupo", "code": 400}}) 
     jefeDeGrupo = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse Jefe de Grupo", "code": 400}}) 
     grupoGral = fields.Boolean(default=False)
+    integrantes = fields.List(fields.Int())
 
     @post_load
     def make_Grupo(self, data, **kwargs):
