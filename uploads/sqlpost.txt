@@ -1,0 +1,18 @@
+sql alchemy ]
+
+docker 
+	sudo docker pull postgres
+
+
+directorio:
+	mkdir -p $HOME/docker/volumes/postgres
+
+activacion docker:
+	sudo docker run --rm   --name inmunodbpostgres -e POSTGRES_PASSWORD=secreto -d -p 5432:5432 -v $HOME/docker/volumes/postgres:/var/lib/postgresql/data  postgres
+
+
+acceso a dockes desde terminal:
+	psql -h localhost -U postgres -d postgres
+
+adentro
+	CREATE USER usuario WITH PASSWORD '1234' CREATEDB;

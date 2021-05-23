@@ -32,4 +32,9 @@ class ObtenerProductoResource(Resource):
     def get(self,id_producto):
         return ProductoService().obtenerProducto(id_producto)
 
-     
+class ArchivoProducto(Resource):
+    def post(self,id_producto):
+        archivo = request.files['detallesTecnicos']
+        if(archivo):
+            return ProductoService().asociarArchivo(archivo,id_producto)
+        return {'name': 'None'},400

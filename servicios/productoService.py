@@ -4,19 +4,27 @@ from schemas.productoSchema import ProductoSchema,NuevoProductoSchema,IdProducto
 from exceptions.exception import ErrorProductoInexistente,ErrorDistribuidoraInexistente
 from servicios.commonService import CommonService
 from servicios.distribuidoraService import DistribuidoraService
+from servicios.fileService import FileService
+
 class ProductoService():
 
     @classmethod
     def altaProducto(cls,datos):
         try:
+            #aca devuelve el id del producto para luego pasarselo a l subida del archivo
+            #y guardar el archivo con esa id
             nuevoProducto = NuevoProductoSchema().load(datos)
             cls.validacionAltaProducto(datos['id_distribuidora'])
             nuevoProducto.save()
-            return {'Status':'ok'},200
+            print(nuevoProducto.id_producto)
+            return {'Status':'ok','id_producto':nuevoProducto.id_producto},200
         except ValidationError as err:
-            return {'error': err.messages},400
+            return {'Error': err.messages},400
         except ErrorDistribuidoraInexistente as err:
-            return {'error': err.message},400
+            return {'Error': err.message},400 
+
+    def asociarArchivo(cls,archivo,_id_producto):
+        filename = FileService.upload(archivo)
 
     def validacionAltaProducto(id_distribuidora):
         #valida que exista la distribuidora y qué mas??

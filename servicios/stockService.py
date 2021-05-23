@@ -8,8 +8,6 @@ from exceptions.exception import ErrorGrupoInexistente,ErrorProductoInexistente,
 from servicios.commonService import CommonService
 from servicios.productosEnStockService import ProductoEnStockService
 
-#TO- DO :  tomar la descripcion del ultimo que se envia si coincide con otros stocks activos
-
 class StockService():
     @classmethod
     def nuevoStock(cls,datos):
@@ -62,7 +60,6 @@ class StockService():
     @classmethod
     def BusquedaStockPorId(cls,_id_productoEnStock):
         resultado =  Stock.objects.filter(id_productoEnStock =_id_productoEnStock).first()
-        #resultado =  Stock.objects.filter(producto__id_productos = _id_productos, id_productoEnStock =_id_productoEnStock ).first()
         if(not resultado):
             raise ErrorStockInexistente()
         return resultado
@@ -157,18 +154,18 @@ class StockService():
             stock= cls.BusquedaStockPorId(datos['id_productoEnStock'])
             producto = cls.obtenerProductosEspecificos(datos['id_productos'],stock.producto)
             cls.modificarUnidades(producto.unidad - datos['unidad'],producto)
-            print(stock.producto)
             stock.save()
-            return {'Status':'ok'},200
         except ErrorStockVacio:
             stock.producto.remove(producto)
             stock.save()
             cls.borradoStockVacio(stock)
-            return {'Status':'ok'},200
+            #return {'Status':'ok'},200
         except ValidationError as err:
             return {'error': err.messages},400
         except (ErrorUnidadStock,ErrorStockInexistente,ErrorProductoEnStockInexistente) as err:
             return {'error': err.message},400
+        finally:
+            return {'Status':'ok'},200
 
     @classmethod
     def borradoStockVacio(cls,stock):

@@ -7,7 +7,7 @@ class Producto(dbMongo.Document):
     marca = dbMongo.StringField()
     url = dbMongo.StringField(default="")
     unidadAgrupacion = dbMongo.IntField(default=1)
-    detallesTecnicos = dbMongo.StringField() #Se sube archivo .txt
+    detallesTecnicos = dbMongo.StringField() #guardo el nombre del archivo?
     protocolo = dbMongo.StringField() #Se sube archivo
     id_distribuidora = dbMongo.IntField()
     id_producto = dbMongo.SequenceField()
