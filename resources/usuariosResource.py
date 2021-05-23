@@ -49,16 +49,6 @@ class BusquedaPorID(Resource):
         return UsuarioService.busquedaUsuario(id_usuario)
    
 
-class ActualizarPermisos(Resource):
-    '''dado un id de usuario y una lista con dic de permisos , actualiza los permisos
-    del usuario con dicha lista'''
-    #@jwt_required()
-    def put(self):
-        datos = request.get_json()
-        if(datos):
-            return UsuarioService.actualizarPermisos(datos)
-        return {'name': 'None'}, 400
-
 class ObtenerUsuariosParaProyecto(Resource):
     #aca el 4 representa la id del permiso director de proyecto,ya que no hay visibilidad
     #entre un director de proyecto y otro con mismo permiso.

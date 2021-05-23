@@ -65,16 +65,6 @@ class UsuarioService():
             return CommonService.jsonMany(user,UsuarioSchema)
         return user
 
-    @classmethod
-    def actualizarPermisos(cls,datos):
-        try:
-            UsuarioSchemaModificarPermisos().load(datos)
-            usuario = cls.find_by_id(datos['id_usuario'])
-            return cls.asignarPermisos(usuario,datos['permisos'])
-        except ValidationError as err:
-            return {'error': err.messages},400
-        except (ErrorPermisoInexistente,ErrorUsuarioInexistente) as err:
-            return {'error': err.message},400
 
 
     @classmethod

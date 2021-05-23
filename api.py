@@ -1,6 +1,6 @@
 from flask_restful import Api
 
-from resources.usuariosResource import ActualizarPermisos, ObtenerUsuariosResource,UsuarioResource, BusquedaPorID,ObtenerUsuariosParaProyecto
+from resources.usuariosResource import  ObtenerUsuariosResource,UsuarioResource, BusquedaPorID,ObtenerUsuariosParaProyecto
 from resources.proyectoResource import *
 from resources.permisosResource import Permisos,ObtenerPermisoPorId
 from resources.grupoDeTrabajoResource import ObtenerGrupoDeTrabajo,GrupoDeTrabajo,GruposDeTrabajo,RenombrarJefeGrupo
@@ -18,7 +18,6 @@ api = Api()
 api.add_resource(ObtenerPermisoPorId, '/api/v1/permiso/<int:id_permiso>')
 api.add_resource(Permisos, '/api/v1/permisos')
 #usuarios
-api.add_resource(ActualizarPermisos, '/api/v1/usuariosPermisos')
 api.add_resource(ObtenerUsuariosResource, '/api/v1/usuarios')
 api.add_resource(UsuarioResource, '/api/v1/usuario')
 api.add_resource(BusquedaPorID, '/api/v1/usuario/<int:id_usuario>')
