@@ -18,7 +18,7 @@ class PermisosService():
     @classmethod
     def all_permisos(cls):
         permisos = Permiso.query.all()
-        return CommonService().jsonMany(permisos,PermisoSchema)
+        return CommonService.jsonMany(permisos,PermisoSchema)
 
 
     @classmethod
@@ -40,6 +40,6 @@ class PermisosService():
     def obtenerPermisoPorId(cls,id_permiso):
         permiso = PermisosService.find_by_id(id_permiso)
         if permiso : 
-            return CommonService().json(permiso,PermisoSchema)
+            return CommonService.json(permiso,PermisoSchema)
         return {'error':'No existen permisos con esa id'},400
 
