@@ -14,6 +14,7 @@ class ProductoService():
             #aca devuelve el id del producto para luego pasarselo a l subida del archivo
             #y guardar el archivo con esa id
             nuevoProducto = NuevoProductoSchema().load(datos)
+            print('valido producto y obtengo',nuevoProducto)
             cls.validacionAltaProducto(datos['id_distribuidora'])
             nuevoProducto.save()
             print(nuevoProducto.id_producto)
@@ -22,23 +23,24 @@ class ProductoService():
             return {'Error': err.messages},400
         except ErrorDistribuidoraInexistente as err:
             return {'Error': err.message},400 
+
     @classmethod
     def asociarArchivo(cls,archivo,_id_producto):
         try:
             producto = cls.find_by_id(_id_producto)
             filename = FileService.upload(archivo)
-            producto.update_one(set__detallesTecnicos = filename)
+            producto.update(set__detallesTecnicos = filename)
             producto.reload() 
+            return {'Status':'ok'} ,200
         except ErrorProductoInexistente as err:
             return {'Error': err.message},400
 
-   
+
     def validacionAltaProducto(id_distribuidora):
         #valida que exista la distribuidora y qué mas??
         DistribuidoraService().find_by_id(id_distribuidora)
-        
-
-    def find_by_id(id):
+    @classmethod
+    def find_by_id(cls,id):
         producto =  Producto.objects(id_producto = id).first()
         if(not producto):
             raise ErrorProductoInexistente(id)
@@ -55,7 +57,6 @@ class ProductoService():
             return {'error': err.messages},400
         except ErrorProductoInexistente as err:
             return {'Error': err.message},400
-
 
     @classmethod
     def obtenerProductos(cls):

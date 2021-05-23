@@ -47,7 +47,7 @@ api.add_resource(ConsumirStockResource, '/api/v1/consumirStock')
 api.add_resource(ProductoResource, '/api/v1/producto')
 api.add_resource(ObtenerProductosResource, '/api/v1/getProductos')
 api.add_resource(ObtenerProductoResource, '/api/v1/getProducto/<int:id_producto>')
-api.add_resource(ArchivoProducto, '/api/v1/subirArchivo/<int:id_producto>')
+api.add_resource(ArchivoProducto, '/api/v1/producto/subirArchivo/<int:id_producto>')
 
 #distribuidora
 api.add_resource(DistribuidoraResource, '/api/v1/distribuidora')
