@@ -30,7 +30,11 @@ class ErrorGrupoInexistente(Exception):
     def __init__(self, message="Grupo de trabajo inexistente"):
         self.message = message
         super().__init__(self.message)
-
+        
+class ErrorGrupoInexistente(Exception):
+    def __init__(self, message="Grupo de trabajo inexistente"):
+        self.message = message
+        super().__init__(self.message)
 
 class ErrorStockEspacioFisicoInexistente(Exception):
     def __init__(self, message="No hay stock activo para este id de espacio fisico "):

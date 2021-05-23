@@ -22,9 +22,11 @@ class ProductoService():
             return {'Error': err.messages},400
         except ErrorDistribuidoraInexistente as err:
             return {'Error': err.message},400 
-
+    @classmethod
     def asociarArchivo(cls,archivo,_id_producto):
         filename = FileService.upload(archivo)
+        
+
 
     def validacionAltaProducto(id_distribuidora):
         #valida que exista la distribuidora y qué mas??

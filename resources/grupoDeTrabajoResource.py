@@ -2,8 +2,7 @@ from db import dbMongo
 from flask_restful import Resource,Api
 from flask import request
 from servicios.grupoDeTrabajoService import GrupoDeTrabajoService
- 
-
+from servicios.commonService import CommonService
 class RenombrarJefeGrupo(Resource):
     def put(self):
             datos = request.get_json()
@@ -41,10 +40,7 @@ class ObtenerGrupoDeTrabajo(Resource):
 
 class GruposDeTrabajo(Resource):
     def get(self):
-        gruposConsulta= GrupoDeTrabajoService.obtenerTodosLosGrupos()
-        if(gruposConsulta):
-            return GrupoDeTrabajoService.jsonMany(gruposConsulta)
+        return GrupoDeTrabajoService.obtenerTodosLosGrupos()
 
-        return{'error':'No existen grupos de trabajo '},400
 
 
