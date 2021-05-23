@@ -5,7 +5,7 @@ from flask_restful import Resource,Api
 from flask_jwt import jwt_required
 from flask import jsonify, request
 from db import db
-from exceptions.exception import ErrorPermisosInexistentes
+from exceptions.exception import ErrorUsuariosInexistentes
 
 class ObtenerUsuariosResource(Resource):
     '''devuelve todos los usuarios de la base que se encuentren habilitados 
@@ -13,7 +13,7 @@ class ObtenerUsuariosResource(Resource):
     def get(self):
         try:
             return UsuarioService.findUsuariosHabilitados() 
-        except ErrorPermisosInexistentes as err:
+        except ErrorUsuariosInexistentes as err:
             return {'Error': err.message},400
         
 class UsuarioResource(Resource): 

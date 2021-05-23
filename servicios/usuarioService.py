@@ -1,9 +1,9 @@
 from db import db
 from models.mysql.usuario import Usuario
-from schemas.usuarioSchema import UsuarioSchema,UsuarioSchemaModificar,UsuarioNuevoSchema,UsuarioSchemaModificarPermisos,usuarioIDSchema
+from schemas.usuarioSchema import UsuarioSchema,UsuarioSchemaModificar,UsuarioNuevoSchema,usuarioIDSchema
 from marshmallow import Schema, ValidationError
 from servicios.permisosService import PermisosService,Permiso
-from exceptions.exception import ErrorPermisoInexistente,ErrorUsuarioInexistente,ErrorPermisosInexistentes
+from exceptions.exception import ErrorPermisoInexistente,ErrorUsuarioInexistente,ErrorUsuariosInexistentes
 from servicios.commonService import CommonService
 class UsuarioService():
 
@@ -55,7 +55,7 @@ class UsuarioService():
     @classmethod
     def findUsuariosHabilitados(cls):
         resultado = Usuario.query.filter_by(habilitado=1).all()
-        if not resultado : raise ErrorPermisosInexistentes()
+        if not resultado : raise ErrorUsuariosInexistentes()
         return CommonService.jsonMany(resultado,UsuarioSchema) 
     
     @classmethod

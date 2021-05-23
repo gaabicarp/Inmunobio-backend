@@ -57,3 +57,8 @@ class ErrorUsuarioInexistente(Exception):
     def __init__(self,id_usuario, message="No hay usuario asociados con id "):
         self.message = message + str(id_usuario)
         super().__init__(self.message)
+
+class ErrorUsuariosInexistentes(Exception):
+    def __init__(self,id_usuario, message="No hay usuario habilitados "):
+        self.message = message + str(id_usuario)
+        super().__init__(self.message)
