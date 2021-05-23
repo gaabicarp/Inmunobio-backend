@@ -29,12 +29,14 @@ class ProductoService():
         try:
             producto = cls.find_by_id(_id_producto)
             filename = FileService.upload(archivo)
+            FileService.deleteFile(producto.detallesTecnicos)
             producto.update(set__detallesTecnicos = filename)
             producto.reload() 
             return {'Status':'ok'} ,200
         except ErrorProductoInexistente as err:
             return {'Error': err.message},400
-
+        except:
+            return {'Error':'no se pudo borrar archivo'},400
 
     def validacionAltaProducto(id_distribuidora):
         #valida que exista la distribuidora y qué mas??

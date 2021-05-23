@@ -48,7 +48,9 @@ class ProyectoNuevoSchema(ProyectoSchema):
 class ProyectoCerradoSchema(ProyectoSchema):
     id_proyecto = fields.Integer(required=True, error_messages={"required": {"message": "Es necesario el id_proyecto", "code:": 400}})
     conclusion = fields.Str(required=True, error_messages={"required": {"message": "Es necesario detallar la conclusión para cerrar el proyecto", "code": 400}})
+    
 class ProyectoModificarSchema(ProyectoSchema):
+
     id_proyecto = fields.Integer(required=True, error_messages={"required": {"message": "Es necesario el id_proyecto. Este campo no puede estar vacío", "code:": 400}})
     descripcion = fields.Str(required=True, error_messages={"required": {"message": "Es necesaria una descripcion. Este campo puede estar vacío", "code": 400}})
     montoInicial = fields.Float(required=True, error_messages={"required": {"message": "Es necesario un montoInicial. Este campo no puede estar vacío.", "code": 400}})

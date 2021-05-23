@@ -8,7 +8,9 @@ class GrupoDeTrabajoIDSchema(Schema):
     ) 
 
 class ModificarGrupoDeTrabajoSchema(GrupoDeTrabajoIDSchema):
-    integrantes = fields.List(fields.Integer,required=True,many=True,error_messages={"required": {"message": "Deben indicarse los miembros del grupo", "code": 400}})
+    integrantes = fields.List(fields.Int())
+    jefeDeGrupo =  fields.Integer()
+    nombre = fields.Str()
 
 class jefeDeGrupoSchema(GrupoDeTrabajoIDSchema):
     jefeDeGrupo = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse id jefe de grupo", "code": 400}}) 

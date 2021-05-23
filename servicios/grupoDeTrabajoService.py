@@ -19,8 +19,10 @@ class GrupoDeTrabajoService:
         try:
             ModificarGrupoDeTrabajoSchema().load(datos)
             grupoAModificar = cls.find_by_id(datos['id_grupoDeTrabajo'])
-            cls.validarMiembros(datos['integrantes'])
-            grupoAModificar.update(integrantes=datos['integrantes'])
+            cls.validarMiembros(datos['integrantes']+[datos['jefeDeGrupo']])
+            grupoAModificar.update(integrantes=datos['integrantes'],
+            jefeDeGrupo=datos['jefeDeGrupo'],nombre= datos['nombre']
+            )
             return {'Status':'ok'},200  
         except ValidationError as err:
             return {'error': err.messages},400
@@ -32,21 +34,19 @@ class GrupoDeTrabajoService:
         try:
             jefeDeGrupoSchema().load(datos)
             grupoAModificar = cls.find_by_id(datos['id_grupoDeTrabajo'])
-            if(cls.validarMiembros([datos['jefeDeGrupo']])):
-                grupoAModificar.update(jefeDeGrupo=datos['jefeDeGrupo'])
-                return {'Status':'ok'},200  
-            return {'error':'Jefe de grupo inexistente'},400
+            cls.validarMiembros([datos['jefeDeGrupo']])
+            grupoAModificar.update(jefeDeGrupo=datos['jefeDeGrupo'])
+            return {'Status':'ok'},200  
         except ValidationError as err:
             return {'error': err.messages},400
-        except ErrorGrupoInexistente as err:
+        except (ErrorGrupoInexistente,ErrorUsuarioInexistente) as err:
             return {'Error':err.message},400
             
     @classmethod
     def nuevoGrupo(cls,datos):
         try:
             grupoCreado = NuevoGrupoDeTrabajoSchema().load(datos)
-            cls.validarMiembros([grupoCreado.jefeDeGrupo])
-            cls.validarMiembros(datos['integrantes'])
+            cls.validarMiembros([grupoCreado.jefeDeGrupo]+datos['integrantes'])
             #falta ver si tiene permisos nivel 4 
             grupoCreado.save()
             return {'Status':'ok'},200  
@@ -63,7 +63,7 @@ class GrupoDeTrabajoService:
             if(cls.validarDelete(grupoABorrar)):
                 grupoABorrar.delete()
                 return {'Status':'ok'},200
-            return {'Status': 'El grupo no puede ser dado de baja por contener stock activo o ser grupo general'}
+            return {'Status': 'El grupo no puede ser dado de baja por ser grupo general'},400
         except ValidationError as err:
             return {'error': err.messages},400
         except ErrorGrupoInexistente as err:
@@ -72,18 +72,18 @@ class GrupoDeTrabajoService:
     def obtenerGrupoPorId(idGrupoDeTrabajo):
         try:
             grupoConsulta= GrupoDeTrabajoService.find_by_id(idGrupoDeTrabajo)
-            return CommonService.json(grupoConsulta,GrupoDeTrabajoSchema)
-        except ErrorGrupoInexistente as err:
+            jefeDeGrupo = UsuarioService.find_by_id()
+            return CommonService.json(grupoConsulta,GrupoDeTrabajoSchema),jefeDeGrupo.nombre
+        except (ErrorGrupoInexistente,ErrorUsuarioInexistente) as err:
             return {'Error':err.message},400
 
     def validarDelete(grupo):
-        return len(grupo.stock) == 0 and not grupo.grupoGral
+        return not grupo.grupoGral
 
     def validarMiembros(integrantes):
         '''recibe una listacon id de usuarios devuelve true si todos existen o false en caso contrario'''
         for idIntegrante in integrantes:
             if(not UsuarioService.find_by_id(idIntegrante)):
-                print("id"+ str(idIntegrante) + "no existe")
                 raise ErrorUsuarioInexistente(idIntegrante)
                 
     def obtenerTodosLosGrupos():
