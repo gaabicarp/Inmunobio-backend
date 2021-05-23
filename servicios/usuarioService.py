@@ -8,29 +8,29 @@ from servicios.commonService import CommonService
 class UsuarioService():
 
     @classmethod
-    def modificarUsuario(cls,usuario,modificaciones):        
+    def modificarUsuario(cls,datos):        
         try:
-            UsuarioSchemaModificar().load(modificaciones) 
-            CommonService.updateAtributes(usuario,modificaciones)
+            UsuarioSchemaModificar().load(datos) 
+            usuario = UsuarioService.find_by_id(datos['id_usuario'])
+            CommonService.updateAtributes(usuario,datos,'permisos')
             db.session.commit()
+            cls.asignarPermisos(usuario,datos['permisos'])
             return {'Status':'ok'},200
         except ValidationError as err:
-            return {'error': err.messages}, 400
+            return {'Error': err.messages}, 400
+        except (ErrorUsuarioInexistente,ErrorPermisoInexistente) as err:
+            return {'Error': err.message},400
 
     @classmethod
     def asignarPermisos(cls,usuario,permisosDicts):
         '''recibe una lista con diccionarios de permisos y un usuario de la base
         si pudo encontrar los permisos en la base actualiza al usuario, sino devuelve
         mensaje de error.'''
-        try:
-            permisosObject = PermisosService.permisosById(permisosDicts)
-            usuario.setPermiso(permisosObject)
-            db.session.add(usuario)
-            db.session.commit()
-            return {'Status':'ok'},200
-        except ErrorPermisoInexistente as err:
-            return {'Error': err.message},400
-            
+        permisosObject = PermisosService.permisosById(permisosDicts)
+        usuario.setPermiso(permisosObject)
+        db.session.add(usuario)
+        db.session.commit()
+  
 
     @classmethod
     def nuevoUsuario(cls,datos):

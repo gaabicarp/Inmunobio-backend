@@ -27,12 +27,17 @@ class usuarioIDSchema(Schema):
     id_usuario = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse id Usuario", "code": 400}})
 
 class UsuarioSchemaModificar(usuarioIDSchema):
-    """ class Meta:
-        unknown = EXCLUDE """
+
     email = fields.Str()
     password = fields.Str()    
     direccion = fields.Str()
     telefono = fields.Str()
+    nombre = fields.Str()
+    permisos = fields.Nested(PermisoExistenteSchema, many=True)
+    habilitado = fields.Boolean(default=True)
+    direccion = fields.Str()
+
+
 
 class UsuarioSchemaModificarPermisos(usuarioIDSchema):
     permisos = fields.Nested(PermisoSchema, many=True,required=True,error_messages={"required": {"message": "Debe indicarse permisos al Usuario", "code": 400}} )

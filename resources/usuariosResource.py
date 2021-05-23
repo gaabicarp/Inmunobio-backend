@@ -19,18 +19,10 @@ class ObtenerUsuariosResource(Resource):
 class UsuarioResource(Resource): 
     #@jwt_required()
     def put(self):
-        ''' recibe: un idUsuario y/o direccion y/o telefono y/o mail y/o contraseña en formato json.
-        Modifica esos campos de un usuario si existe.
-        devuelve: solo mensajes de status.
-        '''
+
         datos = request.get_json()
         if (datos):
-            #ver para que se verifique con schema que exista id_usuario en json
-            usuario = UsuarioService.find_by_id(datos['id_usuario'])
-            if (usuario):
-                print("entra al if de datos y usuario")
-                return UsuarioService.modificarUsuario(usuario,datos)
-            return {'error':'No existe usuario'},400
+                return UsuarioService.modificarUsuario(datos)
         return {'name': 'None'},400
 
     def delete(self):
