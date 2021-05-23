@@ -88,3 +88,15 @@ class UsuarioService():
             return CommonService.json(usuario,UsuarioSchema)
         except ErrorUsuarioInexistente as err:
             return {'Error': err.message},400
+
+    @classmethod
+    def cambiarIdGrupo(cls,_id_usuario, idGrupo):
+        UsuarioService.find_by_id(_id_usuario).id_grupoDeTrabajo = idGrupo
+        db.session.commit()
+    @classmethod
+    def asignarGrupo(cls,_id_usuario, idGrupo):
+        UsuarioService.find_by_id(_id_usuario).esJefeDe = idGrupo
+        db.session.commit()
+
+
+

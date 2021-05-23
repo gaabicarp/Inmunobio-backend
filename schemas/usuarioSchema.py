@@ -12,6 +12,8 @@ class UsuarioSchema(Schema):
     direccion = fields.Str()
     telefono = fields.Str()
     permisos = fields.Nested(PermisoSchema, many=True)
+    id_grupoDeTrabajo =fields.Integer()
+    esJefeDe = fields.Integer()
 
 def must_not_be_blank(data):
     if not data:
@@ -40,4 +42,7 @@ class UsuarioSchemaModificar(usuarioIDSchema):
     permisos = fields.Nested(PermisoExistenteSchema, many=True)
     habilitado = fields.Boolean(default=True)
     direccion = fields.Str()
+    id_grupoDeTrabajo =fields.Integer()
+    esJefeDe = fields.Integer()
+    
 

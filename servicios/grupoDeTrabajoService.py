@@ -36,6 +36,7 @@ class GrupoDeTrabajoService:
             grupoAModificar = cls.find_by_id(datos['id_grupoDeTrabajo'])
             cls.validarMiembros([datos['jefeDeGrupo']])
             grupoAModificar.update(jefeDeGrupo=datos['jefeDeGrupo'])
+            cls.asignarIDGrupo(grupoAModificar)
             return {'Status':'ok'},200  
         except ValidationError as err:
             return {'error': err.messages},400
@@ -49,6 +50,7 @@ class GrupoDeTrabajoService:
             cls.validarMiembros([grupoCreado.jefeDeGrupo]+datos['integrantes'])
             #falta ver si tiene permisos nivel 4 
             grupoCreado.save()
+            cls.asignarIDGrupo(grupoCreado)
             return {'Status':'ok'},200  
         except ValidationError as err:
             return {'error': err.messages},400
@@ -83,8 +85,13 @@ class GrupoDeTrabajoService:
     def validarMiembros(integrantes):
         '''recibe una listacon id de usuarios devuelve true si todos existen o false en caso contrario'''
         for idIntegrante in integrantes:
-            if(not UsuarioService.find_by_id(idIntegrante)):
-                raise ErrorUsuarioInexistente(idIntegrante)
-                
+            UsuarioService.find_by_id(idIntegrante)
+
+    def asignarIDGrupo(grupo):
+        for idIntegrante in grupo.integrantes:
+            UsuarioService.cambiarIdGrupo(idIntegrante,grupo.id_grupoDeTrabajo)
+        UsuarioService.cambiarIdGrupo(grupo.jefeDeGrupo,grupo.id_grupoDeTrabajo)
+        UsuarioService.asignarGrupo(grupo.jefeDeGrupo,grupo.id_grupoDeTrabajo)
+
     def obtenerTodosLosGrupos():
         return CommonService.jsonMany(GrupoDeTrabajo.objects.all(),GrupoDeTrabajoSchema)

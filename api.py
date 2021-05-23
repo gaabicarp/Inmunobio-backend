@@ -24,12 +24,11 @@ api.add_resource(BusquedaPorID, '/api/v1/usuario/<int:id_usuario>')
 api.add_resource(ObtenerUsuariosParaProyecto, '/api/UsuariosParaProyecto')
 
 #proyectos
-api.add_resource(Proyectos, '/api/proyectos')
-api.add_resource(NuevoProyecto, '/api/nuevoProyecto')
-api.add_resource(ProyectoID, '/api/proyectoID')
-api.add_resource(CerrarProyecto, '/api/cerrarProyecto')
-api.add_resource(ModificarProyecto, '/api/modificarProyecto')
-
+api.add_resource(Proyectos, '/api/v1/proyectos')
+api.add_resource(NuevoProyecto, '/api/v1/nuevoProyecto')
+api.add_resource(ProyectoID, '/api/v1/proyecto/<int:id_proyecto>')
+api.add_resource(CerrarProyecto, '/api/v1/cerrarProyecto')
+api.add_resource(ModificarProyecto, '/api/v1/modificarProyecto')
 #Grupo de trabajo
 api.add_resource(GrupoDeTrabajo,'/api/v1/grupoDeTrabajo')
 api.add_resource(RenombrarJefeGrupo, '/api/v1/nuevoJefeDeGrupo')
