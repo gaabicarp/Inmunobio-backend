@@ -8,6 +8,7 @@ class MuestraExterna(dbMongo.EmbeddedDocument):
     codigo = dbMongo.StringField()
     fecha = dbMongo.DateTimeField(default=parser.parse(str(datetime.datetime.utcnow())))
     tipo = dbMongo.StringField()
+
 class Experimento(dbMongo.Document):
     id_experimento = dbMongo.SequenceField()
     id_proyecto = dbMongo.IntField()

@@ -11,8 +11,9 @@ class Blog(EmbeddedDocument):
     unidad = IntField()
     fechaVencimiento = DateTimeField()
     id_espacioFisico = ReferenciasField(EspacioFisico, required=True)
-    codigoContenedor = StringField() """
-""" class GrupoDeTrabajo(Document):
+    codigoContenedor = StringField() 
+
+class GrupoDeTrabajo(Document):
     nombre = StringField()
     jefeDeGrupo = IntField()
     integrantes = ListField()
@@ -22,15 +23,18 @@ class Herramienta(EmbeddedDocument):
     nombre = StringField()
     detalle_protocolo = StringField()
     blogs = EmbeddedDocumentListField('Blog')
+
 class Animal(EmbeddedDocument):
     codigo = StringField()
     especie = StringField()
     cepa = StringField()
     sexo = StringField()
+
 class TipoDeJaula(Document):
     codigo = StringField()
     capacidad = IntField()
     nombre = StringField()
+
 class Jaula(EmbeddedDocument):
     codigo = StringField()
     nombre = StringField()
@@ -50,6 +54,7 @@ class EspacioFisico(Document):
     tipo = StringField() #Revisar y preguntar /Taller, Bioterio, etc
     herramientas = EmbeddedDocumentListField('Herramienta')
     jaulas = EmbeddedDocumentListField('Jaula')
+
 class subContenedores(EmbeddedDocument):
     codigo = StringField()
     fichaTecnica = StringField()
@@ -81,30 +86,30 @@ class Productob(embebido):
     nombre
     id_producto <- id_producto
     unidad = dbMongo.IntField()
-    
-
-    
-
 class Distribuidora(Document):
     nombre = StringField()
     direccion = StringField()
     contacto = StringField()
     cuit = StringField()
     representante = StringField()
+
 class GrupoExperimental(EmbeddedDocument):
     codigo = StringField()
     descripcion = StringField()
+
 class FuenteExperimental(Document):
     cepa = StringField() #lo ponemos solo en animal?
     tipo = StringField() #Animal u otros
     descripcion = StringField()
     animal = EmbeddedDocument("Animal") #?
     gruposExperimentales = EmbeddedDocumentListField('GrupoExperimental')
+
 class FuenteExperimental(EmbeddedDocument):
     cepa = StringField() #lo ponemos solo en animal?
     tipo = StringField() #Animal u otros
     animal = EmbeddedDocument('Animal')
     descripcion = StringField()
+
 class Muestra(EmbeddedDocument):
     nombre = StringField()
     fecha = DateTimeField()
