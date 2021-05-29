@@ -43,17 +43,13 @@ class CerrarProyecto(Resource):
                 return {'error': err.messages},404
         return {'name': datos},404
 
-
 class ProyectoID(Resource):
 
     #@jwt_required()
-    def get(self):
-        datos = request.get_json()
-        if datos:
-             proyecto = ProyectoService.find_by_id(datos['id'])
+    def get(self, id_proyecto):
+             proyecto = ProyectoService.find_by_id(id_proyecto)
              if proyecto:
                 return proyecto.json(), 200
-        return {'name': f"No se encontró ningún proyecto con el ID {datos['id']}"},400
 
 class ModificarProyecto(Resource):
 

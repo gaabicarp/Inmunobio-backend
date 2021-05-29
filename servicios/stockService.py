@@ -1,108 +1,180 @@
-#from dateutil import parser
-#import datetime
 from marshmallow import ValidationError,EXCLUDE
-from flask import jsonify, request
 from models.mongo.stock import Stock
-from schemas.stockSchema import StockSchema,NuevoStockSchema
-from schemas.productoEnStockSchema import NuevoProductoEnStockSchema
-from schemas.grupoTrabajoSchema import NuevoStockGrupoSchema,busquedaStocksSchema
+from schemas.stockSchema import StockSchema,NuevoStockSchema,busquedaStocksSchema,ModificarProducto,ConsumirStockSchema
+from schemas.productosEnStockSchema import NuevoProductoEnStockSchema
 from servicios.grupoDeTrabajoService import GrupoDeTrabajoService
+from servicios.productoService import ProductoService
+from exceptions.exception import ErrorGrupoInexistente,ErrorProductoInexistente,ErrorProductoEnStockInexistente,ErrorStockEspacioFisicoInexistente,ErrorStockInexistente,ErrorUnidadStock,ErrorStockVacio
+from servicios.commonService import CommonService
+from servicios.productosEnStockService import ProductoEnStockService
 
 class StockService():
     @classmethod
     def nuevoStock(cls,datos):
         try:
-            NuevoStockGrupoSchema().load(datos)
-            if(cls.validarNuevoStock(datos)):
-                return cls.altaStock(cls.obtenerGrupo(datos), datos)
-            return  {'error':'Grupo de trabajo inexistente'},400
+            NuevoStockSchema().load(datos)
+            cls.validarNuevoStock(datos)
+            productoEnSistema = ProductoService.find_by_id(datos['id_producto']) 
+            return cls.altaStock(datos,productoEnSistema)
         except ValidationError as err:
             return {'error': err.messages},400
+            #ver como anidar estos dos errores 
+        except ErrorGrupoInexistente as err:
+            return {'error':err.message},400
+        except ErrorProductoInexistente as err:
+            return {'error':err.message},400
 
     @classmethod
     def validarNuevoStock(cls,datos):
-        return cls.obtenerProducto(datos) and cls.obtenerGrupo(datos)
-        
-    @classmethod
-    def obtenerProducto(cls,datos):
-        return True
+        GrupoDeTrabajoService.find_by_id(datos['id_grupoDeTrabajo']) 
+        #EspacioFisicoService.find_by_id...
 
     @classmethod
-    def obtenerGrupo(cls,datos):
-        return GrupoDeTrabajoService.find_by_id(datos['id_grupoDeTrabajo']) #and producto existe en sistema
+    def altaStock(cls,datos,productoEnSistema):
+        try:
+            stock = cls.BusquedaEnStockAlta(datos['id_grupoDeTrabajo'],datos['id_espacioFisico'],datos['id_producto'])
+            cls.altaProductoEnStock(stock,datos,productoEnSistema)
+        except ErrorProductoEnStockInexistente :
+            cls.crearStock(datos,productoEnSistema)
+        except (ErrorUnidadStock ,ErrorStockVacio) as err:
+            return {'error':err.message},400
+        return {'Status':'ok'},200
+
+    def BusquedaEnStockAlta(_id_grupoDeTrabajo,_id_espacioFisico,_id_producto):
+        resultado =  Stock.objects.filter(id_producto=_id_producto,id_espacioFisico = _id_espacioFisico, id_grupoDeTrabajo =_id_grupoDeTrabajo).first()
+        if(not resultado):
+            raise ErrorProductoEnStockInexistente(_id_producto)
+        return resultado
+
+    def BusquedaEnStock(_id_grupoDeTrabajo,_id_espacioFisico):
+        resultado =  Stock.objects.filter(id_espacioFisico = _id_espacioFisico, id_grupoDeTrabajo =_id_grupoDeTrabajo )
+        if(not resultado):
+            raise ErrorStockEspacioFisicoInexistente()
+        return resultado
+
+    def busquedaProductoPorAtributo(stock,productoNuevo):
+        for producto in stock:
+            if(ProductoEnStockService().compararProductos(producto,productoNuevo)):
+                 return producto
+        return None
+    @classmethod
+    def BusquedaStockPorId(cls,_id_productoEnStock):
+        resultado =  Stock.objects.filter(id_productoEnStock =_id_productoEnStock).first()
+        if(not resultado):
+            raise ErrorStockInexistente()
+        return resultado
+
+    def obtenerProductosEspecificos(_id_productos,productos):
+        for prod in productos:
+            if prod.id_productos == _id_productos: return prod
+        raise ErrorProductoEnStockInexistente(_id_productos)
 
     @classmethod
-    def altaStock(cls,grupoTrabajo,datos):
-        stockProducto = cls.busquedaEnStock(grupoTrabajo.stock,datos['stock'])
-        if(stockProducto):
-            print(' modifico stock existente, hubo coincidencia con lote e id')
-            cls.modificarStockExistente(stockProducto[0],datos['stock']['producto'][0])
+    def crearProducto(cls,datos, productoEnSistema):
+        productoNuevo = NuevoProductoEnStockSchema().load(datos,unknown=EXCLUDE )
+        cls.setearUnidadesDeAgrupacion(productoEnSistema,productoNuevo)
+        return productoNuevo
+
+    @classmethod
+    def altaProductoEnStock(cls,stock,datos,productoEnSistema):
+        productoNuevo = cls.crearProducto(datos['producto'][0],productoEnSistema)
+        productoEnStock = cls.busquedaProductoPorAtributo(stock.producto,productoNuevo)
+        if not productoEnStock:
+            stock.producto.append(productoNuevo)
         else:
-           cls.crearStock(datos,grupoTrabajo)
-        grupoTrabajo.save()
-        return {'Status':'ok'},200 
-  
-    @classmethod
-    def busquedaEnStock(cls,stocks,datos):
-        '''Recibe lista con stocks y stock a dar de alta, devuelve un stock que coincida con id_producto
-        a dar de alta,o [] si no encuentra'''
-        return list(filter(lambda x: cls.criterioBusqueda(x,datos), stocks))
-    
-    def criterioBusqueda(stock,stockNuevo):
-        return stock.id_producto == stockNuevo['id_producto'] and stock.lote == stockNuevo['lote']
+            cls.modificarUnidades(productoEnStock.unidad + productoNuevo.unidad,productoEnStock)
+        stock.save()
 
     @classmethod
-    def modificarStockExistente(cls,stockExistente,nuevoProducto):
-        productoEnStock = cls.busquedaEnProducto(stockExistente.producto,nuevoProducto) 
-        if(productoEnStock):
-            print('hay coincidencia con espacio fisico y conteneredir')
-            cls.modificarUnidades(productoEnStock[0],productoEnStock[0].unidad+nuevoProducto['unidad'])
-        else:
-            cls.crearProductoEnStock(stockExistente,nuevoProducto)
-            print('no hubo coincidencia con esp fisico o cont me creo una nueva instancia de prod')
-        return {'Status':'ok'},200 
-  
-    @classmethod
-    def busquedaEnProducto(cls,productos,datos):
-        return list(filter(lambda x: cls.criterioBusquedaProducto(x,datos) , productos))
-
-    def criterioBusquedaProducto(producto,productoNuevo):
-        return producto.id_espacioFisico == productoNuevo['id_espacioFisico'] and producto.codigoContenedor == productoNuevo['codigoContenedor']
-
-    @classmethod
-    def modificarUnidades(cls,producto,unidad):
-        print('se encuentra stock con mismo lote y mismo id espacio fisico modif unidades')
+    def modificarUnidades(cls,unidad,producto):
+        if(unidad < 0 ):raise ErrorUnidadStock()
+        if not unidad : raise ErrorStockVacio()    
         producto.unidad= unidad
-    
-    #deberia en service de producto en stock
-    @classmethod
-    def crearProductoEnStock(cls,stockExistente,datos):
-        print(datos)
-        stockExistente.producto.append(NuevoProductoEnStockSchema().load(datos))
 
     @classmethod
-    def crearStock(cls,datos,grupoTrabajo):
-        grupoTrabajo.stock.append(NuevoStockSchema().load(datos['stock']))
-    
-    def jsonMany(datos):
-        return jsonify(StockSchema().dump(datos,many=True))
-    def json(datos):
-        return StockSchema().dump(datos)
+    def setearUnidadesDeAgrupacion(cls, productoSistema , producto):
+        cls.modificarUnidades(producto.unidad * productoSistema.unidadAgrupacion,producto)
 
     @classmethod
-    def obtenerProductos(cls,id_grupoDeTrabajo):
-        grupo = GrupoDeTrabajoService.find_by_id(id_grupoDeTrabajo)
-        if (grupo):
-            return cls.jsonMany(grupo.stock)
-        return  {'error':'Grupo de trabajo inexistente'},400
+    def crearStock(cls,datos,productoEnSistema):
+        nuevoStock = NuevoStockSchema().load(datos,unknown=EXCLUDE)
+        nuevoStock.nombre = productoEnSistema.nombre
+        cls.setearUnidadesDeAgrupacion(productoEnSistema,nuevoStock.producto[0])
+        nuevoStock.save()
 
-    #def busquedaPorId():
+    @classmethod
+    def obtenerProductos(cls,id_grupoDeTrabajo,id_espacioFisico):
+        try:
+            GrupoDeTrabajoService.find_by_id(id_grupoDeTrabajo) #valido q exista grupo
+            #faltabuscar espaciofisico y si no encuentra lanza excep
+            stock =  cls.BusquedaEnStock(id_grupoDeTrabajo,id_espacioFisico)
+            return CommonService.jsonMany(stock,StockSchema)
+        except ErrorGrupoInexistente as err:
+            return {'Error':err.message},400
+        except ErrorStockEspacioFisicoInexistente as err:
+            return {'Error':err.message},400
+
     @classmethod
     def borrarProductoEnStock(cls,datos):
-        '''recibe un json con id grupo de trabajo, id de stock e id de producto en stock,
-        si hay coincidencia lo borra'''
+        try:
+            busquedaStocksSchema().load(datos)
+            stock= cls.BusquedaStockPorId(datos['id_productoEnStock'])
+            productoEnStock = cls.obtenerProductosEspecificos(datos['id_productos'],stock.producto)
+            stock.producto.remove(productoEnStock)
+            #stock.update(pull__producto__id_productos = datos['id_productos'])
+            #stock= cls.BusquedaStockPorId(datos['id_productoEnStock']).first() #aca tengo que consultar de nuevo
+            #porque los cambios se guardan en la base y no en el stock objeto, ver como se puede mejorar
+            cls.borradoStockVacio(stock)
+            stock.save()
+            return {'Status':'ok'},200
+        except ValidationError as err:
+            return {'error': err.messages},400 
+        except (ErrorProductoEnStockInexistente,ErrorStockInexistente) as err:
+            return {'Error':err.message},400  
 
-        
 
+    @classmethod    
+    def modificarProductoEnStock(cls,datos):
+        try:
+            ModificarProducto().load(datos)
+            stock= cls.BusquedaStockPorId(datos['id_productoEnStock'])
+            producto = cls.obtenerProductosEspecificos(datos['id_productos'],stock.producto)
+            CommonService.updateAtributes(producto,datos['producto'],'id_productos')
+            stock.save()
+            return {'Status':'ok'},200
+        except ValidationError as err:
+            return {'error': err.messages},400
+        except (ErrorProductoEnStockInexistente,ErrorStockInexistente) as err:
+            return {'Error':err.message},400 
+         
+    @classmethod
+    def consumirStock(cls,datos):
+        try:
+            ConsumirStockSchema().load(datos)
+            stock= cls.BusquedaStockPorId(datos['id_productoEnStock'])
+            producto = cls.obtenerProductosEspecificos(datos['id_productos'],stock.producto)
+            cls.modificarUnidades(producto.unidad - datos['unidad'],producto)
+            stock.save()
+        except ErrorStockVacio:
+            stock.producto.remove(producto)
+            stock.save()
+            cls.borradoStockVacio(stock)
+            #return {'Status':'ok'},200
+        except ValidationError as err:
+            return {'error': err.messages},400
+        except (ErrorUnidadStock,ErrorStockInexistente,ErrorProductoEnStockInexistente) as err:
+            return {'error': err.message},400
+        finally:
+            return {'Status':'ok'},200
+
+    @classmethod
+    def borradoStockVacio(cls,stock):
+        if(not stock.producto): stock.delete()
+        stock.save()
+
+    #para testear
+    def borrarTodo(_id_grupoDeTrabajo):
+        Stock.objects.filter(id_grupoDeTrabajo = _id_grupoDeTrabajo).delete()
+        return {'Status':'ok'},200
 
 

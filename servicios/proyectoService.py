@@ -1,9 +1,9 @@
 from dateutil import parser
 import datetime
 from flask import jsonify
-
-from models.mongo.proyecto import Proyecto, ProyectoSchema, ProyectoCerradoSchema, ProyectoModificarSchema
-
+from models.mysql.usuario import Usuario
+from models.mongo.proyecto import Proyecto, ProyectoSchema, ProyectoCerradoSchema, ProyectoModificarSchema,ProyectoNuevoSchema
+from servicios.usuarioService import UsuarioService
 class ProyectoService:
     @classmethod
     def find_all(cls):
@@ -40,5 +40,5 @@ class ProyectoService:
     
     @classmethod
     def agregarMiembros(self):
-        usuariosIdPermitidas = Usuario.find_usuarios_Habilitados()
+        usuariosIdPermitidas = UsuarioService.UsuarioService()
         return usuariosIdPermitidas
