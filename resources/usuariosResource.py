@@ -2,9 +2,7 @@ from warnings import catch_warnings
 from servicios.usuarioService import UsuarioService
 from servicios.permisosService import PermisosService
 from flask_restful import Resource,Api
-from flask_jwt import jwt_required
-from flask import jsonify, request
-from db import db
+from flask import request
 from exceptions.exception import ErrorUsuariosInexistentes
 
 class ObtenerUsuariosResource(Resource):
@@ -19,18 +17,11 @@ class ObtenerUsuariosResource(Resource):
 class UsuarioResource(Resource): 
     #@jwt_required()
     def put(self):
-
         datos = request.get_json()
         if (datos):
                 return UsuarioService.modificarUsuario(datos)
         return {'name': 'None'},400
 
-    def delete(self):
-        '''recibe una id de usuario si este esta habilitado lo deshabilita'''
-        datos = request.get_json()
-        if datos:
-                return UsuarioService.deshabilitarUsuario(datos)
-        return {'name': 'None'},400
     # @jwt_required()
     def post(self):
         datos = request.get_json()
@@ -39,7 +30,7 @@ class UsuarioResource(Resource):
         return {'name': 'None'},400
      
 
-class BusquedaPorID(Resource):
+class UsuarioID(Resource):
  #@jwt_required()
     def get(self,id_usuario):
         ''' recibe: un idUsuario como parametro
@@ -47,6 +38,9 @@ class BusquedaPorID(Resource):
            en formato json.
         '''
         return UsuarioService.busquedaUsuario(id_usuario)
+    def delete(self,id_usuario):
+        '''recibe una id de usuario si este esta habilitado lo deshabilita'''
+        return UsuarioService.deshabilitarUsuario(id_usuario)
    
 
 class ObtenerUsuariosParaProyecto(Resource):

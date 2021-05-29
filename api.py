@@ -1,9 +1,9 @@
 from flask_restful import Api
 
-from resources.usuariosResource import  ObtenerUsuariosResource,UsuarioResource, BusquedaPorID,ObtenerUsuariosParaProyecto
+from resources.usuariosResource import  ObtenerUsuariosResource,UsuarioResource, UsuarioID,ObtenerUsuariosParaProyecto
 from resources.proyectoResource import *
 from resources.permisosResource import Permisos,ObtenerPermisoPorId
-from resources.grupoDeTrabajoResource import ObtenerGrupoDeTrabajo,GrupoDeTrabajo,GruposDeTrabajo,RenombrarJefeGrupo
+from resources.grupoDeTrabajoResource import GrupoDeTrabajoID,GrupoDeTrabajo,GruposDeTrabajo,RenombrarJefeGrupo
 from resources.experimentoResource import ExperimentoResource, Experimentos
 from resources.proyectoResource import *
 from resources.experimentoResource import ExperimentoResource, Experimentos, CerrarExperimento
@@ -17,10 +17,11 @@ api = Api()
 #permisos
 api.add_resource(ObtenerPermisoPorId, '/api/v1/permiso/<int:id_permiso>')
 api.add_resource(Permisos, '/api/v1/permisos')
+
 #usuarios
 api.add_resource(ObtenerUsuariosResource, '/api/v1/usuarios')
 api.add_resource(UsuarioResource, '/api/v1/usuario')
-api.add_resource(BusquedaPorID, '/api/v1/usuario/<int:id_usuario>')
+api.add_resource(UsuarioID, '/api/v1/usuario/<int:id_usuario>')
 api.add_resource(ObtenerUsuariosParaProyecto, '/api/UsuariosParaProyecto')
 
 #proyectos
@@ -29,12 +30,12 @@ api.add_resource(NuevoProyecto, '/api/v1/nuevoProyecto')
 api.add_resource(ProyectoID, '/api/v1/proyecto/<int:id_proyecto>')
 api.add_resource(CerrarProyecto, '/api/v1/cerrarProyecto')
 api.add_resource(ModificarProyecto, '/api/v1/modificarProyecto')
+
 #Grupo de trabajo
 api.add_resource(GrupoDeTrabajo,'/api/v1/grupoDeTrabajo')
-api.add_resource(RenombrarJefeGrupo, '/api/v1/nuevoJefeDeGrupo')
 api.add_resource(GruposDeTrabajo, '/api/v1/gruposDeTrabajo')
-api.add_resource(ObtenerGrupoDeTrabajo, '/api/v1/grupoDeTrabajo/<int:id_grupoDeTrabajo>')
-
+api.add_resource(GrupoDeTrabajoID, '/api/v1/grupoDeTrabajo/<int:id_grupoDeTrabajo>')
+api.add_resource(RenombrarJefeGrupo, '/api/v1/nuevoJefeDeGrupo') # ver si se queda o no 
 #stock
 api.add_resource(ObtenerProductosStock, '/api/v1/obtenerStock/<int:id_grupoDeTrabajo>/<int:id_espacioFisico>')
 api.add_resource(ProductoEnStock, '/api/v1/productoEnStock')

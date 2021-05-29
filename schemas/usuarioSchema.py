@@ -2,7 +2,6 @@ from models.mysql.usuario import Usuario
 from marshmallow import Schema, fields, post_load,ValidationError
 from schemas.permisosSchema import PermisoSchema,PermisoExistenteSchema
 
-
 class UsuarioSchema(Schema):
     id_usuario = fields.Integer(dump_only=True)
     email = fields.Str()

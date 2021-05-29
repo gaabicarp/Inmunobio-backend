@@ -63,3 +63,8 @@ class ErrorUsuariosInexistentes(Exception):
     def __init__(self,id_usuario, message="No hay usuario habilitados "):
         self.message = message + str(id_usuario)
         super().__init__(self.message)
+
+class ErrorGrupoDeTrabajoGeneral(Exception):
+    def __init__(self, message="El grupo es general y no puede darse de baja."):
+        self.message = message 
+        super().__init__(self.message)
