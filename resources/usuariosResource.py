@@ -40,8 +40,7 @@ class UsuarioID(Resource):
         return UsuarioService.busquedaUsuario(id_usuario)
     def delete(self,id_usuario):
         '''recibe una id de usuario si este esta habilitado lo deshabilita'''
-        return UsuarioService.deshabilitarUsuario(id_usuario)
-   
+        return UsuarioService.deshabilitarUsuario(id_usuario)  
 
 class ObtenerUsuariosParaProyecto(Resource):
     #aca el 4 representa la id del permiso director de proyecto,ya que no hay visibilidad
