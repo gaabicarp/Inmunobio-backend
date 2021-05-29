@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask_mongoalchemy import MongoAlchemy
+from flask_mongoengine import MongoEngine
 
 db = SQLAlchemy()
-dbMongo = MongoAlchemy()
+dbMongo = MongoEngine()
