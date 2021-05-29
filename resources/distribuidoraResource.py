@@ -3,8 +3,6 @@ from flask_restful import Resource,Api
 from flask_jwt import jwt_required
 from flask import request
 
-
-
 class DistribuidoraResource(Resource):
     def post(self):
         datos = request.get_json()
@@ -18,19 +16,15 @@ class DistribuidoraResource(Resource):
             return DistribuidoraService().modificarDistribuidora(datos)
         return {'name': 'None'},400
     
-    def delete(self):
-        #ver: borramos el producto ¿que sucede con los productos activos en stock?
-        datos = request.get_json()
-        if(datos):
-            return DistribuidoraService().bajaDistribuidora(datos)
-        return {'name': 'None'},400
-    
 class ObtenerDistribuidorasResource(Resource):
     def get(self):
         return DistribuidoraService().obtenerDistribuidoras()
     
-class ObtenerDistribuidoraResource(Resource):
+class DistribuidoraID(Resource):
     def get(self,id_distribuidora):
         return DistribuidoraService().obtenerDistribuidora(id_distribuidora)
+    def delete(self,id_distribuidora):
+        #ver: borramos el producto ¿que sucede con los productos activos en stock?
+        return DistribuidoraService().bajaDistribuidora(id_distribuidora)
 
      

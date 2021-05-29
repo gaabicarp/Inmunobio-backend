@@ -9,8 +9,8 @@ from resources.proyectoResource import *
 from resources.experimentoResource import ExperimentoResource, Experimentos, CerrarExperimento
 from resources.contenedorResource import Contenedor, ContenedorProyecto, ContenedorParent
 from resources.stockResource import ObtenerProductosStock,ProductoEnStock,BorrarTodoStock,ConsumirStockResource
-from resources.productoResource import ProductoResource,ObtenerProductosResource,ObtenerProductoResource,ArchivoProducto
-from resources.distribuidoraResource import DistribuidoraResource,ObtenerDistribuidorasResource,ObtenerDistribuidoraResource
+from resources.productoResource import ProductoResource,ObtenerProductosResource,ProductoID,ArchivoProducto
+from resources.distribuidoraResource import DistribuidoraResource,ObtenerDistribuidorasResource,DistribuidoraID
 
 
 api = Api()
@@ -36,23 +36,23 @@ api.add_resource(GrupoDeTrabajo,'/api/v1/grupoDeTrabajo')
 api.add_resource(GruposDeTrabajo, '/api/v1/gruposDeTrabajo')
 api.add_resource(GrupoDeTrabajoID, '/api/v1/grupoDeTrabajo/<int:id_grupoDeTrabajo>')
 api.add_resource(RenombrarJefeGrupo, '/api/v1/nuevoJefeDeGrupo') # ver si se queda o no 
+
 #stock
 api.add_resource(ObtenerProductosStock, '/api/v1/obtenerStock/<int:id_grupoDeTrabajo>/<int:id_espacioFisico>')
 api.add_resource(ProductoEnStock, '/api/v1/productoEnStock')
 api.add_resource(BorrarTodoStock, '/api/v1/borrar/<int:id_grupoDeTrabajo>')
 api.add_resource(ConsumirStockResource, '/api/v1/consumirStock')
 
-
 #producto
 api.add_resource(ProductoResource, '/api/v1/producto')
 api.add_resource(ObtenerProductosResource, '/api/v1/getProductos')
-api.add_resource(ObtenerProductoResource, '/api/v1/getProducto/<int:id_producto>')
+api.add_resource(ProductoID, '/api/v1/producto/<int:id_producto>')
 api.add_resource(ArchivoProducto, '/api/v1/producto/subirArchivo/<int:id_producto>')
 
 #distribuidora
 api.add_resource(DistribuidoraResource, '/api/v1/distribuidora')
 api.add_resource(ObtenerDistribuidorasResource, '/api/v1/getDistribuidoras')
-api.add_resource(ObtenerDistribuidoraResource, '/api/v1/getDistribuidora/<int:id_distribuidora>')
+api.add_resource(DistribuidoraID, '/api/v1/distribuidora/<int:id_distribuidora>')
 
 #experimentos
 api.add_resource(Experimentos, '/api/v1/proyecto/<int:idProyecto>/experimentos')

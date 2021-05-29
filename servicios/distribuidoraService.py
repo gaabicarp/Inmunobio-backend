@@ -19,26 +19,25 @@ class DistribuidoraService():
     def validacionDistribuidora(datos):
         #debe validar algo la distribuidora?
         pass
+
     @classmethod    
     def find_by_id(cls,id):
         distribuidora =  Distribuidora.objects(id_distribuidora = id).first()
         if(not distribuidora):
             raise ErrorDistribuidoraInexistente()
-        return distribuidora     
-
+        return distribuidora  
+           
     @classmethod
-    def bajaDistribuidora(cls,datos):
+    def bajaDistribuidora(cls,id_distribuidora):
         try:
             #valida si existe producto activo con esta id?
-            IdDistribuidoraSchema().load(datos)
-            distribuidora = cls.find_by_id(datos['id_distribuidora'])
+            distribuidora = cls.find_by_id(id_distribuidora)
             distribuidora.delete()
             return {'Status':'ok'},200
         except ValidationError as err:
             return {'error': err.messages},400
         except ErrorDistribuidoraInexistente as err:
           return {'Error': err.message},400
-
     @classmethod
     def obtenerDistribuidoras(cls):
         return CommonService.jsonMany(Distribuidora.objects().all(),DistribuidoraSchema)
@@ -63,6 +62,4 @@ class DistribuidoraService():
             return CommonService.json(distribuidora,DistribuidoraSchema)
         except ErrorDistribuidoraInexistente as err:
             return {'Error': err.message},400
-
-
         
