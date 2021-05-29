@@ -2,8 +2,8 @@ from db import dbMongo
 import datetime
 from dateutil import parser
 from marshmallow import Schema, fields, post_load
+
 class Experimento(dbMongo.Document):
-    
     id_experimento = dbMongo.SequenceField()
     id_proyecto = dbMongo.IntField()
     fechaInicio = dbMongo.DateTimeField(default=parser.parse(str(datetime.datetime.utcnow())))

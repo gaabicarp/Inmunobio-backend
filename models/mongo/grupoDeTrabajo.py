@@ -1,5 +1,4 @@
 from db import dbMongo
-from flask import jsonify
 from models.mongo.stock import Stock
 
 class GrupoDeTrabajo(dbMongo.Document):

@@ -1,6 +1,6 @@
 from db import dbMongo
 import datetime
-from marshmallow import Schema, fields, post_load, ValidationError
+from marshmallow import Schema, fields, post_load
 class Contenedor(dbMongo.Document):
     id_contenedor = dbMongo.SequenceField()
     codigo = dbMongo.StringField()
