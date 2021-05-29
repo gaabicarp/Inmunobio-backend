@@ -10,4 +10,3 @@ class EspacioFisico(dbMongo.Document):
     tipo = dbMongo.StringField() #Revisar y preguntar /Taller, Bioterio, etc
     herramientas = dbMongo.ListField(dbMongo.EmbeddedDocumentField('Herramienta'))
     jaulas = dbMongo.ListField(dbMongo.EmbeddedDocumentField('Jaula'))
-    
