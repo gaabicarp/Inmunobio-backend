@@ -36,6 +36,9 @@ class ProyectoSchema(Schema):
     montoInicial = fields.Float()
     conclusion = fields.Str()
 
+    #En Participantes
+    #ID, Nombre y ROL
+
     @post_load
     def make_Proyecto(self, data, **kwargs):
         return Proyecto(**data)
