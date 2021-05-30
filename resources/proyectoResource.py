@@ -61,10 +61,7 @@ class ModificarProyecto(Resource):
 class ObtenerUsuariosProyecto(Resource):
     #@jwt_required()
     def get(self,id_proyecto):
-        datos = request.get_json()
-        if datos:
-            try:
-                return ProyectoService.obtenerMiembrosProyecto(id_proyecto)
-            except ValidationError as err:
-                return {'error': err.messages}, 400
-        return {'name': datos}, 400
+        try:
+            return ProyectoService.obtenerMiembrosProyecto(id_proyecto)
+        except ValidationError as err:
+            return {'error': err.messages}, 400
