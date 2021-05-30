@@ -18,20 +18,21 @@ class ProductoEnStock(Resource):
             return StockService.modificarProductoEnStock(datos)
         return {'name': 'None'},400
 
-    def delete(self):
-        datos = request.get_json()
-        if(datos):
-            return StockService.borrarProductoEnStock(datos)
-        return {'name': 'None'},400
-
 
 class ObtenerProductosStock(Resource):
     def get(self,id_grupoDeTrabajo,id_espacioFisico):
         return StockService.obtenerProductos(id_grupoDeTrabajo,id_espacioFisico)
-
+    
 class BorrarTodoStock(Resource):
     def delete(self,id_grupoDeTrabajo):
         return StockService.borrarTodo(id_grupoDeTrabajo)
+
+class ProductoEnStockID(Resource):
+    def delete(self,id_grupoDeTrabajo):
+        datos = request.get_json()
+        if(datos):
+            return StockService.borrarProductoEnStock(datos)
+        return {'name': 'None'},400
 
 class ConsumirStockResource(Resource):
     def put(self):
