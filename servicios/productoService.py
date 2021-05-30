@@ -29,7 +29,8 @@ class ProductoService():
         try:
             producto = cls.find_by_id(_id_producto)
             filename = FileService.upload(archivo)
-            FileService.deleteFile(producto.detallesTecnicos)
+            if(producto.detallesTecnicos):
+                FileService.deleteFile(producto.detallesTecnicos)
             producto.update(set__detallesTecnicos = filename)
             producto.reload() 
             return {'Status':'ok'} ,200
