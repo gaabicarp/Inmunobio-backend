@@ -115,11 +115,10 @@ class StockService():
             return {'Error':err.message},400
 
     @classmethod
-    def borrarProductoEnStock(cls,datos):
+    def borrarProductoEnStock(cls,id_productoEnStock,id_productos):
         try:
-            busquedaStocksSchema().load(datos)
-            stock= cls.BusquedaStockPorId(datos['id_productoEnStock'])
-            productoEnStock = cls.obtenerProductosEspecificos(datos['id_productos'],stock.producto)
+            stock= cls.BusquedaStockPorId(id_productoEnStock)
+            productoEnStock = cls.obtenerProductosEspecificos(id_productos,stock.producto)
             stock.producto.remove(productoEnStock)
             #stock.update(pull__producto__id_productos = datos['id_productos'])
             #stock= cls.BusquedaStockPorId(datos['id_productoEnStock']).first() #aca tengo que consultar de nuevo
