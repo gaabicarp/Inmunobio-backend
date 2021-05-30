@@ -4,6 +4,7 @@ from flask import jsonify
 from models.mysql.usuario import Usuario
 from models.mongo.proyecto import Proyecto, ProyectoSchema, ProyectoCerradoSchema, ProyectoModificarSchema,ProyectoNuevoSchema
 from servicios.usuarioService import UsuarioService
+
 class ProyectoService:
     @classmethod
     def find_all(cls):
@@ -16,6 +17,7 @@ class ProyectoService:
     @classmethod
     def nuevoProyecto(cls, datos):
         proyecto = ProyectoNuevoSchema().load(datos)
+        UsuarioService.busquedaUsuariosID(datos['participantes']) #validamos que se pasen usuarios validos 
         proyecto.save()
 
     @classmethod
@@ -49,6 +51,6 @@ class ProyectoService:
         proyecto = cls.find_by_id(id_proyecto)
         return UsuarioService.busquedaUsuariosID(proyecto.participantes)
 
-
-
+    def json(self,datos):
+        return  ProyectoSchema().dump(datos)
 
