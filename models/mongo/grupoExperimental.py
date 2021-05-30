@@ -2,12 +2,14 @@ from db import dbMongo
 from marshmallow import Schema, fields, post_load
 import datetime
 from dateutil import parser
+
 class MuestraPropia(dbMongo.EmbeddedDocument):
     id_muestra = dbMongo.IntField()
     codigo = dbMongo.StringField()
     nombre = dbMongo.StringField()
     fecha = dbMongo.DateTimeField(default=parser.parse(str(datetime.datetime.utcnow())))
     tipo = dbMongo.StringField()
+
 class FuenteExperimentalPropia(dbMongo.EmbeddedDocument):
     id_fuenteExperimental = dbMongo.SequenceField()
     codigo = dbMongo.StringField(default="")

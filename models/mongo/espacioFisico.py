@@ -1,5 +1,5 @@
 from db import dbMongo
-from models.mongo.blog import Blog
+from models.mongo.jaula import Jaula
 
 class EspacioFisico(dbMongo.Document):
     nombre = dbMongo.StringField()
@@ -7,6 +7,5 @@ class EspacioFisico(dbMongo.Document):
     sala = dbMongo.StringField()
     descripcion = dbMongo.StringField()
     blogs = dbMongo.ListField(dbMongo.EmbeddedDocumentField('Blog'))
-    tipo = dbMongo.StringField() #Revisar y preguntar /Taller, Bioterio, etc
-    herramientas = dbMongo.ListField(dbMongo.EmbeddedDocumentField('Herramienta'))
-    jaulas = dbMongo.ListField(dbMongo.EmbeddedDocumentField('Jaula'))
+    id_espacioFisico = dbMongo.SequenceField()
+    #tipo = dbMongo.StringField() #Revisar y preguntar /Taller, Bioterio, etc

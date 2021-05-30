@@ -13,8 +13,8 @@ class UsuarioService():
             UsuarioSchemaModificar().load(datos) 
             usuario = UsuarioService.find_by_id(datos['id_usuario'])
             CommonService.updateAtributes(usuario,datos,'permisos')
-            db.session.commit()
             cls.asignarPermisos(usuario,datos['permisos'])
+            db.session.commit()
             return {'Status':'ok'},200
         except ValidationError as err:
             return {'Error': err.messages}, 400

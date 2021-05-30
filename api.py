@@ -20,6 +20,8 @@ from resources.animalResource import  Animal, Animales, AnimalesSinJaula, Animal
 
 
 api = Api()
+#Espacio fisico
+
 
 #permisos
 api.add_resource(ObtenerPermisoPorId, '/api/v1/permiso/<int:id_permiso>')
@@ -68,7 +70,6 @@ api.add_resource(DistribuidoraID, '/api/v1/distribuidora/<int:id_distribuidora>'
 
 #Experimento
 api.add_resource(Experimentos, '/api/v1/proyecto/<int:idProyecto>/experimentos', endpoint='experimentos')
-
 api.add_resource(ExperimentoResource, '/api/v1/experimento/<int:idExperimiento>', endpoint='experimento')
 api.add_resource(ExperimentoResource, '/api/v1/nuevoExperimento', endpoint='nuevo_experimento')
 api.add_resource(CerrarExperimento, '/api/v1/cerrarExperimento', endpoint='cerrar_experimento')
