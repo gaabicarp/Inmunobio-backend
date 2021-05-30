@@ -31,7 +31,6 @@ class ProyectoService:
             fechaFinal = parser.parse(str(datetime.datetime.utcnow()))
         )
     
-
     #Agregar modificar Participantes
     @classmethod
     def modificarProyecto(cls, datos):
@@ -41,6 +40,15 @@ class ProyectoService:
         Proyecto.objects(id_proyecto = proyecto.id_proyecto).update(set__montoInicial = proyecto.montoInicial)
     
     @classmethod
-    def agregarMiembros(self):
+    def agregarMiembros(cls):
         usuariosIdPermitidas = UsuarioService.UsuarioService()
         return usuariosIdPermitidas
+
+    @classmethod
+    def obtenerMiembrosProyecto(cls, id_proyecto):        
+        proyecto = cls.find_by_id(id_proyecto)
+        return UsuarioService.busquedaUsuariosID(proyecto.participantes)
+
+
+
+

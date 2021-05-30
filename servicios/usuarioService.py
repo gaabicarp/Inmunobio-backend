@@ -86,6 +86,17 @@ class UsuarioService():
             return CommonService.json(usuario,UsuarioSchema)
         except ErrorUsuarioInexistente as err:
             return {'Error': err.message},400
+    
+    @classmethod
+    def busquedaUsuariosID(cls,list_id_usuario):
+        usuarios = []
+        try:
+            for id in list_id_usuario:
+                usuario = UsuarioService.find_by_id(id)
+                usuarios.append(usuario)
+            return CommonService.jsonMany(usuarios,UsuarioSchema)
+        except ErrorUsuarioInexistente as err:
+            return {'Error': err.message},400
 
     @classmethod
     def cambiarIdGrupo(cls,_id_usuario, idGrupo):
