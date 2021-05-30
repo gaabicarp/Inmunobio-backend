@@ -19,10 +19,6 @@ class Proyecto(dbMongo.Document):
     participantes = dbMongo.ListField(dbMongo.IntField())
     idDirectorProyecto = dbMongo.IntField()
 
-    def json(self):
-        proyectoSchema = ProyectoSchema()
-        return proyectoSchema.dump(self)
-
 class ProyectoSchema(Schema):
     id_proyecto = fields.Integer()
     codigoProyecto = fields.Str()
