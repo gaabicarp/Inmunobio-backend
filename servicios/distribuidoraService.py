@@ -1,5 +1,4 @@
 from marshmallow import ValidationError
-from flask import jsonify
 from models.mongo.distribuidora import Distribuidora
 from schemas.distribuidoraSchema import DistribuidoraSchema,ModificarDistribuidora,NuevaDistribuidoraSchema,IdDistribuidoraSchema
 from exceptions.exception import ErrorDistribuidoraInexistente

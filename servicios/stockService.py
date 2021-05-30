@@ -1,10 +1,10 @@
 from marshmallow import ValidationError,EXCLUDE
 from models.mongo.stock import Stock
-from schemas.stockSchema import StockSchema,NuevoStockSchema,busquedaStocksSchema,ModificarProducto,ConsumirStockSchema
+from schemas.stockSchema import StockSchema,NuevoStockSchema,ModificarProducto,ConsumirStockSchema
 from schemas.productosEnStockSchema import NuevoProductoEnStockSchema
 from servicios.grupoDeTrabajoService import GrupoDeTrabajoService
 from servicios.productoService import ProductoService
-from exceptions.exception import ErrorGrupoInexistente,ErrorProductoInexistente,ErrorProductoEnStockInexistente,ErrorStockEspacioFisicoInexistente,ErrorStockInexistente,ErrorUnidadStock,ErrorStockVacio
+from exceptions.exception import ErrorGrupoInexistente,ErrorProductoInexistente,ErrorProductoEnStockInexistente,ErrorStockInexistente,ErrorUnidadStock,ErrorStockVacio
 from servicios.commonService import CommonService
 from servicios.productosEnStockService import ProductoEnStockService
 
@@ -47,11 +47,8 @@ class StockService():
         return resultado
 
     def BusquedaEnStock(_id_grupoDeTrabajo,_id_espacioFisico):
-        resultado =  Stock.objects.filter(id_espacioFisico = _id_espacioFisico, id_grupoDeTrabajo =_id_grupoDeTrabajo )
-        if(not resultado):
-            raise ErrorStockEspacioFisicoInexistente()
-        return resultado
-
+        return  Stock.objects.filter(id_espacioFisico = _id_espacioFisico, id_grupoDeTrabajo =_id_grupoDeTrabajo )
+    
     def busquedaProductoPorAtributo(stock,productoNuevo):
         for producto in stock:
             if(ProductoEnStockService().compararProductos(producto,productoNuevo)):
@@ -111,8 +108,7 @@ class StockService():
             return CommonService.jsonMany(stock,StockSchema)
         except ErrorGrupoInexistente as err:
             return {'Error':err.message},400
-        except ErrorStockEspacioFisicoInexistente as err:
-            return {'Error':err.message},400
+
 
     @classmethod
     def borrarProductoEnStock(cls,id_productoEnStock,id_productos):
@@ -130,7 +126,6 @@ class StockService():
             return {'error': err.messages},400 
         except (ErrorProductoEnStockInexistente,ErrorStockInexistente) as err:
             return {'Error':err.message},400  
-
 
     @classmethod    
     def modificarProductoEnStock(cls,datos):
