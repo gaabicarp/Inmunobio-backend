@@ -1,12 +1,12 @@
 from dateutil import parser
 import datetime
 from flask import jsonify
-from models.mysql.usuario import Usuario
 from models.mongo.proyecto import Proyecto, ProyectoSchema, ProyectoCerradoSchema, ProyectoModificarSchema,ProyectoNuevoSchema
 from servicios.usuarioService import UsuarioService
 from servicios.commonService import CommonService
 from schemas.usuarioSchema import UsuarioSchema
 from exceptions.exception import ErrorUsuarioInexistente
+
 class ProyectoService:
     @classmethod
     def find_all(cls):
@@ -18,11 +18,9 @@ class ProyectoService:
 
     @classmethod
     def nuevoProyecto(cls, datos):
-            proyecto = ProyectoNuevoSchema().load(datos)
-            UsuarioService.busquedaUsuariosID(datos['participantes']) #validamos que se pasen usuarios validos 
-            proyecto.save()
-
-        
+        proyecto = ProyectoNuevoSchema().load(datos)
+        UsuarioService.busquedaUsuariosID(datos['participantes']) #validamos que se pasen usuarios validos 
+        proyecto.save()
 
     @classmethod
     def find_by_nombre(cls, _nombre):
@@ -60,6 +58,7 @@ class ProyectoService:
             return {'Error': err.message},400  
 
 
-    def json(self,datos):
+    @classmethod
+    def json(cls,datos):
         return  ProyectoSchema().dump(datos)
 

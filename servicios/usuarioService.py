@@ -1,10 +1,11 @@
-from db import db
+from db import db 
 from models.mysql.usuario import Usuario
 from schemas.usuarioSchema import UsuarioSchema,UsuarioSchemaModificar,UsuarioNuevoSchema,usuarioIDSchema
 from marshmallow import ValidationError
 from servicios.permisosService import PermisosService,Permiso
 from exceptions.exception import ErrorPermisoInexistente,ErrorUsuarioInexistente,ErrorUsuariosInexistentes
 from servicios.commonService import CommonService
+from servicios.validationService import ValidacionesUsuario
 class UsuarioService():
 
     @classmethod
@@ -73,6 +74,7 @@ class UsuarioService():
         try:
             CommonService.updateAtributes(UsuarioService.find_by_id(id_usuario),{'habilitado': False}) # -> oh por dios corregir esto hardcodeado  en algun momento 
             db.session.commit()
+            ValidacionesUsuario.desvincularDeProyectos(id_usuario)
             return {'Status':'ok'},200
         except ValidationError as err:
             return {'error': err.messages},400
