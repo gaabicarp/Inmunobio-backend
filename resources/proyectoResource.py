@@ -1,10 +1,7 @@
-from flask_restful import Resource,Api
+from flask_restful import Resource
 from flask_jwt import jwt_required
-from flask import jsonify, request
-from dateutil import parser
-import json
+from flask import  request
 from marshmallow import ValidationError
-from pprint import pprint
 
 from servicios.proyectoService import ProyectoService
 
@@ -31,7 +28,6 @@ class NuevoProyecto(Resource):
         return {'name': datos},404
 
 class CerrarProyecto(Resource):
-
     #@jwt_required()
     def put(self):
         datos = request.get_json()

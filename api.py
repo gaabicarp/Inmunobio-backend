@@ -36,13 +36,10 @@ api.add_resource(ObtenerUsuariosParaProyecto, '/api/UsuariosParaProyecto')
 #proyectos
 api.add_resource(Proyectos, '/api/v1/proyectos')
 api.add_resource(NuevoProyecto, '/api/v1/nuevoProyecto')
-
 api.add_resource(ProyectoID, '/api/v1/proyecto/<int:id_proyecto>')
 api.add_resource(CerrarProyecto, '/api/v1/cerrarProyecto')
 api.add_resource(ModificarProyecto, '/api/v1/modificarProyecto')
 api.add_resource(ObtenerUsuariosProyecto, '/api/v1/obtenerUsuariosProyecto/<int:id_proyecto>')
-
-
 
 #Grupo de trabajo
 api.add_resource(GrupoDeTrabajo,'/api/v1/grupoDeTrabajo')
