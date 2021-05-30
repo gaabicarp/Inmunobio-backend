@@ -50,10 +50,9 @@ class ProductoService():
         return producto     
 
     @classmethod
-    def bajaProducto(cls,datos):
+    def bajaProducto(cls,id_producto):
         try:
-            IdProductoSchema().load(datos)
-            producto = cls.find_by_id(datos['id_producto'])
+            producto = cls.find_by_id(id_producto)
             producto.delete()
             return {'Status':'ok'},200
         except ValidationError as err:

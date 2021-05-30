@@ -14,10 +14,12 @@ class ModificarProductoSchema(IdProductoSchema):
     id_distribuidora =  fields.Integer()
     marca =  fields.String()
     nombre = fields.String()
+    unidadAgrupacion =  fields.Integer(default=1)
+    id_producto = fields.Integer()
 
 class ProductoSchema(ModificarProductoSchema):
     id_producto = fields.Integer(dump_only=True)
-    unidadAgrupacion =  fields.Integer(default=1)
+    #unidadAgrupacion =  fields.Integer(default=1)
 
 class NuevoProductoSchema(ProductoSchema):
     nombre = fields.String(required=True, error_messages={"required": {"message" : "Debe indicarse el nombre de producto", "code": 400}})

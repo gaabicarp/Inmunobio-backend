@@ -28,11 +28,9 @@ class BorrarTodoStock(Resource):
         return StockService.borrarTodo(id_grupoDeTrabajo)
 
 class ProductoEnStockID(Resource):
-    def delete(self,id_grupoDeTrabajo):
-        datos = request.get_json()
-        if(datos):
-            return StockService.borrarProductoEnStock(datos)
-        return {'name': 'None'},400
+    def delete(self,id_productoEnStock,id_productos):
+        return StockService.borrarProductoEnStock(id_productoEnStock,id_productos)
+    
 
 class ConsumirStockResource(Resource):
     def put(self):
