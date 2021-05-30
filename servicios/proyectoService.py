@@ -4,7 +4,9 @@ from flask import jsonify
 from models.mysql.usuario import Usuario
 from models.mongo.proyecto import Proyecto, ProyectoSchema, ProyectoCerradoSchema, ProyectoModificarSchema,ProyectoNuevoSchema
 from servicios.usuarioService import UsuarioService
-
+from servicios.commonService import CommonService
+from schemas.usuarioSchema import UsuarioSchema
+from exceptions.exception import ErrorUsuarioInexistente
 class ProyectoService:
     @classmethod
     def find_all(cls):
@@ -16,9 +18,11 @@ class ProyectoService:
 
     @classmethod
     def nuevoProyecto(cls, datos):
-        proyecto = ProyectoNuevoSchema().load(datos)
-        UsuarioService.busquedaUsuariosID(datos['participantes']) #validamos que se pasen usuarios validos 
-        proyecto.save()
+            proyecto = ProyectoNuevoSchema().load(datos)
+            UsuarioService.busquedaUsuariosID(datos['participantes']) #validamos que se pasen usuarios validos 
+            proyecto.save()
+
+        
 
     @classmethod
     def find_by_nombre(cls, _nombre):
@@ -47,9 +51,14 @@ class ProyectoService:
         return usuariosIdPermitidas
 
     @classmethod
-    def obtenerMiembrosProyecto(cls, id_proyecto):        
-        proyecto = cls.find_by_id(id_proyecto)
-        return UsuarioService.busquedaUsuariosID(proyecto.participantes)
+    def obtenerMiembrosProyecto(cls, id_proyecto):    
+        try:
+            proyecto = cls.find_by_id(id_proyecto)
+            usuarios = UsuarioService.busquedaUsuariosID(proyecto.participantes)
+            return CommonService.jsonMany(usuarios,UsuarioSchema)
+        except ErrorUsuarioInexistente as err:
+            return {'Error': err.message},400  
+
 
     def json(self,datos):
         return  ProyectoSchema().dump(datos)

@@ -2,6 +2,7 @@ from flask_restful import Resource
 from flask_jwt import jwt_required
 from flask import  request
 from marshmallow import ValidationError
+from exceptions.exception import ErrorUsuarioInexistente
 
 from servicios.proyectoService import ProyectoService
 
@@ -24,7 +25,9 @@ class NuevoProyecto(Resource):
                 ProyectoService.nuevoProyecto(datos)
                 return {'Status':'ok'},200
             except ValidationError as err:
-                return {'error': err.messages},404
+                return {'error': err.messages},400
+            except ErrorUsuarioInexistente as err:
+                return {'Error':err.message},400
         return {'name': datos},404
 
 class CerrarProyecto(Resource):
