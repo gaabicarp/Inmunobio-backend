@@ -26,4 +26,9 @@ class MuestraSchema(Schema):
     def make_Proyecto(self, data, **kwargs):
         return Muestra(**data)
 
+class NuevaMuestraSchema(MuestraSchema):
+    id_proyecto = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar el id del proyecto", "code": 400}})
+    codigo = fields.Str(required=True, error_messages={"required": {"message" : "Es necesario indicar el id código de la muestra", "code": 400}})
+    id_contenedor = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar el id del contenedor", "code": 400}})
+
 

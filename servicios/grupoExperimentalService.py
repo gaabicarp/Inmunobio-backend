@@ -1,4 +1,4 @@
-from models.mongo.grupoExperimental import GrupoExperimental, GrupoExperimentalSchema, AltaGrupoExperimentalSchema
+from models.mongo.grupoExperimental import GrupoExperimental, GrupoExperimentalSchema, AltaGrupoExperimentalSchema, DividirGrupoExperimentalSchema
 from models.mongo.fuenteExperimental import FuenteExperimental, FuenteExperimentalAnimalSchema, FuenteExperimentalOtroSchema
 from dateutil import parser
 import datetime
@@ -43,7 +43,25 @@ class GrupoExperimentalService:
         )
 
     def asociarAGrupoExperimental(cls, fuenteExperimental):
-        FuenteExperimental.objects(id_fuenteExperimental = fuenteNueva.id_fuenteExperimental).update(
-            codigo = fuenteNueva.codigo,
-            codigoGrupoExperimental = fuenteNueva.codigoGrupoExperimental
+        FuenteExperimental.objects(id_fuenteExperimental = fuenteExperimental.id_fuenteExperimental).update(
+            codigo = fuenteExperimental.codigo,
+            codigoGrupoExperimental = fuenteExperimental.codigoGrupoExperimental
         )
+    
+    @classmethod
+    def dividirGrupoExperimental(cls, datos):
+        gruposExperimentales = DividirGrupoExperimentalSchema().load(datos, many=True)
+        cls.elGrupoExperimentalPadreEstaHabilitado(gruposExperimentales)        
+        for grupo in gruposExperimentales:
+            grupo.save()
+            cls.reasignarCodigoGrupoExperimentalAFuentesExperimentales(grupo)
+        GrupoExperimental.objects(id_grupoExperimental = gruposExperimentales[0].parent).update(habilitado = False)
+    
+    def elGrupoExperimentalPadreEstaHabilitado(gruposExperimentales):
+        for grupo in gruposExperimentales:
+            if GrupoExperimental.objects(id_grupoExperimental = grupo.parent, habilitado = True).first() is None:
+                raise Exception("El grupo experimental padre debe existir y estar habilitado")
+
+    def reasignarCodigoGrupoExperimentalAFuentesExperimentales(grupo):
+        for fuente in grupo.fuentesExperimentales:
+            FuenteExperimental.objects(id_fuenteExperimental = fuente.id_fuenteExperimental).update(codigoGrupoExperimental = grupo.codigo)

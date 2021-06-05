@@ -67,7 +67,6 @@ class AnimalesDeLaJaula(Resource):
             try:
                 errores = AnimalService.asignarJaulaAAnimales(datos)
                 return ({'Status': 'Se asignaron los animales a la jaula.'}, 200) if len(errores) == 0 else ({"Status": errores}, 400)
-                #return {'Status': 'Ok'}
             except ValidationError as err:
                 return {'Error': err.messages},400
         return {'Error' : "Se deben enviar un array de aniamles."}, 400

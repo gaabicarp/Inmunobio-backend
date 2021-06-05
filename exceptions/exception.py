@@ -39,7 +39,7 @@ class ErrorPermisoInexistente(Exception):
         super().__init__(self.message)
 
 class ErrorPermisosInexistentes(Exception):
-    def __init__(self, message="No hay permisos activos"):
+    def __init__(self, message="No hay usuarios activos"):
         self.message = message 
         super().__init__(self.message)
 

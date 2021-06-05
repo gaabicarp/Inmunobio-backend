@@ -1,4 +1,4 @@
-from models.mongo.muestra import Muestra, MuestraSchema
+from models.mongo.muestra import Muestra, MuestraSchema, NuevaMuestraSchema
 from dateutil import parser
 import datetime
 
@@ -13,4 +13,6 @@ class MuestraService:
         muestras = Muestra.objects.filter(id_experimento=idExperimento).all()
         return MuestraSchema.dump(muestras, many=True)
 
-    
+    @classmethod
+    def nuevaMuestra(cls, datos):
+        muestra = NuevaMuestraSchema().load(datos)

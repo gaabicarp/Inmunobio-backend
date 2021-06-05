@@ -9,7 +9,7 @@ from resources.proyectoResource import *
 from resources.experimentoResource import ExperimentoResource, Experimentos, CerrarExperimento
 from resources.contenedorResource import Contenedor, ContenedorProyecto, ContenedorParent
 
-from resources.grupoExperimentalResource import GrupoExperimental, GruposExperimentales
+from resources.grupoExperimentalResource import GrupoExperimental, GruposExperimentales, DevidirGrupoExperimental
 from resources.jaulaResource import Jaula, JaulasSinProyecto, JaulasDelProyecto
 from resources.fuenteExperimentalResource import FuenteExperimental
 from resources.animalResource import  Animal, Animales, AnimalesSinJaula, AnimalesDeLaJaula
@@ -61,7 +61,6 @@ api.add_resource(DistribuidoraResource, '/api/v1/distribuidora')
 api.add_resource(ObtenerDistribuidorasResource, '/api/v1/getDistribuidoras')
 api.add_resource(ObtenerDistribuidoraResource, '/api/v1/getDistribuidora/<int:id_distribuidora>')
 
-
 #Experimento
 api.add_resource(Experimentos, '/api/v1/proyecto/<int:idProyecto>/experimentos', endpoint='experimentos')
 
@@ -74,6 +73,7 @@ api.add_resource(ExperimentoResource, '/api/v1/modificarExperimento', endpoint='
 api.add_resource(GrupoExperimental, '/api/v1/grupoExperimental/<int:idGrupoExperimental>', endpoint='grupo_experimental')
 api.add_resource(GrupoExperimental, '/api/v1/nuevoGrupoExperimental', endpoint='nuevo_grupo_experimental')
 api.add_resource(GruposExperimentales, '/api/v1/experimento/<int:idExperimento>/gruposExperimentales', endpoint='grupos_experimentales_del_experimento')
+api.add_resource(DevidirGrupoExperimental, '/api/v1/dividirGrupoExperimental', endpoint='dividir_grupo_experimental')
 
 #Jaula
 api.add_resource(Jaula, '/api/v1/jaula/<int:idJaula>', endpoint="jaula_por_id")
@@ -84,7 +84,8 @@ api.add_resource(JaulasSinProyecto, '/api/v1/jaulasDisponibles', endpoint="jaula
 api.add_resource(JaulasDelProyecto, '/api/v1/proyecto/<int:idProyecto>/jaulasDelProyecto', endpoint="jaulas_del_proyecto")
 
 #FuenteExperimental
-api.add_resource(FuenteExperimental, '/api/v1/fuenteExperimental/<int:idFuenteExperimental>', endpoint="fuente_experimental")
+api.add_resource(FuenteExperimental, '/api/v1/fuenteExperimental/<string:codigo>', endpoint="fuente_experimental")
+api.add_resource(FuenteExperimental, '/api/v1/nuevasFuentesExperimentales', endpoint="nuevas_fuentes_experimentales")
 
 #Animal
 api.add_resource(Animal, '/api/v1/animal/<int:idAnimal>', endpoint="animal")
