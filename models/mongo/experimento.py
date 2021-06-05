@@ -19,7 +19,7 @@ class Experimento(dbMongo.Document):
     metodologia = dbMongo.StringField()
     conclusiones = dbMongo.StringField(default="")
     objetivos = dbMongo.StringField()
-    muestrasExternas = dbMongo.ListField(dbMongo.EmbeddedDocumentField(MuestraExterna))
+    muestrasExternas = dbMongo.ListField(dbMongo.EmbeddedDocumentField('MuestraExterna'))
 
     def json(self):
         return ExperimentoSchema().dump(self)

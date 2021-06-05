@@ -54,7 +54,6 @@ api.add_resource(BorrarTodoStock, '/api/v1/borrar/<int:id_grupoDeTrabajo>')
 api.add_resource(ConsumirStockResource, '/api/v1/consumirStock')
 api.add_resource(ProductoEnStockID, '/api/v1/stock/<int:id_productoEnStock>/<int:id_productos>')
 
-
 #producto
 api.add_resource(ProductoResource, '/api/v1/producto')
 api.add_resource(ObtenerProductosResource, '/api/v1/getProductos')

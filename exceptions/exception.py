@@ -68,3 +68,16 @@ class ErrorGrupoDeTrabajoGeneral(Exception):
     def __init__(self, message="El grupo es general y no puede darse de baja."):
         self.message = message 
         super().__init__(self.message)
+
+
+class ErrorJsonVacio(Exception):
+    def __init__(self, message="Se deben enviar datos para la modificación de la jaula.'"):
+        self.message = message 
+        super().__init__(self.message)
+
+class ErrorJaulaInexistente(Exception):
+    def __init__(self,id_jaula, message="No se encontró ninguna jaula con el id: "):
+        self.message = message + str(id_jaula)
+        super().__init__(self.message)    
+
+    
