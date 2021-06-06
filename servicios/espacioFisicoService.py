@@ -9,7 +9,7 @@ class EspacioFisicoService():
     @classmethod
     def altaEspacioFisico(cls,datos):
         try:
-            espacioNuevo=NuevoEspacioFisicoSchema.load(datos)
+            espacioNuevo=NuevoEspacioFisicoSchema().load(datos)
             espacioNuevo.save()
             return {'Status':'ok'},200
         except ValidationError as err:
@@ -41,8 +41,7 @@ class EspacioFisicoService():
     def obtenerEspacio(cls,id_espacioFisico):
         try:
             espacio = cls.find_by_id(id_espacioFisico)
-            CommonService.json(espacio,EspacioFisicoSchema)
-            return {'Status':'ok'},200
+            return CommonService.json(espacio,EspacioFisicoSchema)
         except ValidationError as err:
             return {'error': err.messages},400 
         except ErrorEspacioFisicoInexistente as err:
