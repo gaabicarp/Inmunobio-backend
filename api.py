@@ -14,7 +14,7 @@ from resources.productoResource import ProductoResource,ObtenerProductosResource
 from resources.distribuidoraResource import DistribuidoraResource,ObtenerDistribuidorasResource,DistribuidoraID
 
 from resources.grupoExperimentalResource import GrupoExperimental, GruposExperimentales
-from resources.jaulaResource import Jaula, JaulasSinProyecto, JaulasDelProyecto
+from resources.jaulaResource import Jaula, JaulasSinProyecto, JaulasDelProyecto,BlogJaula,BorrarBlogJaula
 from resources.fuenteExperimentalResource import FuenteExperimental
 from resources.animalResource import  Animal, Animales, AnimalesSinJaula, AnimalesDeLaJaula
 
@@ -54,7 +54,6 @@ api.add_resource(BorrarTodoStock, '/api/v1/borrar/<int:id_grupoDeTrabajo>')
 api.add_resource(ConsumirStockResource, '/api/v1/consumirStock')
 api.add_resource(ProductoEnStockID, '/api/v1/stock/<int:id_productoEnStock>/<int:id_productos>')
 
-
 #producto
 api.add_resource(ProductoResource, '/api/v1/producto')
 api.add_resource(ObtenerProductosResource, '/api/v1/getProductos')
@@ -80,12 +79,14 @@ api.add_resource(GrupoExperimental, '/api/v1/nuevoGrupoExperimental', endpoint='
 api.add_resource(GruposExperimentales, '/api/v1/experimento/<int:idExperimento>/gruposExperimentales', endpoint='grupos_experimentales_del_experimento')
 
 #Jaula
-api.add_resource(Jaula, '/api/v1/jaula/<int:idJaula>', endpoint="jaula_por_id")
+api.add_resource(Jaula, '/api/v1/jaula/<int:id_jaula>', endpoint="jaula_por_id")
 api.add_resource(Jaula, '/api/v1/asignarJaulaAProyecto', endpoint="asignar_jaula_a_proyecto")
 api.add_resource(Jaula, '/api/v1/nuevaJaula', endpoint="nueva_jaula")
-api.add_resource(Jaula, '/api/v1/bajarJaula/<int:idJaula>', endpoint="bajar_jaula")
+api.add_resource(Jaula, '/api/v1/bajarJaula/<int:id_jaula>', endpoint="bajar_jaula")
 api.add_resource(JaulasSinProyecto, '/api/v1/jaulasDisponibles', endpoint="jaulas_disponibles")
-api.add_resource(JaulasDelProyecto, '/api/v1/proyecto/<int:idProyecto>/jaulasDelProyecto', endpoint="jaulas_del_proyecto")
+api.add_resource(JaulasDelProyecto, '/api/v1/proyecto/<int:id_proyecto>/jaulasDelProyecto', endpoint="jaulas_del_proyecto")
+api.add_resource(BlogJaula, '/api/v1/proyecto/blogJaula')
+api.add_resource(BorrarBlogJaula, '/api/v1/proyecto/borrarBlogJaula/<int:id_jaula>/<int:id_blog>' )
 
 #FuenteExperimental
 api.add_resource(FuenteExperimental, '/api/v1/fuenteExperimental/<int:idFuenteExperimental>', endpoint="fuente_experimental")
