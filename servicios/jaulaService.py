@@ -1,11 +1,10 @@
 from models.mongo.jaula import Jaula
 from servicios.fuenteExperimentalService import FuenteExperimentalService
 from servicios.blogService import BlogService
-from exceptions.exception import ErrorJaulaInexistente
+from exceptions.exception import ErrorJaulaInexistente,ErrorBlogInexistente
 from schemas.jaulaSchema import  NuevaJaulaSchema, ActualizarProyectoJaulaSchema, ActualizarJaulaSchema,NuevoBlogJaulaSchema
 
 class JaulaService:
-  
     @classmethod
     def find_by_id(cls, idJaula):
         jaula =  Jaula.objects(id_jaula = idJaula).first()
@@ -61,14 +60,16 @@ class JaulaService:
 
     @classmethod
     def nuevoBlogJaula(cls, datos):
-        try:
-            NuevoBlogJaulaSchema.load(datos)
+            NuevoBlogJaulaSchema().load(datos)
             jaula = cls.find_by_id(datos['id_jaula'])
             blog = BlogService.nuevoBlog(datos['blogs'])
             jaula.blogs.append(blog)
             jaula.save()
             return {'Status':'Ok'}, 200
-
-        except ValidationError as err:
-                return {"Error" : err.messages}, 400
-
+    @classmethod
+    def borrarBlogJaula(cls,_id_jaula,_id_blog):
+        if(Jaula.objects.filter(id_jaula = _id_jaula).first()):
+            if (Jaula.objects.filter(id_jaula = _id_jaula, blogs__id_blog= _id_blog).first()):
+                return Jaula.objects.filter(id_jaula = _id_jaula).first().modify(pull__blogs__id_blog =_id_blog)
+            raise ErrorBlogInexistente(_id_blog)
+        raise ErrorJaulaInexistente(_id_jaula)

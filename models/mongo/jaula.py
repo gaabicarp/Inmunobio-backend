@@ -12,7 +12,5 @@ class Jaula(dbMongo.Document):
     tipo = dbMongo.StringField()
     capacidad = dbMongo.IntField()
     habilitado = dbMongo.BooleanField(default = True)
-    blogs = dbMongo.ListField(dbMongo.EmbeddedDocumentListField('Blog'))
+    blogs = dbMongo.ListField(dbMongo.EmbeddedDocumentField('Blog'))
 
-    """def json(self):
-        return JaulaSchema().dump(self) """

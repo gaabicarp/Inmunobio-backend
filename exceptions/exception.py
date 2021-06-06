@@ -80,4 +80,8 @@ class ErrorJaulaInexistente(Exception):
         self.message = message + str(id_jaula)
         super().__init__(self.message)    
 
-    
+class ErrorBlogInexistente(Exception):
+    def __init__(self,id_blog, message="No se encontró ninguna blog con el id: "):
+        self.message = message + str(id_blog)
+        super().__init__(self.message)    
+
