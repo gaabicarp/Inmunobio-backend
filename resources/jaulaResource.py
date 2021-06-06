@@ -86,4 +86,12 @@ class BorrarBlogJaula(Resource):
 
 
 
-        
+class Jaulas(Resource):
+
+    def get(self):
+        try:
+            return  CommonService.jsonMany(JaulaService.obtenerJaulas() ,JaulaSchema)
+        except ErrorJaulaInexistente as err:
+            return {'Error':err.message},400 
+        except (ErrorBlogInexistente,ErrorJaulaInexistente) as err:
+            return {'Error':err.message},400
