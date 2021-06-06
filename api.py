@@ -79,12 +79,12 @@ api.add_resource(GrupoExperimental, '/api/v1/nuevoGrupoExperimental', endpoint='
 api.add_resource(GruposExperimentales, '/api/v1/experimento/<int:idExperimento>/gruposExperimentales', endpoint='grupos_experimentales_del_experimento')
 
 #Jaula
-api.add_resource(Jaula, '/api/v1/jaula/<int:idJaula>', endpoint="jaula_por_id")
+api.add_resource(Jaula, '/api/v1/jaula/<int:id_jaula>', endpoint="jaula_por_id")
 api.add_resource(Jaula, '/api/v1/asignarJaulaAProyecto', endpoint="asignar_jaula_a_proyecto")
 api.add_resource(Jaula, '/api/v1/nuevaJaula', endpoint="nueva_jaula")
-api.add_resource(Jaula, '/api/v1/bajarJaula/<int:idJaula>', endpoint="bajar_jaula")
+api.add_resource(Jaula, '/api/v1/bajarJaula/<int:id_jaula>', endpoint="bajar_jaula")
 api.add_resource(JaulasSinProyecto, '/api/v1/jaulasDisponibles', endpoint="jaulas_disponibles")
-api.add_resource(JaulasDelProyecto, '/api/v1/proyecto/<int:idProyecto>/jaulasDelProyecto', endpoint="jaulas_del_proyecto")
+api.add_resource(JaulasDelProyecto, '/api/v1/proyecto/<int:id_proyecto>/jaulasDelProyecto', endpoint="jaulas_del_proyecto")
 api.add_resource(BlogJaula, '/api/v1/proyecto/blogJaula')
 api.add_resource(BorrarBlogJaula, '/api/v1/proyecto/borrarBlogJaula/<int:id_jaula>/<int:id_blog>' )
 

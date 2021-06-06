@@ -38,9 +38,9 @@ class Jaula(Resource):
                 return {"Error" : err.messages}, 400
         return  {'Error':'Se deben enviar datos para la modificación de la jaula.'},400
 
-    def delete(self, idJaula):
-        if idJaula:
-            return JaulaService.bajarJaula(idJaula)
+    def delete(self, id_jaula):
+        if id_jaula:
+            return JaulaService.bajarJaula(id_jaula)
         return {'Error': 'Se debe indicar un id para la jaula.'}, 400
 
 class JaulasSinProyecto(Resource):
