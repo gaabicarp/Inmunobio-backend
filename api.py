@@ -18,7 +18,7 @@ from resources.jaulaResource import Jaula, JaulasSinProyecto, JaulasDelProyecto,
 from resources.fuenteExperimentalResource import FuenteExperimental
 from resources.animalResource import  Animal, Animales, AnimalesSinJaula, AnimalesDeLaJaula
 from resources.espacioFisicoResource import EspaciosFisicos,EspacioFisico,EspacioFisicoID,CrearBlogEspacioFisico,BorrarBlogEspacioFisico
-from resources.herramientaResource import HerramientaResource,HerramientaPorId,Herramientas
+from resources.herramientaResource import HerramientaResource,HerramientaPorId,Herramientas,BorrarBlogHeramienta,BlogHerramientaXId,CrearBlogHerramientas
 api = Api()
 #Espacio fisico
 
@@ -119,7 +119,9 @@ api.add_resource(ContenedorParent, '/api/v1/asignarParentAContenedores', endpoin
 api.add_resource(HerramientaResource, '/api/v1/herramienta')
 api.add_resource(HerramientaPorId, '/api/v1/herramienta/<int:id_herramienta>')
 api.add_resource(Herramientas, '/api/v1/herramientas/')
-
+api.add_resource(BorrarBlogHeramienta, '/api/v1/blogHerramienta/<id_herramienta>/<int:id_blog>')
+api.add_resource(BlogHerramientaXId, '/api/v1/blogHerramienta/<id_herramienta>')
+api.add_resource(CrearBlogHerramientas, '/api/v1/blogHerramienta')
 
 
 
