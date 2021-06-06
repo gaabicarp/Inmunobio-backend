@@ -13,6 +13,7 @@ class AnimalService:
     @classmethod
     def nuevoAnimal(cls, datos):
         animal = NuevoAnimalSchema().load(datos)
+        animal.tipo = 'Animal'
         animal.save()
     
     @classmethod
