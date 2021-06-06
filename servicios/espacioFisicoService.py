@@ -27,7 +27,7 @@ class EspacioFisicoService():
     @classmethod
     def modificarEspacio(cls,datos):
         try:
-            ModificarEspacioFisico.load(datos)
+            ModificarEspacioFisico().load(datos)
             espacio = cls.find_by_id(datos['id_espacioFisico'])
             CommonService.updateAtributes(espacio,datos,'blogs')
             espacio.save()
