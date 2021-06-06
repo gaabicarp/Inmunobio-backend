@@ -32,11 +32,12 @@ class FuenteExperimentalSchema(AnimalSchema):
     codigo = fields.Str()
     codigoGrupoExperimental = fields.Str()
     descripcion = fields.Str()
+    
 class NuevoAnimalSchema(AnimalSchema):
     especie = fields.Str(required=True, error_messages={"required": {"message" : "Es necesario indicar la especie del animal", "code" : 400}})
     sexo = fields.Str(required=True, error_messages={"required": {"message" : "Es necesario indicar el sexo del animal", "code" : 400}})
     cepa = fields.Str(required=True, error_messages={"required": {"message" : "Es necesario indicar la cepa del animal", "code" : 400}})
-    tipo = fields.Str(required=True, error_messages={"required" : {"message" : "Es necesario indicar el tipo del animal", "code" : 400}})
+    #tipo = fields.Str(required=True, error_messages={"required" : {"message" : "Es necesario indicar el tipo del animal", "code" : 400}})
 
 class FuenteExperimentalAnimalSchema(FuenteExperimentalSchema):
     id_fuenteExperimental = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar el id de la fuente experimental", "code": 400}})
