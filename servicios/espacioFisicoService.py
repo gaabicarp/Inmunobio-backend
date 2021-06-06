@@ -6,8 +6,6 @@ from servicios.commonService import CommonService
 from servicios.blogService import BlogService
 
 class EspacioFisicoService():
-
-
     @classmethod
     def obtenerEspacios(cls):
         return CommonService.jsonMany(EspacioFisico.objects.all(),EspacioFisicoSchema)
@@ -20,9 +18,7 @@ class EspacioFisicoService():
             return {'Status':'ok'},200
         except ValidationError as err:
                 return {'error': err.messages},400 
-        #except (ErrorProductoEnStockInexistente,ErrorStockInexistente) as err:
-        #       return {'Error':err.message},400 
-        #  
+   
     @classmethod
     def find_by_id(cls,id):
         producto =  EspacioFisico.objects(id_espacioFisico = id).first()
@@ -53,7 +49,6 @@ class EspacioFisicoService():
         except ErrorEspacioFisicoInexistente as err:
             return {'error':err.message},400
 
-
     @classmethod
     def borrarEspacio(cls,id_espacioFisico):
         try:
@@ -72,6 +67,7 @@ class EspacioFisicoService():
             espacio = cls.find_by_id(datos['id_espacioFisico'])
             blog = BlogService.nuevoBlog(datos['blogs'])
             espacio.blogs.append(blog)
+            espacio.save()
             return {'Status':'ok'},200
         except ValidationError as err:
             return {'error': err.messages},400 

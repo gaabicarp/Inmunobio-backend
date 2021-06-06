@@ -14,19 +14,19 @@ from resources.productoResource import ProductoResource,ObtenerProductosResource
 from resources.distribuidoraResource import DistribuidoraResource,ObtenerDistribuidorasResource,DistribuidoraID
 
 from resources.grupoExperimentalResource import GrupoExperimental, GruposExperimentales
-from resources.jaulaResource import Jaula, JaulasSinProyecto, JaulasDelProyecto,BlogJaula,BorrarBlogJaula
+from resources.jaulaResource import Jaula, JaulasSinProyecto, JaulasDelProyecto,BlogJaula,BorrarBlogJaula,Jaulas
 from resources.fuenteExperimentalResource import FuenteExperimental
 from resources.animalResource import  Animal, Animales, AnimalesSinJaula, AnimalesDeLaJaula
-from resources.espacioFisicoResource import EspaciosFisicos,EspacioFisico,EspacioFisicoID,CrearBlogEspacioFisico
+from resources.espacioFisicoResource import EspaciosFisicos,EspacioFisico,EspacioFisicoID,CrearBlogEspacioFisico,BorrarBlogEspacioFisico
 
 api = Api()
 #Espacio fisico
 
 api.add_resource(EspacioFisico, '/api/v1/espacioFisico')
 api.add_resource(EspacioFisicoID, '/api/v1/espacioFisico/<int:id_espacioFisico>')
-api.add_resource(CrearBlogEspacioFisico, '/api/v1/crearBlogEspacioFisico')
+api.add_resource(CrearBlogEspacioFisico, '/api/v1/crearBlogEspacio')
 api.add_resource(EspaciosFisicos, '/api/v1/espaciosFisicos')
-
+api.add_resource(BorrarBlogEspacioFisico, '/api/v1/borrarBlogEspacio/<int:id_espacioFisico>/<int:id_blog>')
 
 
 #permisos
@@ -93,6 +93,10 @@ api.add_resource(JaulasSinProyecto, '/api/v1/jaulasDisponibles', endpoint="jaula
 api.add_resource(JaulasDelProyecto, '/api/v1/proyecto/<int:id_proyecto>/jaulasDelProyecto', endpoint="jaulas_del_proyecto")
 api.add_resource(BlogJaula, '/api/v1/proyecto/blogJaula')
 api.add_resource(BorrarBlogJaula, '/api/v1/proyecto/borrarBlogJaula/<int:id_jaula>/<int:id_blog>' )
+api.add_resource(Jaulas, '/api/v1/jaulas')
+
+
+
 
 #FuenteExperimental
 api.add_resource(FuenteExperimental, '/api/v1/fuenteExperimental/<int:idFuenteExperimental>', endpoint="fuente_experimental")
