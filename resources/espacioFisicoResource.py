@@ -3,7 +3,6 @@ from flask_jwt import jwt_required
 from flask import request
 from servicios.espacioFisicoService import EspacioFisicoService
 
-from servicios.fuenteExperimentalService import FuenteExperimentalService
 
 class EspacioFisico(Resource):
     def post(self):
@@ -22,10 +21,9 @@ class EspacioFisicoID(Resource):
     def get(self,id_espacioFisico):
         return EspacioFisicoService().obtenerEspacio(id_espacioFisico)
 
-    def put(self,id_espacioFisico):
-        datos = request.get_json()
-        if(datos):
-            return EspacioFisicoService().modificarEspacio(id_espacioFisico)
+    def delete(self,id_espacioFisico):
+        if(id_espacioFisico):
+            return EspacioFisicoService().borrarEspacio(id_espacioFisico)
         return {'name': 'None'},400
         
 class CrearBlogEspacioFisico(Resource):
