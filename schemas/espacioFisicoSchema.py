@@ -7,13 +7,13 @@ class EspacioFisicoSchema(Schema):
     piso = fields.String()
     sala = fields.String()
     descripcion = fields.String()
-    blogs = fields.Nested(BlogSchema,many=True)
+    #blogs = fields.Nested(BlogSchema,many=True)
     id_espacioFisico = fields.Integer()
     #tipo = dbMongo.StringField() #Revisar y preguntar /Taller, Bioterio, etc
 
 class ModificarEspacioFisico(EspacioFisicoSchema):
     id_espacioFisico = fields.Integer(required=True, error_messages={"required": {"message" : "Deben indicarse el id del espacio", "code": 400}})
-    blogs = fields.Nested(BlogSchema,many=True,dump_only=True)
+    blogs = fields.Nested(BlogSchema,many=True)
 
 class NuevoEspacioFisicoSchema(Schema):
     nombre = fields.String(required=True, error_messages={"required": {"message" : "Deben indicarse el nombre del espacio", "code": 400}})

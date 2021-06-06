@@ -17,16 +17,17 @@ from resources.grupoExperimentalResource import GrupoExperimental, GruposExperim
 from resources.jaulaResource import Jaula, JaulasSinProyecto, JaulasDelProyecto,BlogJaula,BorrarBlogJaula,Jaulas
 from resources.fuenteExperimentalResource import FuenteExperimental
 from resources.animalResource import  Animal, Animales, AnimalesSinJaula, AnimalesDeLaJaula
-from resources.espacioFisicoResource import EspaciosFisicos,EspacioFisico,EspacioFisicoID,CrearBlogEspacioFisico,BorrarBlogEspacioFisico
-
+from resources.espacioFisicoResource import EspaciosFisicos,EspacioFisico,EspacioFisicoID,CrearBlogEspacioFisico,BorrarBlogEspacioFisico,ObtenerBlogsEspFisico
+from resources.herramientaResource import HerramientaResource,HerramientaPorId,Herramientas,BorrarBlogHeramienta,BlogHerramientaXId,CrearBlogHerramientas
 api = Api()
 #Espacio fisico
 
 api.add_resource(EspacioFisico, '/api/v1/espacioFisico')
 api.add_resource(EspacioFisicoID, '/api/v1/espacioFisico/<int:id_espacioFisico>')
-api.add_resource(CrearBlogEspacioFisico, '/api/v1/crearBlogEspacio')
 api.add_resource(EspaciosFisicos, '/api/v1/espaciosFisicos')
 api.add_resource(BorrarBlogEspacioFisico, '/api/v1/borrarBlogEspacio/<int:id_espacioFisico>/<int:id_blog>')
+api.add_resource(CrearBlogEspacioFisico, '/api/v1/crearBlogEspacio')
+api.add_resource(ObtenerBlogsEspFisico, '/api/v1/blogsEspacio/<int:id_espacioFisico>')
 
 
 #permisos
@@ -114,3 +115,14 @@ api.add_resource(ContenedorProyecto, '/api/v1/contenedoresDelProyecto', endpoint
 api.add_resource(ContenedorProyecto, '/api/v1/asignarProyectoAlContenedor', endpoint='asignar_proyecto_al_contenedor')
 api.add_resource(ContenedorParent, '/api/v1/subcontenedores', endpoint='subcontenedores')
 api.add_resource(ContenedorParent, '/api/v1/asignarParentAContenedores', endpoint='asignar_parent_a_contenedores')
+
+#Herramientas
+api.add_resource(HerramientaResource, '/api/v1/herramienta')
+api.add_resource(HerramientaPorId, '/api/v1/herramienta/<int:id_herramienta>')
+api.add_resource(Herramientas, '/api/v1/herramientas/')
+api.add_resource(BorrarBlogHeramienta, '/api/v1/blogHerramienta/<id_herramienta>/<int:id_blog>')
+api.add_resource(BlogHerramientaXId, '/api/v1/blogHerramienta/<id_herramienta>')
+api.add_resource(CrearBlogHerramientas, '/api/v1/blogHerramienta')
+
+
+
