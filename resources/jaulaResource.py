@@ -13,7 +13,7 @@ class Jaula(Resource):
     def get(self, id_jaula):
         if id_jaula:
             try:
-                return  CommonService.jsonMany(JaulaService.find_by_id(id_jaula),JaulaSchema)
+                return  CommonService.json(JaulaService.find_by_id(id_jaula),JaulaSchema)
             except ErrorJaulaInexistente as err:    
                 return {'Error':err.message},400 
         return {"Error" : "Se debe indicar el id de una jaula."}, 400

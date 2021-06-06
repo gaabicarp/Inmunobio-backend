@@ -95,9 +95,6 @@ api.add_resource(BlogJaula, '/api/v1/proyecto/blogJaula')
 api.add_resource(BorrarBlogJaula, '/api/v1/proyecto/borrarBlogJaula/<int:id_jaula>/<int:id_blog>' )
 api.add_resource(Jaulas, '/api/v1/jaulas')
 
-
-
-
 #FuenteExperimental
 api.add_resource(FuenteExperimental, '/api/v1/fuenteExperimental/<int:idFuenteExperimental>', endpoint="fuente_experimental")
 

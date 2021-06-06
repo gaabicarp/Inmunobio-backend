@@ -1,5 +1,6 @@
 from db import dbMongo
 from marshmallow import Schema, fields, post_load
+
 class FuenteExperimental(dbMongo.Document):
     id_fuenteExperimental = dbMongo.SequenceField()
     codigo = dbMongo.StringField(default="")
@@ -32,7 +33,7 @@ class FuenteExperimentalSchema(AnimalSchema):
     codigo = fields.Str()
     codigoGrupoExperimental = fields.Str()
     descripcion = fields.Str()
-    
+
 class NuevoAnimalSchema(AnimalSchema):
     especie = fields.Str(required=True, error_messages={"required": {"message" : "Es necesario indicar la especie del animal", "code" : 400}})
     sexo = fields.Str(required=True, error_messages={"required": {"message" : "Es necesario indicar el sexo del animal", "code" : 400}})
