@@ -40,18 +40,6 @@ class BorrarBlogEspacioFisico(Resource):
             return EspacioFisicoService().modificarEspacio(id_espacioFisico,id_blog)
         return {'name': 'None'},400
 
-    @classmethod
-    def nuevoBlogJaula(cls, datos):
-            NuevoBlogJaulaSchema().load(datos)
-            jaula = cls.find_by_id(datos['id_jaula'])
-            blog = BlogService.nuevoBlog(datos['blogs'])
-            jaula.blogs.append(blog)
-            jaula.save()
-            return {'Status':'Ok'}, 200
-    @classmethod
-    def borrarBlogJaula(cls,_id_jaula,_id_blog):
-        if(Jaula.objects.filter(id_jaula = _id_jaula).first()):
-            if (Jaula.objects.filter(id_jaula = _id_jaula, blogs__id_blog= _id_blog).first()):
-                return Jaula.objects.filter(id_jaula = _id_jaula).first().modify(pull__blogs__id_blog =_id_blog)
-            raise ErrorBlogInexistente(_id_blog)
-        raise ErrorJaulaInexistente(_id_jaula)
+class EspaciosFisicos(Resource):
+    def get(self):
+        return EspacioFisicoService().obtenerEspacios()

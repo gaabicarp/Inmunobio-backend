@@ -1,6 +1,6 @@
 from marshmallow import Schema, fields, post_load
 from models.mongo.espacioFisico import EspacioFisico
-from schemas.blogSchema import BlogSchema
+from schemas.blogSchema import NuevoBlogSchema,BlogSchema
 
 class EspacioFisicoSchema(Schema):
     nombre = fields.String()
@@ -24,4 +24,10 @@ class NuevoEspacioFisicoSchema(Schema):
     @post_load
     def makeEspacio(self, data, **kwargs):
         return EspacioFisico(**data)
+
+class NuevoBlogEspacioFisicoSchema(Schema):
+    id_espacioFisico = fields.Integer(required=True, error_messages={"required": {"message" : "Deben indicarse el id del espacio", "code": 400}})
+    blogs = fields.Nested(NuevoBlogSchema)
+
+    
  
