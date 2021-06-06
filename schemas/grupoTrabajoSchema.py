@@ -31,7 +31,6 @@ class NuevoGrupoDeTrabajoSchema(Schema):
     @post_load
     def make_Grupo(self, data, **kwargs):
         return GrupoDeTrabajo(**data)
-  
 
 """ class NuevoStockGrupoSchema(GrupoDeTrabajoIDSchema):
     stock = fields.Nested(NuevoStockSchema) """

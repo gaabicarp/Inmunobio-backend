@@ -1,13 +1,32 @@
 from db import dbMongo
-from marshmallow import Schema, fields, post_load
-from models.mongo.jaula import Jaula
+from marshmallow import Schema, fields, post_load,ValidationError
+from models.mongo.herramienta import Herramienta
 from schemas.blogSchema import BlogSchema
+from servicios.espacioFisicoService import EspacioFisicoService
+from exceptions.exception import ErrorEspacioFisicoInexistente
 
-class HerramientaSchema(dbMongo.Document):
-    nombre = fields
-    detalle = dbMongo.StringField()
-    id_herramienta = dbMongo.IntField()
+def espacioFisValidacion(data):
+    try:
+        EspacioFisicoService.find_by_id(data)
+    except ErrorEspacioFisicoInexistente as err:
+        raise ValidationError(err.message)
 
 
+
+class HerramientaSchema(Schema):
+    nombre = fields.String()
+    detalle = fields.String()
+    id_herramienta = fields.Integer()
+    blogs = fields.Nested(BlogSchema,required=True, error_messages={"required": {"message" : "Es necesario indicar datos de blog de jaula", "code" : 400}})
+    id_espacioFisico = fields.Integer()
+
+class NuevaHerramientaSchema(Schema):
+    nombre = fields.String(required=True,error_messages={"required": {"message": "Debe indicarse el nombre de la herramienta", "code": 400}})
+    detalle = fields.String()
+    id_espacioFisico = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse espacio fisico", "code": 400}},validate =espacioFisValidacion) 
+
+    @post_load
+    def makeHerramienta(self, data, **kwargs):
+        return Herramienta(**data)
 
 

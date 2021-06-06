@@ -43,3 +43,6 @@ class BorrarBlogEspacioFisico(Resource):
 class EspaciosFisicos(Resource):
     def get(self):
         return EspacioFisicoService().obtenerEspacios()
+
+
+

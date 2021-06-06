@@ -85,3 +85,9 @@ class ErrorBlogInexistente(Exception):
         self.message = message + str(id_blog)
         super().__init__(self.message)    
 
+
+class ErrorHerramientaInexistente(Exception):
+    def __init__(self,id_herr, message="No se encontró ninguna herramienta con el id: "):
+        self.message = message + str(id_herr)
+        super().__init__(self.message)    
+
