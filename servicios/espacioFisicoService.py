@@ -6,6 +6,12 @@ from servicios.commonService import CommonService
 from servicios.blogService import BlogService
 
 class EspacioFisicoService():
+
+
+    @classmethod
+    def obtenerEspacios(cls):
+        return CommonService.jsonMany(EspacioFisico.objects.all(),EspacioFisicoSchema)
+
     @classmethod
     def altaEspacioFisico(cls,datos):
         try:

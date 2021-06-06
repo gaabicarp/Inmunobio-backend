@@ -40,4 +40,6 @@ class BorrarBlogEspacioFisico(Resource):
             return EspacioFisicoService().modificarEspacio(id_espacioFisico,id_blog)
         return {'name': 'None'},400
 
-   
+class EspaciosFisicos(Resource):
+    def get(self):
+        return EspacioFisicoService().obtenerEspacios()

@@ -17,7 +17,7 @@ from resources.grupoExperimentalResource import GrupoExperimental, GruposExperim
 from resources.jaulaResource import Jaula, JaulasSinProyecto, JaulasDelProyecto,BlogJaula,BorrarBlogJaula
 from resources.fuenteExperimentalResource import FuenteExperimental
 from resources.animalResource import  Animal, Animales, AnimalesSinJaula, AnimalesDeLaJaula
-from resources.espacioFisicoResource import EspacioFisico,EspacioFisicoID,CrearBlogEspacioFisico
+from resources.espacioFisicoResource import EspaciosFisicos,EspacioFisico,EspacioFisicoID,CrearBlogEspacioFisico
 
 api = Api()
 #Espacio fisico
@@ -25,6 +25,8 @@ api = Api()
 api.add_resource(EspacioFisico, '/api/v1/espacioFisico')
 api.add_resource(EspacioFisicoID, '/api/v1/espacioFisico/<int:id_espacioFisico>')
 api.add_resource(CrearBlogEspacioFisico, '/api/v1/crearBlogEspacioFisico')
+api.add_resource(EspaciosFisicos, '/api/v1/espaciosFisicos')
+
 
 
 #permisos
