@@ -132,8 +132,8 @@ class StockService():
         try:
             ModificarProducto().load(datos)
             stock= cls.BusquedaStockPorId(datos['id_productoEnStock'])
-            producto = cls.obtenerProductosEspecificos(datos['id_productos'],stock.producto)
-            CommonService.updateAtributes(producto,datos['producto'],'id_productos')
+            producto = cls.obtenerProductosEspecificos(datos['producto']['id_productos'],stock.producto)
+            CommonService.updateAtributes(producto,datos['producto'],'unidad')
             stock.save()
             return {'Status':'ok'},200
         except ValidationError as err:

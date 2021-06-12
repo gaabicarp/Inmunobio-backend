@@ -53,7 +53,7 @@ class EspacioFisicoID(Resource):
                 return {'Status':'ok'},200
             except ErrorEspacioFisicoInexistente as err:
                 return {'error':err.message},400
-        return {'name': 'None'},400
+        return {'Error': 'Parametros requeridos'},400
 
 class CrearBlogEspacioFisico(Resource):
     def post(self):
@@ -66,8 +66,7 @@ class CrearBlogEspacioFisico(Resource):
                 return {'error': err.messages},400 
             except ErrorEspacioFisicoInexistente as err:
                 return {'error':err.message},400
-        return {'name': 'None'},400
-
+        return {'Error': 'Error al decodificar json'},400
 
 class BorrarBlogEspacioFisico(Resource):
     def delete(self,id_espacioFisico,id_blog):
@@ -77,19 +76,18 @@ class BorrarBlogEspacioFisico(Resource):
                 return {'Status':'ok'},200
             except (ErrorEspacioFisicoInexistente,ErrorBlogInexistente) as err:
                 return {'error':err.message},400
-        return {'name': 'None'},400
+        return {'Error': 'Parametros requeridos'},400
 
 class ObtenerBlogsEspFisico(Resource):
-    def get(self,id_espacioFisico):
-        if(id_espacioFisico):
+    def get(self,id_espacioFisico,fecDesde,fecHasta):
+        if(id_espacioFisico and fecDesde and fecHasta):
             try:
-                blogs = EspacioFisicoService().obtenerBlogs(id_espacioFisico)
+                blogs = EspacioFisicoService().obtenerBlogs(id_espacioFisico,fecDesde,fecHasta)
                 return CommonService.jsonMany(blogs,BlogSchema)
             except ErrorEspacioFisicoInexistente as err:
                 return {'error':err.message},400
-        return {'name': 'None'},400
+        return {'Error': 'Parametros requeridos'},400
         
-
 class EspaciosFisicos(Resource):
     def get(self): 
         return CommonService.jsonMany(EspacioFisicoService().obtenerEspacios(),EspacioFisicoSchema)
