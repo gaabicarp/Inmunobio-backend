@@ -27,7 +27,7 @@ api.add_resource(EspacioFisicoID, '/api/v1/espacioFisico/<int:id_espacioFisico>'
 api.add_resource(EspaciosFisicos, '/api/v1/espaciosFisicos')
 api.add_resource(BorrarBlogEspacioFisico, '/api/v1/borrarBlogEspacio/<int:id_espacioFisico>/<int:id_blog>')
 api.add_resource(CrearBlogEspacioFisico, '/api/v1/crearBlogEspacio')
-api.add_resource(ObtenerBlogsEspFisico, '/api/v1/blogsEspacio/<int:id_espacioFisico>')
+api.add_resource(ObtenerBlogsEspFisico, '/api/v1/blogsEspacio/<int:id_espacioFisico>/<string:fecDesde>/<string:fecHasta>')
 
 
 #permisos

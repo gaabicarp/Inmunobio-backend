@@ -46,10 +46,16 @@ class EspacioFisicoService():
 
 
     @classmethod
-    def obtenerBlogs(cls,id_espacioFisico):
-        espacio = cls.find_by_id(id_espacioFisico)
-        return espacio.blogs
+    def obtenerBlogs(cls,_id_espacioFisico,fecDesde,fecHasta):
+        espacio = cls.find_by_id(_id_espacioFisico)
+        """print(
+            EspacioFisico.objects.filter(
+            id_espacioFisico = _id_espacioFisico,
+            blogs__fecha__gte=fecDesde, 
+            blogs__fecha__lte=fecHasta).first().blogs) """
 
+        return BlogService.busquedaPorFecha(espacio.blogs,fecDesde,fecHasta)
+        #return espacio.blogs
 
     @classmethod
     def BorrarBlogEspacioFisico(cls,_id_espacioFisico,_id_blog):
