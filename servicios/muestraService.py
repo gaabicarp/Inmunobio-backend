@@ -1,6 +1,7 @@
 from models.mongo.grupoExperimental import GrupoExperimental
 from models.mongo.muestra import Muestra, MuestraSchema, NuevaMuestraSchema, ModificarMuestraSchema
 from models.mongo.grupoExperimental import MuestraPropia, MuestraPropiaSchema, GrupoExperimental
+from models.mongo.experimento import Experimento
 from .validationService import Validacion
 from dateutil import parser
 import datetime
@@ -50,6 +51,9 @@ class MuestraService:
         muestrasPropiasDict = MuestraSchema(exclude=['id_contenedor', 'id_grupoExperimental', 'id_experimento', 'id_proyecto', 'habilitada']).dump(muestras, many=True)
         muestrasPropias = MuestraPropiaSchema().load(muestrasPropiasDict, many=True)
         GrupoExperimental.objects(id_grupoExperimental= idGrupoExperimental).update(muestras = muestrasPropias)
+    
+    def removerMuestraExternaDelExperimento(self, muestra):
+        Experimento.objects(meustras__id_muestra=muestra.id_muestra).update(pop__muestras__S__id_muestra =muestra.id_muestra)
         
     def validarMuestra(self, idMuestra):
         if not Validacion().existeLaMuestra(self, idMuestra):
@@ -80,3 +84,4 @@ class MuestraService:
         muestra = Muestra.objects(id_muestra=idMuestra).first()
         Muestra.objects(id_muestra = idMuestra).update(habilitada = False)
         cls.actualizarMuestrasEnGrupoExperimental(cls, muestra.id_grupoExperimental)
+        cls.removerMuestraExternaDelExperimento(cls, muestra)
