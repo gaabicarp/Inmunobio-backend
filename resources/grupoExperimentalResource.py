@@ -33,3 +33,17 @@ class GruposExperimentales(Resource):
             else:
                 return {f"Status" : "No se encontraron grupos experimentales para el experimento {idExperimento}"}, 204
         return {"Error" : "Se debe enviar un id del experimento"}, 400
+
+class DevidirGrupoExperimental(Resource):
+
+    def post(self):
+        datos = request.get_json()
+        if datos:
+            try:
+                GrupoExperimentalService().dividirGrupoExperimental(datos)
+                return {"Status" : "Ok"}, 200
+            except Exception as err:
+                return {"Error" : str(err)}, 400
+            except ValidationError as err:
+                return {"Error" : err.messages}, 400
+        return {"Error" : "Se deben enviar datos para la división de un grupo experimental"}, 400

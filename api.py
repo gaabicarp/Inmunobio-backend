@@ -4,11 +4,12 @@ from resources.usuariosResource import  ObtenerUsuariosResource,UsuarioResource,
 from resources.proyectoResource import *
 from resources.permisosResource import Permisos,ObtenerPermisoPorId
 from resources.grupoDeTrabajoResource import GrupoDeTrabajoID,GrupoDeTrabajo,GruposDeTrabajo,RenombrarJefeGrupo
-from resources.experimentoResource import ExperimentoResource, Experimentos
+from resources.experimentoResource import ExperimentoResource, Experimentos, ExperimentoMuestra
 from resources.proyectoResource import *
 from resources.experimentoResource import ExperimentoResource, Experimentos, CerrarExperimento
 from resources.contenedorResource import Contenedor, ContenedorProyecto, ContenedorParent
 
+from resources.grupoExperimentalResource import GrupoExperimental, GruposExperimentales, DevidirGrupoExperimental
 from resources.stockResource import ObtenerProductosStock,ProductoEnStock,BorrarTodoStock,ConsumirStockResource,ProductoEnStockID
 from resources.productoResource import ProductoResource,ObtenerProductosResource,ProductoID,ArchivoProducto
 from resources.distribuidoraResource import DistribuidoraResource,ObtenerDistribuidorasResource,DistribuidoraID
@@ -16,6 +17,11 @@ from resources.distribuidoraResource import DistribuidoraResource,ObtenerDistrib
 from resources.grupoExperimentalResource import GrupoExperimental, GruposExperimentales
 from resources.jaulaResource import Jaula, JaulasSinProyecto, JaulasDelProyecto,BlogJaula,BorrarBlogJaula,Jaulas
 from resources.fuenteExperimentalResource import FuenteExperimental
+from resources.animalResource import  Animal, Animales, AnimalesSinJaula, AnimalesDeLaJaula, AnimalesProyecto
+
+from resources.muestraResource import Muestra, MuestraGrupoExperimental, MuestraProyecto
+
+
 from resources.animalResource import  Animal, Animales, AnimalesSinJaula, AnimalesDeLaJaula
 from resources.espacioFisicoResource import EspaciosFisicos,EspacioFisico,EspacioFisicoID,CrearBlogEspacioFisico,BorrarBlogEspacioFisico,ObtenerBlogsEspFisico
 from resources.herramientaResource import HerramientaResource,HerramientaPorId,Herramientas,BorrarBlogHeramienta,BlogHerramientaXId,CrearBlogHerramientas
@@ -71,18 +77,19 @@ api.add_resource(DistribuidoraResource, '/api/v1/distribuidora')
 api.add_resource(ObtenerDistribuidorasResource, '/api/v1/getDistribuidoras')
 api.add_resource(DistribuidoraID, '/api/v1/distribuidora/<int:id_distribuidora>')
 
-
 #Experimento
 api.add_resource(Experimentos, '/api/v1/proyecto/<int:idProyecto>/experimentos', endpoint='experimentos')
 api.add_resource(ExperimentoResource, '/api/v1/experimento/<int:idExperimiento>', endpoint='experimento')
 api.add_resource(ExperimentoResource, '/api/v1/nuevoExperimento', endpoint='nuevo_experimento')
 api.add_resource(CerrarExperimento, '/api/v1/cerrarExperimento', endpoint='cerrar_experimento')
 api.add_resource(ExperimentoResource, '/api/v1/modificarExperimento', endpoint='modificar_experimento')
+api.add_resource(ExperimentoMuestra, '/api/v1/agregarMuestrasExternasAlExperimento', endpoint='agregar_muestras_externas_al_experimento')
 
 #Grupo Experimental
 api.add_resource(GrupoExperimental, '/api/v1/grupoExperimental/<int:idGrupoExperimental>', endpoint='grupo_experimental')
 api.add_resource(GrupoExperimental, '/api/v1/nuevoGrupoExperimental', endpoint='nuevo_grupo_experimental')
 api.add_resource(GruposExperimentales, '/api/v1/experimento/<int:idExperimento>/gruposExperimentales', endpoint='grupos_experimentales_del_experimento')
+api.add_resource(DevidirGrupoExperimental, '/api/v1/dividirGrupoExperimental', endpoint='dividir_grupo_experimental')
 
 #Jaula
 api.add_resource(Jaula, '/api/v1/jaula/<int:id_jaula>', endpoint="jaula_por_id")
@@ -96,16 +103,19 @@ api.add_resource(BorrarBlogJaula, '/api/v1/proyecto/borrarBlogJaula/<int:id_jaul
 api.add_resource(Jaulas, '/api/v1/jaulas')
 
 #FuenteExperimental
-api.add_resource(FuenteExperimental, '/api/v1/fuenteExperimental/<int:idFuenteExperimental>', endpoint="fuente_experimental")
+api.add_resource(FuenteExperimental, '/api/v1/fuenteExperimental/<string:codigo>', endpoint="fuente_experimental")
+api.add_resource(FuenteExperimental, '/api/v1/nuevasFuentesExperimentales', endpoint="nuevas_fuentes_experimentales")
 
 #Animal
 api.add_resource(Animal, '/api/v1/animal/<int:idAnimal>', endpoint="animal")
 api.add_resource(Animal, '/api/v1/bajaAnimal/<int:idAnimal>', endpoint="baja_animal")
 api.add_resource(Animal, '/api/v1/nuevoAnimal', endpoint="nuevo_animal")
 api.add_resource(Animales, '/api/v1/animales', endpoint="animales")
+api.add_resource((Animales))
 api.add_resource(AnimalesSinJaula, '/api/v1/animalesSinJaula', endpoint="animales_sin_jaula")
 api.add_resource(AnimalesDeLaJaula, '/api/v1/jaula/<int:idJaula>/animales', endpoint="animales_de_la_jaula")
 api.add_resource(AnimalesDeLaJaula, '/api/v1/asignarJaulas', endpoint="asignar_jaulas")
+api.add_resource(AnimalesProyecto, '/api/v1/proyecto/<int:idProyecto>/animales', endpoint="animales_del_proyecto")
 
 #contenedor
 api.add_resource(Contenedor, '/api/v1/contenedores', endpoint='contenedores')
@@ -115,6 +125,13 @@ api.add_resource(ContenedorProyecto, '/api/v1/asignarProyectoAlContenedor', endp
 api.add_resource(ContenedorParent, '/api/v1/subcontenedores', endpoint='subcontenedores')
 api.add_resource(ContenedorParent, '/api/v1/asignarParentAContenedores', endpoint='asignar_parent_a_contenedores')
 
+#Muestra
+api.add_resource(Muestra, '/api/v1/muestra/<int:idMuestra>', endpoint='muestra')
+api.add_resource(Muestra, '/api/v1/nuevaMuestra', endpoint='nueva_muestra')
+api.add_resource(Muestra, '/api/v1/modificarMuestra', endpoint='modificar_muestra')
+api.add_resource(Muestra, '/api/v1/bajarMuestra/<int:idMuestra>', endpoint='bajar_muestra')
+api.add_resource(MuestraGrupoExperimental, '/api/v1/grupoExperimental/<int:idGrupoExperimental>/muestras', endpoint='muestras_grupo_experimental')
+api.add_resource(MuestraProyecto, '/api/v1/proyecto/<int:idProyecto>/muestras', endpoint='muestras_proyecto')
 #Herramientas
 api.add_resource(HerramientaResource, '/api/v1/herramienta')
 api.add_resource(HerramientaPorId, '/api/v1/herramienta/<int:id_herramienta>')

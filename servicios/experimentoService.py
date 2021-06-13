@@ -1,4 +1,5 @@
-from models.mongo.experimento import Experimento, ExperimentoSchema, ModificarExperimentoSchema, AltaExperimentoSchema, CerrarExperimentoSchema
+from models.mongo.experimento import Experimento, ExperimentoSchema, ModificarExperimentoSchema, AltaExperimentoSchema, CerrarExperimentoSchema, AgregarMuestrasAlExperimentoSchema
+from servicios.muestraService import MuestraService
 from dateutil import parser
 import datetime
 
@@ -36,3 +37,21 @@ class ExperimentoService:
             objetivos = experimento.objetivos,
             muestrasExternas = experimento.muestrasExternas
         )
+
+    def lasMuestrasSonDelMismoProyectoDelExperimento(self, experimento):
+        return all(experimento.id_proyecto == muestraExterna.id_proyecto for muestraExterna in experimento.muestrasExternas)
+    
+    def lasMuestrasEstanHabilitadas(self, experimento):
+        return all(MuestraService.validarMuestra(muestra.id_muestra) for muestra in experimento.muestras)
+
+    def validarMuestrasExternas(self, experimento):
+        if self.lasMuestrasSonDelMismoProyectoDelExperimento(self, experimento):
+            raise ValueError("Todas las muestras tienen que ser del mismo proyecto.")
+        if self.lasMuestrasEstanHabilitadas(self, experimento):
+            raise ValueError("Todas las muestras tienen que estar habilitadas.")
+
+    @classmethod
+    def agregarMuestrasExternasAlExperimento(cls, datos):
+        experimento = AgregarMuestrasAlExperimentoSchema().load(datos)
+        cls.validarMuestrasExternas(cls, experimento)
+        Experimento.objects(id_experimento = experimento.id_experimento).update(muestrasExternas=experimento.muestrasExternas)
