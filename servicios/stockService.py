@@ -109,7 +109,6 @@ class StockService():
         except ErrorGrupoInexistente as err:
             return {'Error':err.message},400
 
-
     @classmethod
     def borrarProductoEnStock(cls,id_productoEnStock,id_productos):
         try:
