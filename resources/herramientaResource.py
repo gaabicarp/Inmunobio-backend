@@ -7,7 +7,7 @@ from schemas.herramientaSchema import HerramientaSchema
 from schemas.blogSchema import BlogSchema
 from marshmallow import ValidationError
 from servicios.commonService import CommonService
-from exceptions.exception import ErrorBlogInexistente,ErrorHerramientaInexistente
+from exceptions.exception import ErrorBlogInexistente,ErrorHerramientaInexistente,ErrorFechasInvalidas
 
 class HerramientaResource(Resource):
     def post(self):
@@ -33,7 +33,6 @@ class HerramientaResource(Resource):
         return {'name': 'None'},400 
        
 class HerramientaPorId(Resource):
-
     def get(self,id_herramienta):
         if(id_herramienta):
             try:
@@ -49,7 +48,7 @@ class HerramientaPorId(Resource):
                 HerramientaService.eliminarHerramienta(id_herramienta)
                 return {'Status':'ok'},200              
             except ValidationError as err:
-                return {'error': err.messages},40   
+                return {'error': err.messages},400   
         return {'error': 'Debe indicarse id_herramienta'},400
 
 class Herramientas(Resource):
@@ -71,14 +70,17 @@ class CrearBlogHerramientas(Resource):
         return {'name': 'None'},400 
 
 class BlogHerramientaXId(Resource):
-    def get(self,id_herramienta):
-        try:
-            blogs = HerramientaService.blogHerramienta(id_herramienta)
-            return CommonService.jsonMany(blogs,BlogSchema)     
-        except ValidationError as err:
-            return {'error': err.messages},40
-        except ErrorHerramientaInexistente as err:
-            return {'error': err.message},400   
+    def post(self):
+        datos = request.get_json()
+        if datos:
+            try:
+                blogs = HerramientaService.blogHerramienta(datos)
+                return CommonService.jsonMany(blogs,BlogSchema)     
+            except ValidationError as err:
+                return {'error': err.messages},400
+            except (ErrorHerramientaInexistente,ErrorFechasInvalidas) as err:
+                return {'error': err.message},400 
+        return {'Error': 'Parametros requeridos'},400  
 
 class BorrarBlogHeramienta(Resource): 
     def delete(self,id_herramienta,id_blog):

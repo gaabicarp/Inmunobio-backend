@@ -35,4 +35,8 @@ class NuevoBlogHerramientaSchema(Schema):
     id_herramienta = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse  id_herramienta", "code": 400}}) 
 
 
+class BusquedaBlogHerramienta(Schema):
+    fechaDesde = fields.String(required=True,error_messages={"required": {"message": "Debe indicarse  fecha-desde.", "code": 400}}) 
+    fechaHasta = fields.String(required=True,error_messages={"required": {"message": "Debe indicarse  fecha-hasta", "code": 400}}) 
+    id_herramienta = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse  id_herramienta", "code": 400}}) 
 

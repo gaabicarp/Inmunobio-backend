@@ -17,3 +17,6 @@ class BlogSchema(NuevoBlogSchema):
     id_usuario = fields.Integer()
     id_blog = fields.Integer(dump_only=True)
     tipo = fields.String()
+
+
+

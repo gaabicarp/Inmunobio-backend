@@ -14,8 +14,7 @@ class EspacioFisicoService():
     def altaEspacioFisico(cls,datos):
             espacioNuevo=NuevoEspacioFisicoSchema().load(datos)
             espacioNuevo.save()
-
-   
+ 
     @classmethod
     def find_by_id(cls,id):
         producto =  EspacioFisico.objects(id_espacioFisico = id).first()
@@ -30,7 +29,6 @@ class EspacioFisicoService():
             CommonService.updateAtributes(espacio,datos,'blogs')
             espacio.save()
    
-    
     @classmethod
     def borrarEspacio(cls,id_espacioFisico):
             espacio = cls.find_by_id(id_espacioFisico)
@@ -44,27 +42,18 @@ class EspacioFisicoService():
             espacio.blogs.append(blog)
             espacio.save()
 
-
     @classmethod
-    def obtenerBlogs(cls,_id_espacioFisico,fecDesde,fecHasta):
-        espacio = cls.find_by_id(_id_espacioFisico)
-        """print(
-            EspacioFisico.objects.filter(
-            id_espacioFisico = _id_espacioFisico,
-            blogs__fecha__gte=fecDesde, 
-            blogs__fecha__lte=fecHasta).first().blogs) """
-
-        return BlogService.busquedaPorFecha(espacio.blogs,fecDesde,fecHasta)
-        #return espacio.blogs
+    def obtenerBlogs(cls,datos):
+        espacio = cls.find_by_id(datos['id_espacioFisico'])
+        return BlogService.busquedaPorFecha(espacio.blogs,datos['fechaDesde'],datos['fechaHasta'])
 
     @classmethod
     def BorrarBlogEspacioFisico(cls,_id_espacioFisico,_id_blog):
-            if(EspacioFisico.objects.filter(id_espacioFisico = _id_espacioFisico).first()):
-                if (EspacioFisico.objects.filter(id_espacioFisico = _id_espacioFisico, blogs__id_blog= _id_blog).first()):
-                    return EspacioFisico.objects.filter(id_espacioFisico = _id_espacioFisico).first().modify(pull__blogs__id_blog =_id_blog)
-                raise ErrorBlogInexistente(_id_blog)
-            raise ErrorEspacioFisicoInexistente(_id_espacioFisico)
-
+        if(EspacioFisico.objects.filter(id_espacioFisico = _id_espacioFisico).first()):
+            if (EspacioFisico.objects.filter(id_espacioFisico = _id_espacioFisico, blogs__id_blog= _id_blog).first()):
+                return EspacioFisico.objects.filter(id_espacioFisico = _id_espacioFisico).first().modify(pull__blogs__id_blog =_id_blog)
+            raise ErrorBlogInexistente(_id_blog)
+        raise ErrorEspacioFisicoInexistente(_id_espacioFisico)
  
 
 

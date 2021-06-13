@@ -2,7 +2,7 @@ from models.mongo.herramienta import Herramienta
 from servicios.fuenteExperimentalService import FuenteExperimentalService
 from servicios.blogService import BlogService
 from exceptions.exception import ErrorHerramientaInexistente,ErrorBlogInexistente
-from schemas.herramientaSchema import NuevaHerramientaSchema,HerramientaSchema,NuevoBlogHerramientaSchema
+from schemas.herramientaSchema import BusquedaBlogHerramienta,NuevaHerramientaSchema,HerramientaSchema,NuevoBlogHerramientaSchema
 
 class HerramientaService:
     @classmethod
@@ -43,9 +43,10 @@ class HerramientaService:
         herramienta.save()
     
     @classmethod
-    def blogHerramienta(cls,_id_herramienta):
-        herramienta =  cls.find_by_id(_id_herramienta)
-        return herramienta.blogs
+    def blogHerramienta(cls,datos):
+        BusquedaBlogHerramienta().load(datos)
+        herramienta =  cls.find_by_id(datos['id_herramienta'])
+        return BlogService.busquedaPorFecha(herramienta.blogs,datos['fechaDesde'],datos['fechaHasta'])
 
     @classmethod
     def borrarlogHerramienta(cls,_id_herramienta,_id_blog):
@@ -55,9 +56,6 @@ class HerramientaService:
             raise ErrorBlogInexistente(_id_blog)
         raise ErrorHerramientaInexistente(_id_herramienta)
 
-
-
-        
 
 
 
