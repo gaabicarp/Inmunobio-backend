@@ -28,4 +28,10 @@ class NuevoEspacioFisicoSchema(Schema):
 class NuevoBlogEspacioFisicoSchema(Schema):
     id_espacioFisico = fields.Integer(required=True, error_messages={"required": {"message" : "Deben indicarse el id del espacio", "code": 400}})
     blogs = fields.Nested(NuevoBlogSchema)
- 
+
+class BusquedaBlogEspacio(Schema):
+    
+    fechaDesde = fields.String(required=True,error_messages={"required": {"message": "Debe indicarse  fecha-desde.", "code": 400}}) 
+    fechaHasta = fields.String(required=True,error_messages={"required": {"message": "Debe indicarse  fecha-hasta", "code": 400}}) 
+    id_espacioFisico = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse  id_espacioFisico", "code": 400}}) 
+

@@ -2,7 +2,7 @@ from flask_restful import Resource
 from flask_jwt import jwt_required
 from flask import request
 from servicios.espacioFisicoService import EspacioFisicoService
-from exceptions.exception import ErrorEspacioFisicoInexistente,ErrorBlogInexistente
+from exceptions.exception import ErrorEspacioFisicoInexistente,ErrorBlogInexistente,ErrorFechasInvalidas
 from servicios.commonService import CommonService
 from schemas.espacioFisicoSchema import EspacioFisicoSchema,NuevoBlogEspacioFisicoSchema
 from schemas.blogSchema import BlogSchema
@@ -79,13 +79,16 @@ class BorrarBlogEspacioFisico(Resource):
         return {'Error': 'Parametros requeridos'},400
 
 class ObtenerBlogsEspFisico(Resource):
-    def get(self,id_espacioFisico,fecDesde,fecHasta):
-        if(id_espacioFisico and fecDesde and fecHasta):
+    def post(self):
+        datos = request.get_json()
+        if(datos):
             try:
-                blogs = EspacioFisicoService().obtenerBlogs(id_espacioFisico,fecDesde,fecHasta)
+                blogs = EspacioFisicoService().obtenerBlogs(datos)
                 return CommonService.jsonMany(blogs,BlogSchema)
-            except ErrorEspacioFisicoInexistente as err:
+            except (ErrorEspacioFisicoInexistente,ErrorFechasInvalidas) as err:
                 return {'error':err.message},400
+            except ValidationError as err:
+                return {'error': err.messages},400            
         return {'Error': 'Parametros requeridos'},400
         
 class EspaciosFisicos(Resource):

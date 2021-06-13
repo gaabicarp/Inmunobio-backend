@@ -91,3 +91,8 @@ class ErrorHerramientaInexistente(Exception):
         self.message = message + str(id_herr)
         super().__init__(self.message)    
 
+class ErrorFechasInvalidas(Exception):
+    def __init__(self, message="La fecha-desde debe ser inferior a la fecha-hasta "):
+        self.message = message 
+        super().__init__(self.message)    
+

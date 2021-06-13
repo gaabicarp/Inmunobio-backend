@@ -27,8 +27,7 @@ api.add_resource(EspacioFisicoID, '/api/v1/espacioFisico/<int:id_espacioFisico>'
 api.add_resource(EspaciosFisicos, '/api/v1/espaciosFisicos')
 api.add_resource(BorrarBlogEspacioFisico, '/api/v1/borrarBlogEspacio/<int:id_espacioFisico>/<int:id_blog>')
 api.add_resource(CrearBlogEspacioFisico, '/api/v1/crearBlogEspacio')
-api.add_resource(ObtenerBlogsEspFisico, '/api/v1/blogsEspacio/<int:id_espacioFisico>/<string:fecDesde>/<string:fecHasta>')
-
+api.add_resource(ObtenerBlogsEspFisico, '/api/v1/blogsEspacio')
 
 #permisos
 api.add_resource(ObtenerPermisoPorId, '/api/v1/permiso/<int:id_permiso>')
@@ -121,8 +120,8 @@ api.add_resource(HerramientaResource, '/api/v1/herramienta')
 api.add_resource(HerramientaPorId, '/api/v1/herramienta/<int:id_herramienta>')
 api.add_resource(Herramientas, '/api/v1/herramientas/')
 api.add_resource(BorrarBlogHeramienta, '/api/v1/blogHerramienta/<id_herramienta>/<int:id_blog>')
-api.add_resource(BlogHerramientaXId, '/api/v1/blogHerramienta/<id_herramienta>')
-api.add_resource(CrearBlogHerramientas, '/api/v1/blogHerramienta')
+api.add_resource(BlogHerramientaXId, '/api/v1/blogHerramienta')
+api.add_resource(CrearBlogHerramientas, '/api/v1/crearBlogHerramienta')
 
 
 
