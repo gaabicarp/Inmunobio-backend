@@ -37,7 +37,7 @@ class GrupoExperimentalService:
 
     
     def desasociarDeGrupoExperimental(cls, fuenteExperimental):
-        FuenteExperimental.objects(id_fuenteExperimental == fuenteExperimental.id_fuenteExperimental).update(
+        FuenteExperimental.objects(id_fuenteExperimental = fuenteExperimental.id_fuenteExperimental).update(
             codigo = "",
             codigoGrupoExperimental = ""
         )
