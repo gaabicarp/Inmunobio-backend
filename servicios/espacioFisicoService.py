@@ -44,6 +44,7 @@ class EspacioFisicoService():
 
     @classmethod
     def obtenerBlogs(cls,datos):
+        
         espacio = cls.find_by_id(datos['id_espacioFisico'])
         return BlogService.busquedaPorFecha(espacio.blogs,datos['fechaDesde'],datos['fechaHasta'])
 
