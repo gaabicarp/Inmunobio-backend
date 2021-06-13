@@ -10,10 +10,13 @@ class AnimalService:
             return animal.json()
         return None
     
+    #Agregar validaciones
     @classmethod
     def nuevoAnimal(cls, datos):
         animal = NuevoAnimalSchema().load(datos)
         animal.tipo = 'Animal'
+        jaula = Jaula.objects(id_jaula =animal.id_jaula).first()
+        animal.id_proyecto = jaula.id_proyecto
         animal.save()
     
     @classmethod
