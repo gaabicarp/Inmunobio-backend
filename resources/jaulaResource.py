@@ -11,13 +11,6 @@ from exceptions.exception import ErrorJaulaInexistente,ErrorBlogInexistente
 from schemas.blogSchema import BlogSchema
 
 class Jaula(Resource):
-    def get(self, id_jaula):
-        if id_jaula:
-            try:
-                return  CommonService.json(JaulaService.find_by_id(id_jaula),JaulaSchema)
-            except ErrorJaulaInexistente as err:    
-                return {'Error':err.message},400 
-        return {"Error" : "Se debe indicar el id de una jaula."}, 400
 
     def post(self):
         datos = request.get_json()
@@ -106,3 +99,12 @@ class Jaulas(Resource):
             return {'Error':err.message},400 
         except (ErrorBlogInexistente,ErrorJaulaInexistente) as err:
             return {'Error':err.message},400
+
+class JaulaXId(Resource):
+    def get(self, id_jaula):
+        if id_jaula:
+            try:
+                return  CommonService.json(JaulaService.find_by_id(id_jaula),JaulaSchema)
+            except ErrorJaulaInexistente as err:    
+                return {'Error':err.message},400 
+        return {"Error" : "Se debe indicar el id de una jaula."}, 400
