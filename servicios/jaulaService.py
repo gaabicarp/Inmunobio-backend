@@ -2,7 +2,7 @@ from models.mongo.jaula import Jaula
 from servicios.fuenteExperimentalService import FuenteExperimentalService
 from servicios.blogService import BlogService
 from exceptions.exception import ErrorJaulaInexistente,ErrorBlogInexistente
-from schemas.jaulaSchema import  NuevaJaulaSchema, ActualizarProyectoJaulaSchema, ActualizarJaulaSchema,NuevoBlogJaulaSchema
+from schemas.jaulaSchema import  BusquedaBlogJaula,NuevaJaulaSchema, ActualizarProyectoJaulaSchema, ActualizarJaulaSchema,NuevoBlogJaulaSchema
 
 class JaulaService:
     @classmethod
@@ -74,6 +74,12 @@ class JaulaService:
                 return Jaula.objects.filter(id_jaula = _id_jaula).first().modify(pull__blogs__id_blog =_id_blog)
             raise ErrorBlogInexistente(_id_blog)
         raise ErrorJaulaInexistente(_id_jaula)
+
+    @classmethod
+    def obtenerBlogs(cls,datos):
+        BusquedaBlogJaula().load(datos)
+        jaula = cls.find_by_id(datos['id_jaula'])
+        return BlogService.busquedaPorFecha(jaula.blogs,datos['fechaDesde'],datos['fechaHasta'])
 
     @classmethod
     def obtenerJaulas(cls):
