@@ -1,6 +1,6 @@
 from models.mongo.stock import Stock
 from marshmallow import Schema, fields, post_load
-from schemas.productosEnStockSchema import NuevoProductoEnStockSchema,ProductoEnStockSchema,ModificarProductoEnStock
+from schemas.productosEnStockSchema import NuevoProductoEnStockSchema,ProductoEnStockSchema
 
 class StockSchema(Schema):
     id_productoEnStock = fields.Integer(dump_only=True)
@@ -24,8 +24,9 @@ class busquedaStocksSchema(Schema):
     id_productoEnStock = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse id_productoEnStock", "code": 400}})
     id_productos = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse id_productos", "code": 400}})
 
-class ModificarProducto(busquedaStocksSchema):
-    producto = fields.Nested(ModificarProductoEnStock)
+class ModificarProducto(Schema):
+    id_productoEnStock = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse id_productoEnStock", "code": 400}})
+    producto = fields.Nested(ProductoEnStockSchema)
 
 class ConsumirStockSchema(busquedaStocksSchema):
     unidad = fields.Integer(required=True, error_messages={"required": {"message" : "Deben indicarse unidades", "code": 400}})

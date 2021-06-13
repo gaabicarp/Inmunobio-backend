@@ -109,7 +109,6 @@ class StockService():
         except ErrorGrupoInexistente as err:
             return {'Error':err.message},400
 
-
     @classmethod
     def borrarProductoEnStock(cls,id_productoEnStock,id_productos):
         try:
@@ -132,8 +131,8 @@ class StockService():
         try:
             ModificarProducto().load(datos)
             stock= cls.BusquedaStockPorId(datos['id_productoEnStock'])
-            producto = cls.obtenerProductosEspecificos(datos['id_productos'],stock.producto)
-            CommonService.updateAtributes(producto,datos['producto'],'id_productos')
+            producto = cls.obtenerProductosEspecificos(datos['producto']['id_productos'],stock.producto)
+            CommonService.updateAtributes(producto,datos['producto'],'unidad')
             stock.save()
             return {'Status':'ok'},200
         except ValidationError as err:
@@ -146,20 +145,20 @@ class StockService():
         try:
             ConsumirStockSchema().load(datos)
             stock= cls.BusquedaStockPorId(datos['id_productoEnStock'])
+            print(stock)
             producto = cls.obtenerProductosEspecificos(datos['id_productos'],stock.producto)
             cls.modificarUnidades(producto.unidad - datos['unidad'],producto)
             stock.save()
+            return {'Status':'ok'},200
         except ErrorStockVacio:
             stock.producto.remove(producto)
             stock.save()
             cls.borradoStockVacio(stock)
-            #return {'Status':'ok'},200
+            return {'Status':'ok'},200
         except ValidationError as err:
             return {'error': err.messages},400
         except (ErrorUnidadStock,ErrorStockInexistente,ErrorProductoEnStockInexistente) as err:
             return {'error': err.message},400
-        finally:
-            return {'Status':'ok'},200
 
     @classmethod
     def borradoStockVacio(cls,stock):

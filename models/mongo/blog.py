@@ -7,6 +7,7 @@ class Blog(dbMongo.EmbeddedDocument):
     detalle = dbMongo.StringField()
     id_usuario = dbMongo.IntField()
     id_blog = dbMongo.SequenceField()
+    tipo = dbMongo.StringField()
     #agregar tipo experimento, o jaula 
 
 

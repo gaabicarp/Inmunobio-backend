@@ -9,7 +9,7 @@ class ModificarProductoEnStock(IdProductosEnStockSchema):
     detalleUbicacion = fields.String()
 
 class ProductoEnStockSchema(ModificarProductoEnStock):
-    id_productos =  fields.Integer(dump_only=True)
+    id_productos =  fields.Integer()
     lote = fields.String(default="")
     fechaVencimiento = fields.DateTime()
     unidad = fields.Integer()
