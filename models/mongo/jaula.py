@@ -1,5 +1,5 @@
 from db import dbMongo
-from models.mongo.blog import Blog, BlogSchema
+from models.mongo.blog import Blog
 from marshmallow import Schema, fields, post_load
 
 class Jaula(dbMongo.Document):

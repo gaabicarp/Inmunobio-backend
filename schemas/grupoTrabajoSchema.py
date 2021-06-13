@@ -8,7 +8,9 @@ class GrupoDeTrabajoIDSchema(Schema):
     ) 
 
 class ModificarGrupoDeTrabajoSchema(GrupoDeTrabajoIDSchema):
-    integrantes = fields.List(fields.Integer,required=True,many=True,error_messages={"required": {"message": "Deben indicarse los miembros del grupo", "code": 400}})
+    integrantes = fields.List(fields.Int())
+    jefeDeGrupo =  fields.Integer()
+    nombre = fields.Str()
 
 class jefeDeGrupoSchema(GrupoDeTrabajoIDSchema):
     jefeDeGrupo = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse id jefe de grupo", "code": 400}}) 
@@ -18,13 +20,13 @@ class GrupoDeTrabajoSchema(Schema):
     nombre = fields.Str()
     jefeDeGrupo = fields.Integer()
     integrantes = fields.List(fields.Int())
-    #stock = fields.Nested(StockSchema, many=True)
     grupoGral = fields.Boolean()
   
 class NuevoGrupoDeTrabajoSchema(Schema):
     nombre = fields.Str(required=True,error_messages={"required": {"message": "Debe indicarse nombre de grupo", "code": 400}}) 
     jefeDeGrupo = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse Jefe de Grupo", "code": 400}}) 
     grupoGral = fields.Boolean(default=False)
+    integrantes = fields.List(fields.Int())
 
     @post_load
     def make_Grupo(self, data, **kwargs):

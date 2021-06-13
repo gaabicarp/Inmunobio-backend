@@ -1,32 +1,13 @@
 from marshmallow import ValidationError,EXCLUDE
 from models.mongo.stock import Stock
-from schemas.stockSchema import StockSchema,NuevoStockSchema,busquedaStocksSchema,ModificarProducto
-from schemas.productosEnStockSchema import NuevoProductosEnStockSchema
+from schemas.stockSchema import StockSchema,NuevoStockSchema,ModificarProducto,ConsumirStockSchema
+from schemas.productosEnStockSchema import NuevoProductoEnStockSchema
 from servicios.grupoDeTrabajoService import GrupoDeTrabajoService
 from servicios.productoService import ProductoService
-from exceptions.exception import ErrorGrupoInexistente,ErrorProductoInexistente,ErrorStockEspacioFisicoInexistente,ErrorProductoEnStockInexistente,ErrorStockInexistente
+from exceptions.exception import ErrorGrupoInexistente,ErrorProductoInexistente,ErrorProductoEnStockInexistente,ErrorStockInexistente,ErrorUnidadStock,ErrorStockVacio
 from servicios.commonService import CommonService
 from servicios.productosEnStockService import ProductoEnStockService
 
-#TO- DO : testear unidades por agrupacion , tomar la descripcion del ultimo que se envia si coincide con otros stocks activos
-"""
-{
-    id_grupoDeTrabajo: int
-    id_espacioFisico: int
-    id_producto: int 
-    producto = [
-        {
-            id_productos =  fields.Integer(dump_only=True)
-            codigoContenedor = fields.Integer()
-            detalleUbicacion = fields.String(default="")
-            unidad =fields.Integer(default=0)
-            lote = fields.String(default="")
-            fechaVencimiento = fields.DateTime()
-        }
-    ]
-}
-
-"""
 class StockService():
     @classmethod
     def nuevoStock(cls,datos):
@@ -51,71 +32,60 @@ class StockService():
     @classmethod
     def altaStock(cls,datos,productoEnSistema):
         try:
-            stock = cls.busquedaProductoActivoEnStock(datos)
+            stock = cls.BusquedaEnStockAlta(datos['id_grupoDeTrabajo'],datos['id_espacioFisico'],datos['id_producto'])
             cls.altaProductoEnStock(stock,datos,productoEnSistema)
-        except ErrorProductoInexistente :
+        except ErrorProductoEnStockInexistente :
             cls.crearStock(datos,productoEnSistema)
+        except (ErrorUnidadStock ,ErrorStockVacio) as err:
+            return {'error':err.message},400
         return {'Status':'ok'},200
 
-    @classmethod
-    def busquedaProductoActivoEnStock(cls,datos):
-        resultado = cls.BusquedaEnStockAlta(datos['id_grupoDeTrabajo'],datos['id_espacioFisico'],datos['id_producto']).first()
-        return resultado
-
     def BusquedaEnStockAlta(_id_grupoDeTrabajo,_id_espacioFisico,_id_producto):
-        #ver como concatener el filtro de busquedanEn STock y agregarle id_producto 
-        resultado =  Stock.objects.filter(id_producto=_id_producto,id_espacioFisico = _id_espacioFisico, id_grupoDeTrabajo =_id_grupoDeTrabajo)
+        resultado =  Stock.objects.filter(id_producto=_id_producto,id_espacioFisico = _id_espacioFisico, id_grupoDeTrabajo =_id_grupoDeTrabajo).first()
         if(not resultado):
-            raise ErrorProductoInexistente()
+            raise ErrorProductoEnStockInexistente(_id_producto)
         return resultado
 
     def BusquedaEnStock(_id_grupoDeTrabajo,_id_espacioFisico):
-        resultado =  Stock.objects.filter(id_espacioFisico = _id_espacioFisico, id_grupoDeTrabajo =_id_grupoDeTrabajo )
-        if(not resultado):
-            raise ErrorStockEspacioFisicoInexistente()
-        return resultado
-
-    def busquedaProductoEnStock(stock,productoNuevo):
+        return  Stock.objects.filter(id_espacioFisico = _id_espacioFisico, id_grupoDeTrabajo =_id_grupoDeTrabajo )
+    
+    def busquedaProductoPorAtributo(stock,productoNuevo):
         for producto in stock:
             if(ProductoEnStockService().compararProductos(producto,productoNuevo)):
                  return producto
         return None
     @classmethod
-    def BusquedaEnStockPorId(cls,_id_productoEnStock):
-        resultado =  Stock.objects.filter(id_productoEnStock =_id_productoEnStock)
-        #resultado =  Stock.objects.filter(producto__id_productos = _id_productos, id_productoEnStock =_id_productoEnStock ).first()
-        print(resultado)
+    def BusquedaStockPorId(cls,_id_productoEnStock):
+        resultado =  Stock.objects.filter(id_productoEnStock =_id_productoEnStock).first()
         if(not resultado):
             raise ErrorStockInexistente()
         return resultado
 
-    @classmethod
-    def busquedaProductoEnStockPorID(cls,_id_productos,_id_productoEnStock):
-        resultado = cls.BusquedaEnStockPorId(_id_productoEnStock).filter(producto__id_productos=_id_productos).first()
-        print(resultado)
-        if(not resultado):
-            raise ErrorProductoEnStockInexistente()
-        return resultado
+    def obtenerProductosEspecificos(_id_productos,productos):
+        for prod in productos:
+            if prod.id_productos == _id_productos: return prod
+        raise ErrorProductoEnStockInexistente(_id_productos)
 
     @classmethod
     def crearProducto(cls,datos, productoEnSistema):
-        productoNuevo = NuevoProductosEnStockSchema().load(datos,unknown=EXCLUDE )
+        productoNuevo = NuevoProductoEnStockSchema().load(datos,unknown=EXCLUDE )
         cls.setearUnidadesDeAgrupacion(productoEnSistema,productoNuevo)
         return productoNuevo
 
     @classmethod
     def altaProductoEnStock(cls,stock,datos,productoEnSistema):
         productoNuevo = cls.crearProducto(datos['producto'][0],productoEnSistema)
-        productoEnStock = cls.busquedaProductoEnStock(stock.producto,productoNuevo)
+        productoEnStock = cls.busquedaProductoPorAtributo(stock.producto,productoNuevo)
         if not productoEnStock:
             stock.producto.append(productoNuevo)
         else:
             cls.modificarUnidades(productoEnStock.unidad + productoNuevo.unidad,productoEnStock)
         stock.save()
-        return {'Status':'ok'},200
 
     @classmethod
     def modificarUnidades(cls,unidad,producto):
+        if(unidad < 0 ):raise ErrorUnidadStock()
+        if not unidad : raise ErrorStockVacio()    
         producto.unidad= unidad
 
     @classmethod
@@ -138,21 +108,18 @@ class StockService():
             return CommonService.jsonMany(stock,StockSchema)
         except ErrorGrupoInexistente as err:
             return {'Error':err.message},400
-        except ErrorStockEspacioFisicoInexistente as err:
-            return {'Error':err.message},400
 
 
     @classmethod
-    def borrarProductoEnStock(cls,datos):
-        '''recibe un json con id de stock e id de producto en stock,
-        si hay coincidencia lo borra'''
+    def borrarProductoEnStock(cls,id_productoEnStock,id_productos):
         try:
-            busquedaStocksSchema().load(datos)
-            stock= cls.busquedaProductoEnStockPorID(datos['id_productos'],datos['id_productoEnStock'])
-            stock.update(pull__producto__id_productos = datos['id_productos'])
-            stock= cls.BusquedaEnStockPorId(datos['id_productoEnStock']).first() #aca tengo que consultar de nuevo
+            stock= cls.BusquedaStockPorId(id_productoEnStock)
+            productoEnStock = cls.obtenerProductosEspecificos(id_productos,stock.producto)
+            stock.producto.remove(productoEnStock)
+            #stock.update(pull__producto__id_productos = datos['id_productos'])
+            #stock= cls.BusquedaStockPorId(datos['id_productoEnStock']).first() #aca tengo que consultar de nuevo
             #porque los cambios se guardan en la base y no en el stock objeto, ver como se puede mejorar
-            if(not stock.producto): stock.delete()
+            cls.borradoStockVacio(stock)
             stock.save()
             return {'Status':'ok'},200
         except ValidationError as err:
@@ -160,26 +127,44 @@ class StockService():
         except (ErrorProductoEnStockInexistente,ErrorStockInexistente) as err:
             return {'Error':err.message},400  
 
-    def obtenerProductosEspecificos(_id_productos,productos):
-        for prod in productos:
-            if prod.id_productos == _id_productos: return prod
-        raise ErrorProductoInexistente()
-        
-
     @classmethod    
     def modificarProductoEnStock(cls,datos):
         try:
             ModificarProducto().load(datos)
-            stock= cls.busquedaProductoEnStockPorID(datos['id_productos'],datos['id_productoEnStock'])
+            stock= cls.BusquedaStockPorId(datos['id_productoEnStock'])
             producto = cls.obtenerProductosEspecificos(datos['id_productos'],stock.producto)
             CommonService.updateAtributes(producto,datos['producto'],'id_productos')
             stock.save()
             return {'Status':'ok'},200
         except ValidationError as err:
             return {'error': err.messages},400
-        except (ErrorProductoInexistente,ErrorProductoEnStockInexistente) as err:
-            return {'Error':err.message},400  
-        
+        except (ErrorProductoEnStockInexistente,ErrorStockInexistente) as err:
+            return {'Error':err.message},400 
+         
+    @classmethod
+    def consumirStock(cls,datos):
+        try:
+            ConsumirStockSchema().load(datos)
+            stock= cls.BusquedaStockPorId(datos['id_productoEnStock'])
+            producto = cls.obtenerProductosEspecificos(datos['id_productos'],stock.producto)
+            cls.modificarUnidades(producto.unidad - datos['unidad'],producto)
+            stock.save()
+        except ErrorStockVacio:
+            stock.producto.remove(producto)
+            stock.save()
+            cls.borradoStockVacio(stock)
+            #return {'Status':'ok'},200
+        except ValidationError as err:
+            return {'error': err.messages},400
+        except (ErrorUnidadStock,ErrorStockInexistente,ErrorProductoEnStockInexistente) as err:
+            return {'error': err.message},400
+        finally:
+            return {'Status':'ok'},200
+
+    @classmethod
+    def borradoStockVacio(cls,stock):
+        if(not stock.producto): stock.delete()
+        stock.save()
 
     #para testear
     def borrarTodo(_id_grupoDeTrabajo):

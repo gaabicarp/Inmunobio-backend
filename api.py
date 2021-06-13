@@ -1,73 +1,81 @@
 from flask_restful import Api
 
-from resources.usuariosResource import ActualizarPermisos, ObtenerUsuariosResource,UsuarioResource, BusquedaPorID,ObtenerUsuariosParaProyecto
+from resources.usuariosResource import  ObtenerUsuariosResource,UsuarioResource, UsuarioID,ObtenerUsuariosParaProyecto
 from resources.proyectoResource import *
 from resources.permisosResource import Permisos,ObtenerPermisoPorId
-from resources.grupoDeTrabajoResource import ObtenerGrupoDeTrabajo,GrupoDeTrabajo,GruposDeTrabajo,RenombrarJefeGrupo
-from resources.experimentoResource import ExperimentoResource, Experimentos
+from resources.grupoDeTrabajoResource import GrupoDeTrabajoID,GrupoDeTrabajo,GruposDeTrabajo,RenombrarJefeGrupo
+from resources.experimentoResource import ExperimentoResource, Experimentos, ExperimentoMuestra
 from resources.proyectoResource import *
 from resources.experimentoResource import ExperimentoResource, Experimentos, CerrarExperimento
 from resources.contenedorResource import Contenedor, ContenedorProyecto, ContenedorParent
 
 from resources.grupoExperimentalResource import GrupoExperimental, GruposExperimentales, DevidirGrupoExperimental
+from resources.stockResource import ObtenerProductosStock,ProductoEnStock,BorrarTodoStock,ConsumirStockResource,ProductoEnStockID
+from resources.productoResource import ProductoResource,ObtenerProductosResource,ProductoID,ArchivoProducto
+from resources.distribuidoraResource import DistribuidoraResource,ObtenerDistribuidorasResource,DistribuidoraID
+
+from resources.grupoExperimentalResource import GrupoExperimental, GruposExperimentales
 from resources.jaulaResource import Jaula, JaulasSinProyecto, JaulasDelProyecto
 from resources.fuenteExperimentalResource import FuenteExperimental
-from resources.animalResource import  Animal, Animales, AnimalesSinJaula, AnimalesDeLaJaula
+from resources.animalResource import  Animal, Animales, AnimalesSinJaula, AnimalesDeLaJaula, AnimalesProyecto
 
-from resources.stockResource import ObtenerProductosStock,ProductoEnStock,ObtenerStocks,BorrarTodoStock
-from resources.productoResource import ProductoResource,ObtenerProductosResource,ObtenerProductoResource
-from resources.distribuidoraResource import DistribuidoraResource,ObtenerDistribuidorasResource,ObtenerDistribuidoraResource
+from resources.muestraResource import Muestra, MuestraGrupoExperimental, MuestraProyecto
 
 
 api = Api()
+#Espacio fisico
+
 
 #permisos
 api.add_resource(ObtenerPermisoPorId, '/api/v1/permiso/<int:id_permiso>')
 api.add_resource(Permisos, '/api/v1/permisos')
+
 #usuarios
-api.add_resource(ActualizarPermisos, '/api/v1/usuariosPermisos')
 api.add_resource(ObtenerUsuariosResource, '/api/v1/usuarios')
 api.add_resource(UsuarioResource, '/api/v1/usuario')
-api.add_resource(BusquedaPorID, '/api/v1/usuario/<int:id_usuario>')
+api.add_resource(UsuarioID, '/api/v1/usuario/<int:id_usuario>')
 api.add_resource(ObtenerUsuariosParaProyecto, '/api/UsuariosParaProyecto')
 
 #proyectos
 api.add_resource(Proyectos, '/api/v1/proyectos')
 api.add_resource(NuevoProyecto, '/api/v1/nuevoProyecto')
-api.add_resource(ProyectoID, '/api/proyectoID')
-api.add_resource(CerrarProyecto, '/api/cerrarProyecto')
-api.add_resource(ModificarProyecto, '/api/modificarProyecto')
+api.add_resource(ProyectoID, '/api/v1/proyecto/<int:id_proyecto>')
+api.add_resource(CerrarProyecto, '/api/v1/cerrarProyecto')
+api.add_resource(ModificarProyecto, '/api/v1/modificarProyecto')
+api.add_resource(ObtenerUsuariosProyecto, '/api/v1/obtenerUsuariosProyecto/<int:id_proyecto>')
 
 #Grupo de trabajo
 api.add_resource(GrupoDeTrabajo,'/api/v1/grupoDeTrabajo')
-api.add_resource(RenombrarJefeGrupo, '/api/v1/nuevoJefeDeGrupo')
 api.add_resource(GruposDeTrabajo, '/api/v1/gruposDeTrabajo')
-api.add_resource(ObtenerGrupoDeTrabajo, '/api/v1/grupoDeTrabajo/<int:id_grupoDeTrabajo>')
+api.add_resource(GrupoDeTrabajoID, '/api/v1/grupoDeTrabajo/<int:id_grupoDeTrabajo>')
+api.add_resource(RenombrarJefeGrupo, '/api/v1/nuevoJefeDeGrupo') # ver si se queda o no 
 
 #stock
 api.add_resource(ObtenerProductosStock, '/api/v1/obtenerStock/<int:id_grupoDeTrabajo>/<int:id_espacioFisico>')
-api.add_resource(ObtenerStocks, '/api/v1/obtenerStocks/<int:id_grupoDeTrabajo>')
 api.add_resource(ProductoEnStock, '/api/v1/productoEnStock')
 api.add_resource(BorrarTodoStock, '/api/v1/borrar/<int:id_grupoDeTrabajo>')
+api.add_resource(ConsumirStockResource, '/api/v1/consumirStock')
+api.add_resource(ProductoEnStockID, '/api/v1/stock/<int:id_productoEnStock>/<int:id_productos>')
 
 
 #producto
 api.add_resource(ProductoResource, '/api/v1/producto')
 api.add_resource(ObtenerProductosResource, '/api/v1/getProductos')
-api.add_resource(ObtenerProductoResource, '/api/v1/getProducto/<int:id_producto>')
+api.add_resource(ProductoID, '/api/v1/producto/<int:id_producto>')
+api.add_resource(ArchivoProducto, '/api/v1/producto/subirArchivo/<int:id_producto>')
 
 #distribuidora
 api.add_resource(DistribuidoraResource, '/api/v1/distribuidora')
 api.add_resource(ObtenerDistribuidorasResource, '/api/v1/getDistribuidoras')
-api.add_resource(ObtenerDistribuidoraResource, '/api/v1/getDistribuidora/<int:id_distribuidora>')
+api.add_resource(DistribuidoraID, '/api/v1/distribuidora/<int:id_distribuidora>')
 
 #Experimento
 api.add_resource(Experimentos, '/api/v1/proyecto/<int:idProyecto>/experimentos', endpoint='experimentos')
-
 api.add_resource(ExperimentoResource, '/api/v1/experimento/<int:idExperimiento>', endpoint='experimento')
 api.add_resource(ExperimentoResource, '/api/v1/nuevoExperimento', endpoint='nuevo_experimento')
 api.add_resource(CerrarExperimento, '/api/v1/cerrarExperimento', endpoint='cerrar_experimento')
 api.add_resource(ExperimentoResource, '/api/v1/modificarExperimento', endpoint='modificar_experimento')
+api.add_resource(ExperimentoMuestra, '/api/v1/agregarMuestrasExternasAlExperimento', endpoint='agregar_muestras_externas_al_experimento')
 
 #Grupo Experimental
 api.add_resource(GrupoExperimental, '/api/v1/grupoExperimental/<int:idGrupoExperimental>', endpoint='grupo_experimental')
@@ -92,9 +100,11 @@ api.add_resource(Animal, '/api/v1/animal/<int:idAnimal>', endpoint="animal")
 api.add_resource(Animal, '/api/v1/bajaAnimal/<int:idAnimal>', endpoint="baja_animal")
 api.add_resource(Animal, '/api/v1/nuevoAnimal', endpoint="nuevo_animal")
 api.add_resource(Animales, '/api/v1/animales', endpoint="animales")
+api.add_resource((Animales))
 api.add_resource(AnimalesSinJaula, '/api/v1/animalesSinJaula', endpoint="animales_sin_jaula")
 api.add_resource(AnimalesDeLaJaula, '/api/v1/jaula/<int:idJaula>/animales', endpoint="animales_de_la_jaula")
 api.add_resource(AnimalesDeLaJaula, '/api/v1/asignarJaulas', endpoint="asignar_jaulas")
+api.add_resource(AnimalesProyecto, '/api/v1/proyecto/<int:idProyecto>/animales', endpoint="animales_del_proyecto")
 
 #contenedor
 api.add_resource(Contenedor, '/api/v1/contenedores', endpoint='contenedores')
@@ -103,3 +113,11 @@ api.add_resource(ContenedorProyecto, '/api/v1/contenedoresDelProyecto', endpoint
 api.add_resource(ContenedorProyecto, '/api/v1/asignarProyectoAlContenedor', endpoint='asignar_proyecto_al_contenedor')
 api.add_resource(ContenedorParent, '/api/v1/subcontenedores', endpoint='subcontenedores')
 api.add_resource(ContenedorParent, '/api/v1/asignarParentAContenedores', endpoint='asignar_parent_a_contenedores')
+
+#Muestra
+api.add_resource(Muestra, '/api/v1/muestra/<int:idMuestra>', endpoint='muestra')
+api.add_resource(Muestra, '/api/v1/nuevaMuestra', endpoint='nueva_muestra')
+api.add_resource(Muestra, '/api/v1/modificarMuestra', endpoint='modificar_muestra')
+api.add_resource(Muestra, '/api/v1/bajarMuestra/<int:idMuestra>', endpoint='bajar_muestra')
+api.add_resource(MuestraGrupoExperimental, '/api/v1/grupoExperimental/<int:idGrupoExperimental>/muestras', endpoint='muestras_grupo_experimental')
+api.add_resource(MuestraProyecto, '/api/v1/proyecto/<int:idProyecto>/muestras', endpoint='muestras_proyecto')

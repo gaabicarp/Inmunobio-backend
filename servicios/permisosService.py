@@ -13,12 +13,15 @@ class PermisosService():
 
     @classmethod
     def find_by_id(cls, _id_permiso):
-        return Permiso.query.filter_by(id_permiso=_id_permiso).first()
+        permiso= Permiso.query.filter_by(id_permiso=_id_permiso).first()
+        if not permiso: 
+            raise ErrorPermisoInexistente(_id_permiso)
+        return permiso
         
     @classmethod
     def all_permisos(cls):
         permisos = Permiso.query.all()
-        return CommonService().jsonMany(permisos,PermisoSchema)
+        return CommonService.jsonMany(permisos,PermisoSchema)
 
 
     @classmethod
@@ -31,15 +34,13 @@ class PermisosService():
         print("entro a ver permisos")
         for dictonary in permisosDict:
             permiso = cls.find_by_id(dictonary['id_permiso'])
-            if(permiso):
-                permisos.append(permiso)
-            else: raise ErrorPermisoInexistente(dictonary['id_permiso'])
+            permisos.append(permiso)
         return permisos
 
     @classmethod
     def obtenerPermisoPorId(cls,id_permiso):
-        permiso = PermisosService.find_by_id(id_permiso)
-        if permiso : 
-            return CommonService().json(permiso,PermisoSchema)
-        return {'error':'No existen permisos con esa id'},400
+        try:
+            return CommonService.json(PermisosService.find_by_id(id_permiso),PermisoSchema)
+        except ErrorPermisoInexistente as err:
+            return {'error': err.message},400
 

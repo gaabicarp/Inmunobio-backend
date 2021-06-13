@@ -22,6 +22,8 @@ class Usuario(db.Model):
     direccion = db.Column(String(50))
     telefono = db.Column(String(120))
     permisos = db.relationship('Permiso',secondary =permisoXUsuario, backref = db.backref('permisos'),lazy = 'dynamic')
+    id_grupoDeTrabajo =  db.Column(db.Integer)
+    esJefeDe = db.Column(db.Integer)
     
     def __init__(self, nombre, email, password,direccion,telefono,permisos):
         self.nombre = nombre

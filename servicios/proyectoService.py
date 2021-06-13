@@ -1,8 +1,11 @@
 from dateutil import parser
 import datetime
 from flask import jsonify
-
-from models.mongo.proyecto import Proyecto, ProyectoSchema, ProyectoCerradoSchema, ProyectoModificarSchema
+from models.mongo.proyecto import Proyecto, ProyectoSchema, ProyectoCerradoSchema, ProyectoModificarSchema,ProyectoNuevoSchema
+from servicios.usuarioService import UsuarioService
+from servicios.commonService import CommonService
+from schemas.usuarioSchema import UsuarioSchema
+from exceptions.exception import ErrorUsuarioInexistente
 
 class ProyectoService:
     @classmethod
@@ -16,6 +19,7 @@ class ProyectoService:
     @classmethod
     def nuevoProyecto(cls, datos):
         proyecto = ProyectoNuevoSchema().load(datos)
+        UsuarioService.busquedaUsuariosID(datos['participantes']) #validamos que se pasen usuarios validos 
         proyecto.save()
 
     @classmethod
@@ -31,7 +35,6 @@ class ProyectoService:
             fechaFinal = parser.parse(str(datetime.datetime.utcnow()))
         )
     
-
     #Agregar modificar Participantes
     @classmethod
     def modificarProyecto(cls, datos):
@@ -41,6 +44,21 @@ class ProyectoService:
         Proyecto.objects(id_proyecto = proyecto.id_proyecto).update(set__montoInicial = proyecto.montoInicial)
     
     @classmethod
-    def agregarMiembros(self):
-        usuariosIdPermitidas = Usuario.find_usuarios_Habilitados()
+    def agregarMiembros(cls):
+        usuariosIdPermitidas = UsuarioService.UsuarioService()
         return usuariosIdPermitidas
+
+    @classmethod
+    def obtenerMiembrosProyecto(cls, id_proyecto):    
+        try:
+            proyecto = cls.find_by_id(id_proyecto)
+            usuarios = UsuarioService.busquedaUsuariosID(proyecto.participantes)
+            return CommonService.jsonMany(usuarios,UsuarioSchema)
+        except ErrorUsuarioInexistente as err:
+            return {'Error': err.message},400  
+
+
+    @classmethod
+    def json(cls,datos):
+        return  ProyectoSchema().dump(datos)
+

@@ -2,6 +2,7 @@ from db import dbMongo
 from marshmallow import Schema, fields, post_load, validate
 class FuenteExperimental(dbMongo.Document):
     id_fuenteExperimental = dbMongo.SequenceField()
+    id_proyecto = dbMongo.IntField()
     codigo = dbMongo.StringField(default="")
     codigoGrupoExperimental = dbMongo.StringField(default="") #Se usa como flag para saber si está disponible
     especie = dbMongo.StringField()
@@ -17,6 +18,7 @@ class FuenteExperimental(dbMongo.Document):
 
 class AnimalSchema(Schema):
     id_fuenteExperimental = fields.Int()
+    id_proyecto = fields.Int()
     especie = fields.Str()
     sexo = fields.Str()
     cepa = fields.Str()
@@ -37,11 +39,10 @@ class FuenteExperimentalSchema(AnimalSchema):
 #not_empty = validate.Length(min=1, error="El campo no puede estar vacío")
 not_empty_string = validate.Length(min=1, error="El campo no puede estar vacío")
 class NuevoAnimalSchema(AnimalSchema):
+    id_proyecto = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar el id del proyecto.", "code": 400}})
     especie = fields.Str(required=True, error_messages={"required": {"message" : "Es necesario indicar la especie del animal", "code" : 400}})
     sexo = fields.Str(required=True, validate=not_empty_string,  error_messages={"required": {"message" : "Es necesario indicar el sexo del animal", "code" : 400}})
     cepa = fields.Str(required=True, validate=not_empty_string,  error_messages={"required": {"message" : "Es necesario indicar la cepa del animal", "code" : 400}})
-    tipo = fields.Str(required=True, validate=not_empty_string,  error_messages={"required" : {"message" : "Es necesario indicar el tipo del animal", "code" : 400}})
-
 class FuenteExperimentalAnimalSchema(FuenteExperimentalSchema):
     id_fuenteExperimental = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar el id de la fuente experimental", "code": 400}})
     codigo = fields.Str(required=True, validate=not_empty_string, error_messages={"required": {"message" : "Es necesario indicar el codigo de la fuente experimental", "code": 400}})

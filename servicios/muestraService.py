@@ -1,4 +1,7 @@
-from models.mongo.muestra import Muestra, MuestraSchema, NuevaMuestraSchema
+from models.mongo.grupoExperimental import GrupoExperimental
+from models.mongo.muestra import Muestra, MuestraSchema, NuevaMuestraSchema, ModificarMuestraSchema
+from models.mongo.grupoExperimental import MuestraPropia, MuestraPropiaSchema, GrupoExperimental
+from .validationService import Validacion
 from dateutil import parser
 import datetime
 
@@ -8,11 +11,72 @@ class MuestraService:
     def find_by_id(cls, idMuestra):
         return Muestra.objects.filter(id_muestra=idMuestra).first()
 
+    # @classmethod
+    # def find_all_by_experimento(cls, idExperimento):
+    #     muestras = Muestra.objects.filter(id_experimento=idExperimento).all()
+    #     return MuestraSchema.dump(muestras, many=True)
+    
     @classmethod
-    def find_all_by_experimento(cls, idExperimento):
-        muestras = Muestra.objects.filter(id_experimento=idExperimento).all()
-        return MuestraSchema.dump(muestras, many=True)
+    def find_all_by_grupoExperimental(cls, idGrupoExperimental):
+        muestras = Muestra.objects(id_grupoExperimental=idGrupoExperimental, habilitada = True).all()
+        return MuestraSchema().dump(muestras, many=True)
 
     @classmethod
-    def nuevaMuestra(cls, datos):
-        muestra = NuevaMuestraSchema().load(datos)
+    def find_all_by_proyecto(cls, idProyecto):
+        muestras = Muestra.objects(id_proyecto=idProyecto, habilitada = True).all()
+        return MuestraSchema().dump(muestras, many=True)
+
+    @classmethod
+    def nuevasMuestras(cls, datos):
+        muestras = NuevaMuestraSchema().load(datos, many=True)
+        cls.validarRelacionDeMuestras(cls, muestras)
+        for muestra in muestras:
+            muestra.save()
+        cls.actualizarMuestrasEnGrupoExperimental(cls,muestras[0].id_grupoExperimental)
+    
+    def validarRelacionDeMuestras(self, muestras):
+        for muestra in muestras:
+            if not Validacion().elProyectoExiste(muestra.id_proyecto):
+                raise Exception(f"El proyecto con id {muestra.id_proyecto} no exsite.")
+            if not Validacion().elExperimentoEstaFinalizado(muestra.id_experimento):
+                raise Exception(f"El experimento con id {muestra.id_experimento} está finalizado.")
+            if not Validacion().elExperimentoPerteneceAlProyecto(muestra.id_experimento, muestra.id_proyecto):
+                raise Exception(f"El experimento con id {muestra.id_experimento} no pertenece al proyecto con id {muestra.id_proyecto}")
+            if not Validacion().elGrupoExperimentalPerteneceAlExperimento(muestra.id_experimento, muestra.id_grupoExperimental):
+                raise Exception(f"El grupo experimental con id {muestra.id_grupoExperimental} no pertenece al experimento con id {muestra.id_experimento}")
+
+    def actualizarMuestrasEnGrupoExperimental(self, idGrupoExperimental):
+        muestras = Muestra.objects.filter(id_grupoExperimental=idGrupoExperimental, habilitada = True).all()
+        muestrasPropiasDict = MuestraSchema(exclude=['id_contenedor', 'id_grupoExperimental', 'id_experimento', 'id_proyecto', 'habilitada']).dump(muestras, many=True)
+        muestrasPropias = MuestraPropiaSchema().load(muestrasPropiasDict, many=True)
+        GrupoExperimental.objects(id_grupoExperimental= idGrupoExperimental).update(muestras = muestrasPropias)
+        
+    def validarMuestra(self, idMuestra):
+        if not Validacion().existeLaMuestra(self, idMuestra):
+            raise Exception(f"No existe muestra con el id {idMuestra}.")
+        if not Validacion().laMuestraEstaHabilitada(self, idMuestra):
+            raise Exception(f"La muestra con id {idMuestra} se encuentra deshabilitada.")
+
+    @classmethod
+    def modificarMuestra(cls, datos):
+        muestra = ModificarMuestraSchema().load(datos)
+        cls.validarMuestra(muestra.id_muestra)
+        Muestra.objects(id_muestra = muestra.id_muestra).update(
+            codigo = muestra.codigo,
+            descripcion = muestra.descripcion,
+            id_contenedor = muestra.id_contenedor
+        )
+        cls.modificarMuestraEnGrupoExperimental(cls, muestra)
+    
+    def modificarMuestraEnGrupoExperimental(self, muestra):
+        GrupoExperimental.objects(id_grupoExperimental=muestra.id_grupoExperimental, muestras__id_muestra=muestra.id_muestra).update(
+            set__muestras__S__codigo=muestra.codigo, 
+            set__muestras__S__descripcion=muestra.descripcion)
+
+    #Falta agregar la actualización en experimentos
+    @classmethod
+    def darDeBajaMuestra(cls, idMuestra):
+        cls.validarMuestra(cls, idMuestra)
+        muestra = Muestra.objects(id_muestra=idMuestra).first()
+        Muestra.objects(id_muestra = idMuestra).update(habilitada = False)
+        cls.actualizarMuestrasEnGrupoExperimental(cls, muestra.id_grupoExperimental)

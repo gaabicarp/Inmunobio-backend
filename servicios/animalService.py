@@ -13,6 +13,7 @@ class AnimalService:
     @classmethod
     def nuevoAnimal(cls, datos):
         animal = NuevoAnimalSchema().load(datos)
+        animal.tipo = "Animal"
         animal.save()
     
     @classmethod
@@ -53,4 +54,11 @@ class AnimalService:
                 baja = True,
                 id_jaula = 0
                 )
+        return None
+    
+    @classmethod
+    def animalesDelProyecto(cls, idProyecto):
+        animales = FuenteExperimental.objects(id_proyecto = idProyecto).all()
+        if animales:
+            return AnimalSchema().dump(animales, many=True)
         return None

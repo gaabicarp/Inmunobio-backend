@@ -70,3 +70,13 @@ class AnimalesDeLaJaula(Resource):
             except ValidationError as err:
                 return {'Error': err.messages},400
         return {'Error' : "Se deben enviar un array de aniamles."}, 400
+
+class AnimalesProyecto(Resource):
+
+    def get(self, idProyecto):
+        if idProyecto:
+            animales = AnimalService.animalesDelProyecto(idProyecto)
+            if animales:
+                return animales, 200
+            return {'Status': f'No se encontraron animales para el id {idProyecto} del proyecto.'}, 200
+        return {'Error' : "Se debe indicar un id del proyecto"}, 400
