@@ -145,20 +145,20 @@ class StockService():
         try:
             ConsumirStockSchema().load(datos)
             stock= cls.BusquedaStockPorId(datos['id_productoEnStock'])
+            print(stock)
             producto = cls.obtenerProductosEspecificos(datos['id_productos'],stock.producto)
             cls.modificarUnidades(producto.unidad - datos['unidad'],producto)
             stock.save()
+            return {'Status':'ok'},200
         except ErrorStockVacio:
             stock.producto.remove(producto)
             stock.save()
             cls.borradoStockVacio(stock)
-            #return {'Status':'ok'},200
+            return {'Status':'ok'},200
         except ValidationError as err:
             return {'error': err.messages},400
         except (ErrorUnidadStock,ErrorStockInexistente,ErrorProductoEnStockInexistente) as err:
             return {'error': err.message},400
-        finally:
-            return {'Status':'ok'},200
 
     @classmethod
     def borradoStockVacio(cls,stock):
