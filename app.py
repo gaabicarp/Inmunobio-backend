@@ -17,6 +17,7 @@ db.init_app(app)
 
 with app.app_context():
     db.create_all()
+	#pass
 	
 dbMongo.init_app(app)
 

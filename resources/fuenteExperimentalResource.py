@@ -7,11 +7,28 @@ from servicios.fuenteExperimentalService import FuenteExperimentalService
 
 class FuenteExperimental(Resource):
 
-    def get(self, idFuenteExperimental):
-        if idFuenteExperimental:
-            fuenteExperimental = FuenteExperimentalService.find_by_id(idFuenteExperimental)
+    def get(self, codigo):
+        if codigo:
+            fuenteExperimental = FuenteExperimentalService.find_by_codigo(codigo)
             if fuenteExperimental:
-                return fuenteExperimental.json(), 200
+                return fuenteExperimental, 200
             else:
-                return {"Status" : f"No se encontró una fuente experimental para el id {idFuenteExperimental}"}, 200
+                return {"Status" : f"No se encontró una fuente experimental para el id {codigo}"}, 200
         return {'Error': 'Es necesario indicar el id de la fuente experimental.'}, 400
+
+    def post(self):
+        datos = request.get_json()
+        if datos:
+            try:
+                resp = FuenteExperimentalService.nuevasFuentesExperimentales(datos)
+                return resp
+            except ValidationError as err:
+                return {"Error": err.messages}, 400
+            except Exception as err:
+                return {"Error": str(err)}, 400
+        return {'Error' : "Se deben enviar datos para la creación de la fuente experimental."}, 400
+
+class FuentesExperimentales(Resource):
+
+    def get(self):
+        pass

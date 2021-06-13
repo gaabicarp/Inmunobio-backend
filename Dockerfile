@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:3.8-slim-buster
 RUN apt-get update -y && apt-get install -y build-essential
 COPY ./requirements.txt /app/requirements.txt
 WORKDIR /app
