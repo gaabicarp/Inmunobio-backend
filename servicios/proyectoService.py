@@ -10,7 +10,7 @@ from exceptions.exception import ErrorUsuarioInexistente
 class ProyectoService:
     @classmethod
     def find_all(cls):
-        return jsonify(ProyectoSchema().dump(Proyecto.objects.filter(finalizado=False).all(), many=True))
+        return jsonify(ProyectoSchema().dump(Proyecto.objects.filter().all(), many=True))
         
     @classmethod
     def find_by_id(cls, id):
