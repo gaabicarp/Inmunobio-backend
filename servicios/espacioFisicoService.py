@@ -1,6 +1,6 @@
 from marshmallow import ValidationError
 from models.mongo.espacioFisico import EspacioFisico
-from schemas.espacioFisicoSchema import NuevoEspacioFisicoSchema,ModificarEspacioFisico,NuevoBlogEspacioFisicoSchema
+from schemas.espacioFisicoSchema import BusquedaBlogEspacio,NuevoEspacioFisicoSchema,ModificarEspacioFisico,NuevoBlogEspacioFisicoSchema
 from exceptions.exception import ErrorEspacioFisicoInexistente,ErrorBlogInexistente
 from servicios.blogService import BlogService
 from servicios.commonService import CommonService
@@ -44,7 +44,7 @@ class EspacioFisicoService():
 
     @classmethod
     def obtenerBlogs(cls,datos):
-        
+        BusquedaBlogEspacio().load(datos)
         espacio = cls.find_by_id(datos['id_espacioFisico'])
         return BlogService.busquedaPorFecha(espacio.blogs,datos['fechaDesde'],datos['fechaHasta'])
 

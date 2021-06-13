@@ -8,6 +8,7 @@ from schemas.jaulaSchema import  JaulaSchema, NuevaJaulaSchema, ActualizarProyec
 from marshmallow import ValidationError
 from servicios.commonService import CommonService
 from exceptions.exception import ErrorJaulaInexistente,ErrorBlogInexistente
+from schemas.blogSchema import BlogSchema
 
 class Jaula(Resource):
     def get(self, id_jaula):
@@ -74,6 +75,19 @@ class BlogJaula(Resource):
                 return {'Error':err.message},400 
         return {"Status" : "Deben indicarse datos para el blog"}, 400
 
+class ObtenerBlogsJaula(Resource):
+    def post(self):
+        datos = request.get_json()
+        if datos:
+            try:
+                blogs = JaulaService.obtenerBlogs(datos)       
+                return CommonService.jsonMany(blogs,BlogSchema)
+            except ValidationError as err:
+                return {"Error" : err.messages}, 400
+            except ErrorJaulaInexistente as err:
+                return {'Error':err.message},400 
+        return {"Status" : "Deben indicarse datos para el blog"}, 400
+
 class BorrarBlogJaula(Resource):
     def delete(self,id_jaula,id_blog):
         try:
@@ -84,10 +98,7 @@ class BorrarBlogJaula(Resource):
         except (ErrorBlogInexistente,ErrorJaulaInexistente) as err:
             return {'Error':err.message},400
 
-
-
 class Jaulas(Resource):
-
     def get(self):
         try:
             return  CommonService.jsonMany(JaulaService.obtenerJaulas() ,JaulaSchema)

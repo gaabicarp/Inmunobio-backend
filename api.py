@@ -15,7 +15,7 @@ from resources.productoResource import ProductoResource,ObtenerProductosResource
 from resources.distribuidoraResource import DistribuidoraResource,ObtenerDistribuidorasResource,DistribuidoraID
 
 from resources.grupoExperimentalResource import GrupoExperimental, GruposExperimentales
-from resources.jaulaResource import Jaula, JaulasSinProyecto, JaulasDelProyecto,BlogJaula,BorrarBlogJaula,Jaulas
+from resources.jaulaResource import ObtenerBlogsJaula,Jaula, JaulasSinProyecto, JaulasDelProyecto,BlogJaula,BorrarBlogJaula,Jaulas
 from resources.fuenteExperimentalResource import FuenteExperimental
 from resources.animalResource import  Animal, Animales, AnimalesSinJaula, AnimalesDeLaJaula, AnimalesProyecto
 
@@ -26,6 +26,7 @@ from resources.animalResource import  Animal, Animales, AnimalesSinJaula, Animal
 from resources.espacioFisicoResource import EspaciosFisicos,EspacioFisico,EspacioFisicoID,CrearBlogEspacioFisico,BorrarBlogEspacioFisico,ObtenerBlogsEspFisico
 from resources.herramientaResource import HerramientaResource,HerramientaPorId,Herramientas,BorrarBlogHeramienta,BlogHerramientaXId,CrearBlogHerramientas
 api = Api()
+
 #Espacio fisico
 
 api.add_resource(EspacioFisico, '/api/v1/espacioFisico')
@@ -99,6 +100,7 @@ api.add_resource(Jaula, '/api/v1/bajarJaula/<int:id_jaula>', endpoint="bajar_jau
 api.add_resource(JaulasSinProyecto, '/api/v1/jaulasDisponibles', endpoint="jaulas_disponibles")
 api.add_resource(JaulasDelProyecto, '/api/v1/proyecto/<int:id_proyecto>/jaulasDelProyecto', endpoint="jaulas_del_proyecto")
 api.add_resource(BlogJaula, '/api/v1/proyecto/blogJaula')
+api.add_resource(ObtenerBlogsJaula, '/api/v1/proyecto/blogsJaula')
 api.add_resource(BorrarBlogJaula, '/api/v1/proyecto/borrarBlogJaula/<int:id_jaula>/<int:id_blog>' )
 api.add_resource(Jaulas, '/api/v1/jaulas')
 
