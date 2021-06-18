@@ -6,7 +6,7 @@ from models.mongo.validacion import Validacion
 from models.mongo.muestra import MuestraSchema
 
 class MuestraExterna(dbMongo.EmbeddedDocument):
-    id_muestra = dbMongo.SequenceField()
+    id_muestra = dbMongo.IntField()
     codigo = dbMongo.StringField()
     fecha = dbMongo.DateTimeField()
     tipo = dbMongo.StringField()
