@@ -35,7 +35,6 @@ class AnimalSchema(Schema):
 
 class FuenteExperimentalSchema(AnimalSchema):
     codigo = fields.Str()
-    
     codigoGrupoExperimental = fields.Str()
     descripcion = fields.Str()
 

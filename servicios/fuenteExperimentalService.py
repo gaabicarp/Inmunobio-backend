@@ -47,7 +47,7 @@ class FuenteExperimentalService:
 
     def actualizarFuentesExperimentalesEnGrupoExperimental(grupoExperimental):
         fuentesExperimentales =  FuenteExperimental.objects(codigoGrupoExperimental = grupoExperimental.codigo).all()
-        fuentesExperimentalesDic = FuenteExperimentalSchema(exclude=['id_jaula', 'baja']).dump(fuentesExperimentales, many=True)
+        fuentesExperimentalesDic = FuenteExperimentalSchema(exclude=['id_jaula', 'baja', 'id_proyecto']).dump(fuentesExperimentales, many=True)
         GrupoExperimental.objects(id_grupoExperimental = grupoExperimental.id_grupoExperimental).update(
             fuentesExperimentales = fuentesExperimentalesDic
         )
