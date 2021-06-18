@@ -2,18 +2,17 @@ from flask_restful import Resource
 from flask_jwt import jwt_required
 from flask import  request
 from marshmallow import ValidationError
-from exceptions.exception import ErrorUsuarioInexistente
-
+from exceptions.exception import ErrorUsuarioInexistente,ErrorProyectoInexistente
+from schemas.proyecto import ProyectoSchema
 from servicios.proyectoService import ProyectoService
-
+from servicios.commonService import CommonService
+from schemas.usuarioSchema import UsuarioSchema
+from schemas.blogSchema import BlogSchema
 class Proyectos(Resource):
 
     #@jwt_required()
     def get(self):
-        proyectos = ProyectoService.find_all()
-        if proyectos:
-           return proyectos 
-        return {'name': 'None'},404
+        return CommonService.jsonMany(ProyectoService.find_all(),ProyectoSchema)
 
 class NuevoProyecto(Resource):
 
@@ -45,9 +44,11 @@ class CerrarProyecto(Resource):
 class ProyectoID(Resource):
     #@jwt_required()
     def get(self, id_proyecto):
-        proyecto = ProyectoService.find_by_id(id_proyecto)
-        if proyecto:
-            return ProyectoService.json(proyecto), 200
+        try:
+            proyecto = ProyectoService.find_by_id(id_proyecto)
+            return CommonService.json(proyecto,ProyectoSchema),200
+        except ErrorProyectoInexistente as err:
+            return {'error': err.message}, 400
 
 class ModificarProyecto(Resource):
     #@jwt_required()
@@ -65,6 +66,23 @@ class ObtenerUsuariosProyecto(Resource):
     #@jwt_required()
     def get(self,id_proyecto):
         try:
-            return ProyectoService.obtenerMiembrosProyecto(id_proyecto)
+            usuarios=  ProyectoService.obtenerMiembrosProyecto(id_proyecto)
+            return  CommonService.jsonMany(usuarios,UsuarioSchema)
         except ValidationError as err:
             return {'error': err.messages}, 400
+        except ErrorProyectoInexistente as err:
+            return {'error': err.message}, 400
+
+class ObtenerBlogsProyecto(Resource):
+    #@jwt_required()
+    def post(self):
+        datos = request.get_json()
+        if datos:
+            try:
+                blogs =  ProyectoService.obtenerBlogsProyecto(datos)
+                return CommonService.jsonMany(blogs,BlogSchema)
+            except ValidationError as err:
+                return {'error': err.messages}, 400
+            except ErrorProyectoInexistente as err:
+                return {'Error':err.message},400 
+        return {"Status" : "Deben indicarse datos para el blog"}, 400

@@ -3,6 +3,7 @@ from servicios.commonService import CommonService
 from schemas.blogSchema import BlogSchema,NuevoBlogSchema
 from exceptions.exception import ErrorFechasInvalidas
 from datetime import datetime
+from models.mongo import Jaula
 
 class BlogService():
     @classmethod
@@ -30,3 +31,13 @@ class BlogService():
 
     def validarFechas(fechaDesde,fechaHasta):
         if not fechaDesde<fechaHasta: raise ErrorFechasInvalidas()
+
+    @classmethod
+    def blogsProyecto(cls,id_proyecto,fechaDesde,fechaHasta):
+        blogsJaula = cls.obtenerBlogsJaulaProyecto(id_proyecto)
+        return cls.busquedaPorFecha(blogsJaula,fechaDesde,fechaHasta)
+    
+    @classmethod
+    def obtenerBlogsJaulaProyecto(cls,_id_proyecto):
+        jaulas = Jaula.objects.filter(id_proyecto=_id_proyecto)
+        return jaulas.blogs
