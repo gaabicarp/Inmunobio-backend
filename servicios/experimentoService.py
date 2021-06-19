@@ -12,7 +12,10 @@ class ExperimentoService:
     @classmethod
     def find_all_by_idProyecto(cls, idProyecto):
         return ExperimentoSchema().dump(Experimento.objects.filter(id_proyecto=idProyecto).all(), many=True)
-
+    @classmethod
+    def find_all_by_id(cls, idProyecto):
+        return Experimento.objects.filter(id_proyecto=idProyecto).all()
+    
     @classmethod
     def nuevoExperimento(cls, datos):
         experimento = AltaExperimentoSchema().load(datos)

@@ -2,8 +2,8 @@ from flask_restful import Resource
 from flask_jwt import jwt_required
 from flask import  request
 from marshmallow import ValidationError
-from exceptions.exception import ErrorUsuarioInexistente,ErrorProyectoInexistente
-from schemas.proyecto import ProyectoSchema
+from exceptions.exception import ErrorUsuarioInexistente,ErrorProyectoInexistente,ErrorJaulaInexistente
+from schemas.proyectoSchema import ProyectoSchema
 from servicios.proyectoService import ProyectoService
 from servicios.commonService import CommonService
 from schemas.usuarioSchema import UsuarioSchema
@@ -84,5 +84,19 @@ class ObtenerBlogsProyecto(Resource):
             except ValidationError as err:
                 return {'error': err.messages}, 400
             except ErrorProyectoInexistente as err:
+                return {'Error':err.message},400 
+        return {"Status" : "Deben indicarse datos para el blog"}, 400
+
+class NuevoBlogProyecto(Resource):
+    #@jwt_required()
+    def post(self):
+        datos = request.get_json()
+        if datos:
+            try:
+                ProyectoService.nuevoBlogsProyecto(datos)
+                return {'Status':'ok'}, 200
+            except ValidationError as err:
+                return {'error': err.messages}, 400
+            except (ErrorProyectoInexistente,ErrorJaulaInexistente) as err:
                 return {'Error':err.message},400 
         return {"Status" : "Deben indicarse datos para el blog"}, 400

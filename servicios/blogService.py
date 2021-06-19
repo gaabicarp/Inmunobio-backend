@@ -1,9 +1,13 @@
 from marshmallow import ValidationError
-from servicios.commonService import CommonService
+#from servicios.commonService import CommonService
+from blogProyectoService import blogProyectoService
 from schemas.blogSchema import BlogSchema,NuevoBlogSchema
 from exceptions.exception import ErrorFechasInvalidas
 from datetime import datetime
-from models.mongo import Jaula
+#from models.mongo.jaula import Jaula
+#from models.mongo.experimento import Experimento
+#from servicios.jaulaService import JaulaService
+#from servicios.experimentoService import ExperimentoService 
 
 class BlogService():
     @classmethod
@@ -34,10 +38,11 @@ class BlogService():
 
     @classmethod
     def blogsProyecto(cls,id_proyecto,fechaDesde,fechaHasta):
-        blogsJaula = cls.obtenerBlogsJaulaProyecto(id_proyecto)
-        return cls.busquedaPorFecha(blogsJaula,fechaDesde,fechaHasta)
+        blogsJaula = blogProyectoService.obtenerBlogsJaulaProyecto(id_proyecto)
+        blogsExperimento = blogProyectoService.obtenerBlogsExperimento(id_proyecto)
+        return cls.busquedaPorFecha(blogsJaula+blogsExperimento,fechaDesde,fechaHasta)
     
-    @classmethod
-    def obtenerBlogsJaulaProyecto(cls,_id_proyecto):
-        jaulas = Jaula.objects.filter(id_proyecto=_id_proyecto)
-        return jaulas.blogs
+ 
+
+
+ 

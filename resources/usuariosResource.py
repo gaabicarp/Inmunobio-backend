@@ -3,17 +3,14 @@ from servicios.usuarioService import UsuarioService
 from servicios.permisosService import PermisosService
 from flask_restful import Resource,Api
 from flask import request
-from exceptions.exception import ErrorUsuariosInexistentes
+#from exceptions.exception import ErrorUsuariosInexistentes
 
 class ObtenerUsuariosResource(Resource):
     '''devuelve todos los usuarios de la base que se encuentren habilitados 
     '''
     def get(self):
-        try:
             return UsuarioService.findUsuariosHabilitados() 
-        except ErrorUsuariosInexistentes as err:
-            return {'Error': err.message},400
-        
+
 class UsuarioResource(Resource): 
     #@jwt_required()
     def put(self):

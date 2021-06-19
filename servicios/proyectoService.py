@@ -1,10 +1,12 @@
 from dateutil import parser
 import datetime
 from models.mongo.proyecto import Proyecto
-from schemas.proyecto import ObtenerBlogsProyectoSchema, ProyectoCerradoSchema, ProyectoModificarSchema,ProyectoNuevoSchema
+from schemas.proyectoSchema import NuevoBlogProyectoSchema,ObtenerBlogsProyectoSchema, ProyectoCerradoSchema, ProyectoModificarSchema,ProyectoNuevoSchema
 from servicios.usuarioService import UsuarioService
 from exceptions.exception import ErrorProyectoInexistente
-from servicios.blogsProyecto import BlogService
+from servicios.blogService import BlogService
+#from servicios.jaulaService import JaulaService
+#from servicios.experimentoService import ExperimentoService
 
 class ProyectoService:
     @classmethod
@@ -61,4 +63,10 @@ class ProyectoService:
         return BlogService.blogsProyecto(proyecto.id_proyecto,datos['fechaDesde'],datos['fechaHasta'])
 
         
+    @classmethod
+    def nuevoBlogsProyecto(cls,datos):
+        NuevoBlogProyectoSchema().load(datos)
+        return BlogService.nuevoBlogsProyecto(datos)
+
+     
 

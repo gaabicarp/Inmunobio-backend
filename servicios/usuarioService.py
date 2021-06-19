@@ -3,7 +3,7 @@ from models.mysql.usuario import Usuario
 from schemas.usuarioSchema import UsuarioSchema,UsuarioSchemaModificar,UsuarioNuevoSchema,usuarioIDSchema
 from marshmallow import ValidationError
 from servicios.permisosService import PermisosService,Permiso
-from exceptions.exception import ErrorPermisoInexistente,ErrorUsuarioInexistente,ErrorUsuariosInexistentes
+from exceptions.exception import ErrorPermisoInexistente,ErrorUsuarioInexistente
 from servicios.commonService import CommonService
 from servicios.validationService import ValidacionesUsuario
 class UsuarioService():

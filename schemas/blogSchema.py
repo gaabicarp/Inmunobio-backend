@@ -1,5 +1,11 @@
-from marshmallow import Schema, fields,post_load
+from marshmallow import Schema, fields,post_load,ValidationError
 from models.mongo.blog import Blog
+
+
+def tipoValidacion(data):
+    
+    if( data != "Jaula" and data != "Experimento"):
+        raise ValidationError('Debe indicarse como tipo "Jaula" o "Experimento"')
 
 class NuevoBlogSchema(Schema):
     fecha = fields.DateTime()
@@ -18,5 +24,6 @@ class BlogSchema(NuevoBlogSchema):
     id_blog = fields.Integer(dump_only=True)
     tipo = fields.String()
 
-
+class NuevoBlogProyecto(NuevoBlogSchema):
+    tipo = fields.String(required=True, error_messages={"required": {"message" : "Es necesario indicar tipo de blog", "code" : 400}},validate = tipoValidacion)
 

@@ -58,11 +58,18 @@ class JaulaService:
     @classmethod
     def nuevoBlogJaula(cls, datos):
             NuevoBlogJaulaSchema().load(datos)
-            jaula = cls.find_by_id(datos['id_jaula'])
+            cls.crearBlogJaula(cls,datos['id_jaula'],datos['blogs'])
+            """ jaula = cls.find_by_id(datos['id_jaula'])
             blog = BlogService.nuevoBlog(datos['blogs'])
             jaula.blogs.append(blog)
-            jaula.save()
-
+            jaula.save() """
+    
+    @classmethod
+    def crearBlogJaula(cls,id_jaula,datosBlog):
+        jaula = cls.find_by_id(id_jaula)
+        blog = BlogService.nuevoBlog(datosBlog)
+        jaula.blogs.append(blog)
+        jaula.save()
 
     @classmethod
     def borrarBlogJaula(cls,_id_jaula,_id_blog):
