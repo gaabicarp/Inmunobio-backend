@@ -38,11 +38,11 @@ class AnimalService:
 
     @classmethod
     def todosLosAnimales(cls):
-        return AnimalSchema().dump(FuenteExperimental.objects(codigoGrupoExperimental = "", tipo ="Animal", baja=False).all(), many=True)
+        return AnimalSchema().dump(FuenteExperimental.objects(codigoGrupoExperimental__ne="", tipo ="Animal", baja=False).all(), many=True)
     
     @classmethod
     def animalesSinJaula(cls):
-        return AnimalSchema().dump(FuenteExperimental.objects(id_jaula = 0, tipo ="Animal", baja=False).all(), many=True)
+        return AnimalSchema().dump(FuenteExperimental.objects(id_jaula = 0, tipo="Animal", codigoGrupoExperimental__ne="", baja=False).all(), many=True)
 
     @classmethod
     def animalesDeLaJaula(cls, idJaula):
@@ -61,7 +61,7 @@ class AnimalService:
     
     @classmethod
     def animalesDelProyecto(cls, idProyecto):
-        animales = FuenteExperimental.objects(id_proyecto = idProyecto).all()
+        animales = FuenteExperimental.objects(id_proyecto = idProyecto, codigoGrupoExperimental__ne="", tipo ="Animal", baja=False).all()
         if animales:
             return AnimalSchema().dump(animales, many=True)
         return None
