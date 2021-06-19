@@ -42,7 +42,6 @@ class JaulasSinProyecto(Resource):
     def get(self):
         jaulas = JaulaService.jaulasSinAsignar()
         if jaulas:
-            print(jaulas)
             return CommonService.jsonMany(jaulas,JaulaSchema)
         else:
             return {"Status" : "No hay jaulas disponibles."}, 200
@@ -52,7 +51,8 @@ class JaulasDelProyecto(Resource):
     def get(self, idProyecto):
         jaulas = JaulaService.jaulasDelProyecto(idProyecto)
         if jaulas:
-            return jaulas, 200
+            print(jaulas)
+            return JaulaSchema().dump(jaulas, many=True), 200
         else:
             return {"Status" : "No hay jaulas asignadas a ese proyecto."}, 200
 

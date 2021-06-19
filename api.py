@@ -97,7 +97,7 @@ api.add_resource(Jaula, '/api/v1/asignarJaulaAProyecto', endpoint="asignar_jaula
 api.add_resource(Jaula, '/api/v1/nuevaJaula', endpoint="nueva_jaula")
 api.add_resource(Jaula, '/api/v1/bajarJaula/<int:id_jaula>', endpoint="bajar_jaula")
 api.add_resource(JaulasSinProyecto, '/api/v1/jaulasDisponibles', endpoint="jaulas_disponibles")
-api.add_resource(JaulasDelProyecto, '/api/v1/proyecto/<int:id_proyecto>/jaulasDelProyecto', endpoint="jaulas_del_proyecto")
+api.add_resource(JaulasDelProyecto, '/api/v1/proyecto/<int:idProyecto>/jaulasDelProyecto', endpoint="jaulas_del_proyecto")
 api.add_resource(BlogJaula, '/api/v1/proyecto/blogJaula')
 api.add_resource(ObtenerBlogsJaula, '/api/v1/proyecto/blogsJaula')
 api.add_resource(BorrarBlogJaula, '/api/v1/proyecto/borrarBlogJaula/<int:id_jaula>/<int:id_blog>' )

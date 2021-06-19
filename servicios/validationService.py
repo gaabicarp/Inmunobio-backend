@@ -51,4 +51,6 @@ class Validacion():
     
     def losAnimalesPertenecenAlMismoProyectoDelExperimento(grupoExperimental):
         experimento = Experimento.objects(id_experimento = grupoExperimental.id_experimento).first()
+        for animal in grupoExperimental.fuentesExperimentales:
+            print(f"Fuente: {animal.id_fuenteExperimental}  y el proyecto es {animal.id_proyecto}" )
         return all(experimento.id_proyecto == animal.id_proyecto for animal in grupoExperimental.fuentesExperimentales)

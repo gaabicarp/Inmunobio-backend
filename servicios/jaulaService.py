@@ -17,7 +17,10 @@ class JaulaService:
     
     @classmethod
     def jaulasDelProyecto(cls, idProyecto):
-        return Jaula.objects(id_proyecto = idProyecto).all()
+        jaulas = Jaula.objects(id_proyecto = idProyecto).all()
+        if not jaulas:
+             raise ErrorJaulaInexistente(idProyecto)
+        return jaulas
 
     @classmethod
     def crearJaula(cls, datos):
