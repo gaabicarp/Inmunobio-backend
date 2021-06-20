@@ -9,6 +9,7 @@ class RenombrarJefeGrupo(Resource):
             if datos:
                 return GrupoDeTrabajoService.modificarJefeGrupo(datos)
             return {'name': 'None'},400
+            
 
 class GrupoDeTrabajo(Resource):
     def post(self):
