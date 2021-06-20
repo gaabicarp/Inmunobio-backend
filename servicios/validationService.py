@@ -3,13 +3,13 @@ from models.mongo.experimento import Experimento
 from models.mongo.muestra import Muestra
 from models.mongo.grupoExperimental import GrupoExperimental
 from models.mongo.fuenteExperimental import FuenteExperimental
+
 class ValidacionesUsuario():
     @classmethod
     def desvincularDeProyectos(cls,id_usuario):
         proyectos = Proyecto.objects.update(pull__participantes=id_usuario)
 
 class Validacion():
-
     @classmethod
     def elProyectoExiste(cls, idProyecto):
         return Proyecto.objects(id_proyecto=idProyecto).first() != None

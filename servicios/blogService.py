@@ -1,6 +1,6 @@
 from marshmallow import ValidationError
 #from servicios.commonService import CommonService
-from blogProyectoService import blogProyectoService
+#from servicios.blogProyectoService import blogProyectoService
 from schemas.blogSchema import BlogSchema,NuevoBlogSchema
 from exceptions.exception import ErrorFechasInvalidas
 from datetime import datetime

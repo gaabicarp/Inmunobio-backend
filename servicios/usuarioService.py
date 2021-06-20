@@ -6,8 +6,8 @@ from servicios.permisosService import PermisosService,Permiso
 from exceptions.exception import ErrorPermisoInexistente,ErrorUsuarioInexistente
 from servicios.commonService import CommonService
 from servicios.validationService import ValidacionesUsuario
-class UsuarioService():
 
+class UsuarioService():
     @classmethod
     def modificarUsuario(cls,datos):        
         try:
@@ -33,17 +33,11 @@ class UsuarioService():
     @classmethod
     def nuevoUsuario(cls,datos):
         #minimo un permiso  el 5, aun no esta validado , solo valida que sean permisos que existen
-        try:
             usuario = UsuarioNuevoSchema().load(datos) 
             cls.asignarPermisos(usuario,datos['permisos'])
             db.session.add(usuario)
             db.session.commit()
-            return {'Status':'ok'},200
-        except ValidationError as err:
-            return {'error': err.messages},400
-        except ErrorPermisoInexistente as err:
-            return {'error': err.message},400
-
+ 
     @classmethod
     def find_by_email(cls, _email):
         return Usuario.query.filter_by(email=_email).first()
@@ -71,24 +65,11 @@ class UsuarioService():
     def deshabilitarUsuario(cls,id_usuario):
         """recibe un usuario valido y modifica su estado habilitado a false"""
         #agregar schema de id usuario para verificar que se pase
-        try:
-            CommonService.updateAtributes(UsuarioService.find_by_id(id_usuario),{'habilitado': False}) # -> oh por dios corregir esto hardcodeado  en algun momento 
-            db.session.commit()
-            ValidacionesUsuario.desvincularDeProyectos(id_usuario)
-            return {'Status':'ok'},200
-        except ValidationError as err:
-            return {'error': err.messages},400
-        except ErrorUsuarioInexistente as err:
-            return {'Error':err.message},400
+        CommonService.updateAtributes(UsuarioService.find_by_id(id_usuario),{'habilitado': False}) # -> oh por dios corregir esto hardcodeado  en algun momento 
+        db.session.commit()
+        ValidacionesUsuario.desvincularDeProyectos(id_usuario)
 
-    @classmethod
-    def busquedaUsuario(cls,_id_usuario):
-        try:
-            usuario = UsuarioService.find_by_id(_id_usuario)
-            return CommonService.json(usuario,UsuarioSchema)
-        except ErrorUsuarioInexistente as err:
-            return {'Error': err.message},400
-    
+
     @classmethod
     def busquedaUsuariosID(cls,list_id_usuario):
         usuarios = []
@@ -96,10 +77,12 @@ class UsuarioService():
             usuario = UsuarioService.find_by_id(id)
             usuarios.append(usuario)
         return usuarios
+        
     @classmethod
     def cambiarIdGrupo(cls,_id_usuario, idGrupo):
         UsuarioService.find_by_id(_id_usuario).id_grupoDeTrabajo = idGrupo
         db.session.commit()
+
     @classmethod
     def asignarGrupo(cls,_id_usuario, idGrupo):
         UsuarioService.find_by_id(_id_usuario).esJefeDe = idGrupo
