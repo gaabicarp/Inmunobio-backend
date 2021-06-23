@@ -26,18 +26,6 @@ class Contenedor(Resource):
         return {'error': 'Se deben enviar datos para la creación del contenedor'},400
 
 class ContenedorProyecto(Resource):
-
-    #@jwt_required()
-    def get(self):
-        datos = request.get_json()
-        if datos:
-            try:
-                contenedores = ContenedorService.find_all_by_id_proyecto(datos['id_proyecto'])
-                return contenedores, 200
-            except ValidationError as err:
-                return {'error': err.messages}, 400
-        return {'error': 'Se debe enviar un atributo id_proyecto válido'}, 400
-
     #@jwt_required()
     def put(self):
         datos = request.get_json()
@@ -49,8 +37,30 @@ class ContenedorProyecto(Resource):
                 return {'error': err.messages}, 400
         return {'error': 'Se debe enviar un atributo id_proyecto válido'}, 400
 
+class ContenedorProyectoId(Resource):
+    #@jwt_required()
+    def get(self,id_proyecto):
+        if id_proyecto:
+            try:
+                contenedores = ContenedorService.find_all_by_id_proyecto(id_proyecto)
+                return contenedores, 200
+            except ValidationError as err:
+                return {'error': err.messages}, 400
+        return {'error': 'Se debe enviar un atributo id_proyecto válido'}, 400
+
+class ContenedorEspFisicoID(Resource):
+    #@jwt_required()
+    ##falta resolverlo
+    def get(self,id_espacioFisico):
+        if id_espacioFisico:
+            try:
+                #contenedores = ContenedorService.find_all_by_id_proyecto(id_espacioFisico)
+                return 200
+            except ValidationError as err:
+                return {'error': err.messages}, 400
+        return {'error': 'Se debe enviar un atributo id_espacioFisico válido'}, 400
+
 class ContenedorParent(Resource):
-    
     #@jwt_required()
     def get(self):
         datos = request.get_json()

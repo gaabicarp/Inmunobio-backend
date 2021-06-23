@@ -7,7 +7,7 @@ from resources.grupoDeTrabajoResource import GrupoDeTrabajoID,GrupoDeTrabajo,Gru
 from resources.experimentoResource import ExperimentoResource, Experimentos, ExperimentoMuestra
 from resources.proyectoResource import *
 from resources.experimentoResource import ExperimentoResource, Experimentos, CerrarExperimento
-from resources.contenedorResource import Contenedor, ContenedorProyecto, ContenedorParent
+from resources.contenedorResource import Contenedor, ContenedorProyecto, ContenedorParent,ContenedorProyectoId
 
 from resources.grupoExperimentalResource import GrupoExperimental, GruposExperimentales, DevidirGrupoExperimental
 from resources.stockResource import ObtenerProductosStock,ProductoEnStock,BorrarTodoStock,ConsumirStockResource,ProductoEnStockID
@@ -122,11 +122,13 @@ api.add_resource(AnimalesProyecto, '/api/v1/proyecto/<int:idProyecto>/animales',
 
 #contenedor
 api.add_resource(Contenedor, '/api/v1/contenedores', endpoint='contenedores')
-api.add_resource(Contenedor, '/api/v1/nuevoContenedor', endpoint='nuevo_contenedore')
+api.add_resource(Contenedor, '/api/v1/nuevoContenedor', endpoint='nuevo_contenedores')
 api.add_resource(ContenedorProyecto, '/api/v1/contenedoresDelProyecto', endpoint='contenedores_del_proyecto')
 api.add_resource(ContenedorProyecto, '/api/v1/asignarProyectoAlContenedor', endpoint='asignar_proyecto_al_contenedor')
 api.add_resource(ContenedorParent, '/api/v1/subcontenedores', endpoint='subcontenedores')
 api.add_resource(ContenedorParent, '/api/v1/asignarParentAContenedores', endpoint='asignar_parent_a_contenedores')
+api.add_resource(ContenedorProyectoId, '/api/v1/contenedoresDelProyecto/<int:id_proyecto>')
+
 
 #Muestra
 api.add_resource(Muestra, '/api/v1/muestra/<int:idMuestra>', endpoint='muestra')
