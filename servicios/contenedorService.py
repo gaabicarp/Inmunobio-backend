@@ -1,4 +1,4 @@
-from models.mongo.contenedor import Contenedor, ContenedorSchema, ContenedorNuevoSchema, ContenedorProyectoSchema, ContenedorParentSchema
+from models.mongo.contenedor import ContenedorPrincipalSchema,Contenedor, ContenedorSchema, ContenedorNuevoSchema, ContenedorProyectoSchema, ContenedorParentSchema
 
 class ContenedorService:
 
@@ -32,5 +32,5 @@ class ContenedorService:
     @classmethod
     def asignarParents(cls, datos):
         #Falta corregir el map
-        contenedores = datos.map(dato, ContenedorParentSchema().load(datos))
+        contenedores = datos.map(datos, ContenedorParentSchema().load(datos))
         contenedores.forEach(contenedor = Contenedor.objects(id_contenedor = contenedor.id_contenedor).update(parent = contenedor.parent))
