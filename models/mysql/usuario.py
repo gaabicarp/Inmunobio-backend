@@ -5,7 +5,6 @@ from sqlalchemy import DateTime, Integer, String, Text, Float, Boolean
 from db import db
 from models.mysql.permiso import Permiso
 
-
 permisoXUsuario = db.Table('permisosxUsuarios', 
     db.Column('usuario_id', db.Integer, db.ForeignKey('usuarios.id_usuario')),
     db.Column('permiso_id', db.Integer, db.ForeignKey('permisos.id_permiso'))

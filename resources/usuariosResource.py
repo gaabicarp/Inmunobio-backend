@@ -1,6 +1,5 @@
 from warnings import catch_warnings
 from servicios.usuarioService import UsuarioService
-from servicios.permisosService import PermisosService
 from flask_restful import Resource,Api
 from flask import request
 #from exceptions.exception import ErrorUsuariosInexistentes
@@ -21,9 +20,15 @@ class UsuarioResource(Resource):
     def put(self):
         datos = request.get_json()
         if (datos):
-                return UsuarioService.modificarUsuario(datos)
+            try:
+                UsuarioService.modificarUsuario(datos)
+                return {'Status':'ok'},200
+            except ValidationError as err:
+                return {'Error': err.messages}, 400
+            except (ErrorUsuarioInexistente,ErrorPermisoInexistente) as err:
+                return {'Error': err.message},400
         return {'name': 'None'},400
-
+       
     # @jwt_required()
     def post(self):
         datos = request.get_json()
@@ -42,8 +47,7 @@ class UsuarioID(Resource):
     def get(self,id_usuario):
         ''' recibe: un idUsuario como parametro
             devuelve: el usuario,si hay match con esa id y ademas esta habilitado, 
-           en formato json.
-        '''
+           en formato json.'''
         if(id_usuario):
             try:
                 usuario = UsuarioService.find_by_id(id_usuario)

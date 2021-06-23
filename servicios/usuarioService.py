@@ -10,17 +10,12 @@ from servicios.validationService import ValidacionesUsuario
 class UsuarioService():
     @classmethod
     def modificarUsuario(cls,datos):        
-        try:
             UsuarioSchemaModificar().load(datos) 
             usuario = UsuarioService.find_by_id(datos['id_usuario'])
             CommonService.updateAtributes(usuario,datos,'permisos')
             cls.asignarPermisos(usuario,datos['permisos'])
             db.session.commit()
-            return {'Status':'ok'},200
-        except ValidationError as err:
-            return {'Error': err.messages}, 400
-        except (ErrorUsuarioInexistente,ErrorPermisoInexistente) as err:
-            return {'Error': err.message},400
+   
 
     @classmethod
     def asignarPermisos(cls,usuario,permisosDicts):
@@ -69,7 +64,6 @@ class UsuarioService():
         db.session.commit()
         ValidacionesUsuario.desvincularDeProyectos(id_usuario)
 
-
     @classmethod
     def busquedaUsuariosID(cls,list_id_usuario):
         usuarios = []
@@ -77,7 +71,7 @@ class UsuarioService():
             usuario = UsuarioService.find_by_id(id)
             usuarios.append(usuario)
         return usuarios
-        
+
     @classmethod
     def cambiarIdGrupo(cls,_id_usuario, idGrupo):
         UsuarioService.find_by_id(_id_usuario).id_grupoDeTrabajo = idGrupo
