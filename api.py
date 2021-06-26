@@ -137,6 +137,7 @@ api.add_resource(Muestra, '/api/v1/modificarMuestra', endpoint='modificar_muestr
 api.add_resource(Muestra, '/api/v1/bajarMuestra/<int:idMuestra>', endpoint='bajar_muestra')
 api.add_resource(MuestraGrupoExperimental, '/api/v1/grupoExperimental/<int:idGrupoExperimental>/muestras', endpoint='muestras_grupo_experimental')
 api.add_resource(MuestraProyecto, '/api/v1/proyecto/<int:idProyecto>/muestras', endpoint='muestras_proyecto')
+
 #Herramientas
 api.add_resource(HerramientaResource, '/api/v1/herramienta')
 api.add_resource(HerramientaPorId, '/api/v1/herramienta/<int:id_herramienta>')

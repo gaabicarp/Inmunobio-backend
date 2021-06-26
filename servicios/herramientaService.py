@@ -18,7 +18,7 @@ class HerramientaService:
 
     @classmethod
     def modificarHerramienta(cls,datos):
-        HerramientaSchema.load(datos)
+        HerramientaSchema().load(datos)
         herramienta =  cls.find_by_id(datos['id_herramienta'])
         herramienta.update(
             nombre = datos['nombre'],
