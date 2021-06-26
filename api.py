@@ -104,7 +104,6 @@ api.add_resource(BorrarBlogJaula, '/api/v1/proyecto/borrarBlogJaula/<int:id_jaul
 api.add_resource(Jaulas, '/api/v1/jaulas')
 api.add_resource(JaulaXId, '/api/v1/jaula/<int:id_jaula>', endpoint="jaula_por_id")
 
-
 #FuenteExperimental
 api.add_resource(FuenteExperimental, '/api/v1/fuenteExperimental/<string:codigo>', endpoint="fuente_experimental")
 api.add_resource(FuenteExperimental, '/api/v1/nuevasFuentesExperimentales', endpoint="nuevas_fuentes_experimentales")
@@ -123,12 +122,13 @@ api.add_resource(AnimalesProyecto, '/api/v1/proyecto/<int:idProyecto>/animales',
 #contenedor
 api.add_resource(Contenedor, '/api/v1/contenedores', endpoint='contenedores')
 api.add_resource(Contenedor, '/api/v1/nuevoContenedor', endpoint='nuevo_contenedores')
+api.add_resource(Contenedor, '/api/v1/modificarContenedor', endpoint='modificar_contenedor')
+api.add_resource(Contenedor, '/api/v1/eliminarContenedor/<int:idContenedor>', endpoint='eliminar_contenedor')
 api.add_resource(ContenedorProyecto, '/api/v1/contenedoresDelProyecto', endpoint='contenedores_del_proyecto')
 api.add_resource(ContenedorProyecto, '/api/v1/asignarProyectoAlContenedor', endpoint='asignar_proyecto_al_contenedor')
 api.add_resource(ContenedorParent, '/api/v1/subcontenedores', endpoint='subcontenedores')
 api.add_resource(ContenedorParent, '/api/v1/asignarParentAContenedores', endpoint='asignar_parent_a_contenedores')
 api.add_resource(ContenedorProyectoId, '/api/v1/contenedoresDelProyecto/<int:id_proyecto>')
-
 
 #Muestra
 api.add_resource(Muestra, '/api/v1/muestra/<int:idMuestra>', endpoint='muestra')
@@ -137,6 +137,7 @@ api.add_resource(Muestra, '/api/v1/modificarMuestra', endpoint='modificar_muestr
 api.add_resource(Muestra, '/api/v1/bajarMuestra/<int:idMuestra>', endpoint='bajar_muestra')
 api.add_resource(MuestraGrupoExperimental, '/api/v1/grupoExperimental/<int:idGrupoExperimental>/muestras', endpoint='muestras_grupo_experimental')
 api.add_resource(MuestraProyecto, '/api/v1/proyecto/<int:idProyecto>/muestras', endpoint='muestras_proyecto')
+
 #Herramientas
 api.add_resource(HerramientaResource, '/api/v1/herramienta')
 api.add_resource(HerramientaPorId, '/api/v1/herramienta/<int:id_herramienta>')

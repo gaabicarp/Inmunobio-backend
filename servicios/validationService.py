@@ -3,6 +3,7 @@ from models.mongo.experimento import Experimento
 from models.mongo.muestra import Muestra
 from models.mongo.grupoExperimental import GrupoExperimental
 from models.mongo.fuenteExperimental import FuenteExperimental
+from models.mongo.contenedor import Contenedor
 class ValidacionesUsuario():
     @classmethod
     def desvincularDeProyectos(cls,id_usuario):
@@ -54,3 +55,11 @@ class Validacion():
         for animal in grupoExperimental.fuentesExperimentales:
             print(f"Fuente: {animal.id_fuenteExperimental}  y el proyecto es {animal.id_proyecto}" )
         return all(experimento.id_proyecto == animal.id_proyecto for animal in grupoExperimental.fuentesExperimentales)
+    
+    def elContenedorTieneContenedoresHijos(idContenedor):
+        contenedores = Contenedor.objects(parent = idContenedor).all()
+        return len(contenedores) != 0
+    
+    def elContenedorTieneMuestrasAsociadas(idContenedor):
+        muestras = Muestra.objects(id_contenedor = idContenedor).all()
+        return len(muestras) != 0

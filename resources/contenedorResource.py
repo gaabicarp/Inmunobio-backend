@@ -24,6 +24,29 @@ class Contenedor(Resource):
             except ValidationError as err:
                 return {'error': err.messages},400
         return {'error': 'Se deben enviar datos para la creación del contenedor'},400
+    
+    def put(self):
+        datos = request.get_json()
+        if datos:
+            try:
+                ContenedorService.modificarContenedor(datos)
+                return {"Status": "Ok"}, 200
+            except ValidationError as err:
+                return {'Error': err.messages}, 400
+            except Exception as err:
+                return {'Error': str(err)}, 400
+        return {'Error': "Se deben enviar datos para la modificación del contenedor."},400
+    
+    def delete(self, idContenedor):
+        if idContenedor:
+            try:
+                ContenedorService.eliminarContenedor(idContenedor)
+                return {"Status" : "Ok"}, 200
+            except ValidationError as err:
+                return {'Error': err.messages}, 400
+            except Exception as err:
+                return {'Error': str(err)}, 400
+        return {'Error': "Se debe enviar el id del contenedor."},400
 
 class ContenedorProyecto(Resource):
     #@jwt_required()

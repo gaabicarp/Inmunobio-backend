@@ -1,5 +1,5 @@
-from models.mongo.contenedor import ContenedorPrincipalSchema,Contenedor, ContenedorSchema, ContenedorNuevoSchema, ContenedorProyectoSchema, ContenedorParentSchema
-
+from models.mongo.contenedor import ContenedorPrincipalSchema,Contenedor, ContenedorSchema, ContenedorNuevoSchema, ContenedorProyectoSchema, ContenedorParentSchema, ModificarContenedorSchema
+from .validationService import Validacion
 class ContenedorService:
 
     @classmethod
@@ -19,6 +19,33 @@ class ContenedorService:
         contenedor = ContenedorNuevoSchema().load(datos)
         contenedor.save()
     
+    @classmethod
+    def modificarContenedor(cls, datos):
+        contenedor = ModificarContenedorSchema().load(datos)
+        Contenedor.objects(id_contenedor = contenedor.id_contenedor).update(
+            codigo = contenedor.codigo,
+            nombre = contenedor.nombre,
+            descripcion = contenedor.descripcion,
+            temperatura = contenedor.temperatura,
+            id_proyecto = contenedor.id_proyecto,
+            capacidad = contenedor.capacidad,
+            fichaTecnica = contenedor.fichaTecnica,
+            disponible = contenedor.disponible,
+            parent = contenedor.parent,
+            id_espacioFisico = contenedor.id_espacioFisico
+        )
+    
+    @classmethod
+    def eliminarContenedor(cls, idContenedor):
+        cls.verificarEliminarContenedor(idContenedor)
+        Contenedor.objects(id_contenedor = idContenedor).delete()
+    
+    def verificarEliminarContenedor(idContenedor):
+        if Validacion.elContenedorTieneContenedoresHijos(idContenedor):
+            raise Exception("El contenedor no puede tener contenedores asociados.")
+        if Validacion.elContenedorTieneMuestrasAsociadas(idContenedor):
+            raise Exception("El contenedor no puede tener muestras asociadoas.")
+
     @classmethod
     def asignarProyectoAlContenedor(cls, datos):
         contenedor = ContenedorProyectoSchema().load(datos)
