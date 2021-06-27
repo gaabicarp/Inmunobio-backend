@@ -46,8 +46,11 @@ class AnimalService:
 
     @classmethod
     def animalesDeLaJaula(cls, idJaula):
-        animales = FuenteExperimental.objects(id_jaula = idJaula).all()
-        return AnimalSchema().dump(animales, many=True)
+        return  FuenteExperimental.objects(id_jaula = idJaula).all()
+
+    @classmethod
+    def animalesDeLaJaulaSchema(cls, idJaula):
+        return AnimalSchema().dump(cls.animalesDeLaJaula(idJaula), many=True)
 
     @classmethod
     def bajarAnimal(cls, idAnimal):

@@ -3,7 +3,7 @@ from servicios.fuenteExperimentalService import FuenteExperimentalService
 from servicios.blogService import BlogService
 from exceptions.exception import ErrorJaulaInexistente,ErrorBlogInexistente
 from schemas.jaulaSchema import  BusquedaBlogJaula,NuevaJaulaSchema, ActualizarProyectoJaulaSchema, ActualizarJaulaSchema,NuevoBlogJaulaSchema
-
+from servicios.animalService import AnimalService
 class JaulaService:
     @classmethod
     def find_by_id(cls, idJaula):
@@ -30,7 +30,9 @@ class JaulaService:
     
     @classmethod
     def actualizarProyectoDeLaJaula(cls, datos):
+        print(datos)
         jaula = ActualizarProyectoJaulaSchema().load(datos)
+        print(jaula)
         Jaula.objects(id_jaula = jaula.id_jaula).update(
             id_proyecto = jaula.id_proyecto,
             nombre_proyecto = jaula.nombre_proyecto
@@ -51,15 +53,17 @@ class JaulaService:
     def bajarJaula(cls, idJaula):
         jaula = Jaula.objects(id_jaula = idJaula).first()
         if jaula:
-            if not cls.laJualaTieneAnimales(cls, idJaula):
-                Jaula.objects(id_jaula = idJaula).update(habilitado = False)
+            if not cls.laJaulaTieneAnimales(cls, idJaula):
+                jaula = Jaula.objects(id_jaula = idJaula)
+                jaula.delete()
+
                 return {'Status':'Ok'}, 200
             else:
                 return {'Status':'La jaula debe estar vacía para poder darla de baja'}, 400
         return {'Status': f'No se encontró una jaula con el id {idJaula}.'}, 200
 
-    def laJualaTieneAnimales(self, idJaula):
-        animales = FuenteExperimentalService.animalesDeLaJaula(idJaula)
+    def laJaulaTieneAnimales(self, idJaula):
+        animales = AnimalService.animalesDeLaJaula(idJaula)
         return  len(animales) > 0
 
     @classmethod
