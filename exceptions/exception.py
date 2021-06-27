@@ -25,13 +25,10 @@ class ErrorDistribuidoraInexistente(Exception):
         self.message = message
         super().__init__(self.message)
 
-
 class ErrorGrupoInexistente(Exception):
     def __init__(self, message="Grupo de trabajo inexistente"):
         self.message = message
         super().__init__(self.message)
-
-
 
 class ErrorEspacioFisicoInexistente(Exception):
     def __init__(self,id, message="No existe espacio fisico con id "):
@@ -49,18 +46,8 @@ class ErrorPermisoInexistente(Exception):
         self.message = message + str(id_permiso)
         super().__init__(self.message)
 
-class ErrorPermisosInexistentes(Exception):
-    def __init__(self, message="No hay usuarios activos"):
-        self.message = message 
-        super().__init__(self.message)
-
 class ErrorUsuarioInexistente(Exception):
     def __init__(self,id_usuario, message="No hay usuario asociados con id "):
-        self.message = message + str(id_usuario)
-        super().__init__(self.message)
-
-class ErrorUsuariosInexistentes(Exception):
-    def __init__(self,id_usuario, message="No hay usuario habilitados "):
         self.message = message + str(id_usuario)
         super().__init__(self.message)
 
@@ -71,7 +58,7 @@ class ErrorGrupoDeTrabajoGeneral(Exception):
 
 
 class ErrorJsonVacio(Exception):
-    def __init__(self, message="Se deben enviar datos para la modificación de la jaula.'"):
+    def __init__(self, message="Error en el envio de datos"):
         self.message = message 
         super().__init__(self.message)
 
@@ -91,8 +78,17 @@ class ErrorHerramientaInexistente(Exception):
         self.message = message + str(id_herr)
         super().__init__(self.message)    
 
+class ErrorProyectoInexistente(Exception):
+    def __init__(self,id_herr, message="No se encontró ningun proyecto con el id: "):
+        self.message = message + str(id_herr)
+        super().__init__(self.message)    
 class ErrorFechasInvalidas(Exception):
     def __init__(self, message="La fecha-desde debe ser inferior a la fecha-hasta "):
         self.message = message 
         super().__init__(self.message)    
 
+
+class ErrorJaulaBaja(Exception):
+    def __init__(self, message="La jaula debe estar vacía para poder darla de baja "):
+        self.message = message 
+        super().__init__(self.message)    
