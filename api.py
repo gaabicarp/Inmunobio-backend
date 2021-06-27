@@ -25,7 +25,6 @@ from resources.herramientaResource import HerramientaResource,HerramientaPorId,H
 api = Api()
 
 #Espacio fisico
-
 api.add_resource(EspacioFisico, '/api/v1/espacioFisico')
 api.add_resource(EspacioFisicoID, '/api/v1/espacioFisico/<int:id_espacioFisico>')
 api.add_resource(EspaciosFisicos, '/api/v1/espaciosFisicos')
@@ -52,9 +51,6 @@ api.add_resource(ModificarProyecto, '/api/v1/modificarProyecto')
 api.add_resource(ObtenerUsuariosProyecto, '/api/v1/obtenerUsuariosProyecto/<int:id_proyecto>')
 api.add_resource(ObtenerBlogsProyecto, '/api/v1/blogsProyecto')
 api.add_resource(NuevoBlogProyecto, '/api/v1/crearblogProyecto')
-
-
-
 
 #Grupo de trabajo
 api.add_resource(GrupoDeTrabajo,'/api/v1/grupoDeTrabajo')

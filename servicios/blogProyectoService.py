@@ -11,7 +11,7 @@ class BlogProyectoService():
         blogsJaula = cls.obtenerBlogsJaulaProyecto(id_proyecto)
         blogsExperimento = cls.obtenerBlogsExperimento(id_proyecto)
         return cls.busquedaPorFecha(blogsJaula+blogsExperimento,fechaDesde,fechaHasta)
-    
+
     @classmethod
     def obtenerBlogsJaulaProyecto(cls,_id_proyecto):
         jaulas = JaulaService.jaulasDelProyecto(_id_proyecto)
@@ -25,7 +25,7 @@ class BlogProyectoService():
         return cls.appendBlogs(experimentos)
 
     @classmethod
-    def appendBlogs(objetos ):
+    def appendBlogs(objetos):
         listaBlogs = []
         for objeto in objetos:
             listaBlogs.append(objeto.blogs)

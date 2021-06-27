@@ -8,7 +8,7 @@ from schemas.jaulaSchema import  JaulaSchema, NuevaJaulaSchema, ActualizarProyec
 from marshmallow import ValidationError
 from servicios.commonService import CommonService
 from exceptions.exception import ErrorJaulaInexistente,ErrorBlogInexistente,ErrorFechasInvalidas
-from schemas.blogSchema import BlogSchema,BlogsJaulasSchema
+from schemas.blogSchema import BlogSchema
 
 class Jaula(Resource):
 
@@ -44,18 +44,14 @@ class Jaula(Resource):
         return {'Error': 'Se debe indicar un id para la jaula.'}, 400
 
 class JaulasSinProyecto(Resource):
-
     def get(self):
         jaulas = JaulaService.jaulasSinAsignar()
         return CommonService.jsonMany(jaulas,JaulaSchema)
-
 
 class JaulasDelProyecto(Resource):
     def get(self, idProyecto):
         jaulas = JaulaService.jaulasDelProyecto(idProyecto)
         return CommonService.jsonMany(jaulas,JaulaSchema), 200
-
-
 
 class BlogJaula(Resource):
     def post(self):
@@ -89,7 +85,7 @@ class JaulasBlogs(Resource):
         if datos:
             try:
                 return JaulaService.obtenerTodosLosBlogs(datos)  
-            except ErrorFechasInvalidas as err:
+            except (ErrorFechasInvalidas,ErrorProyectoInexistente) as err:
                 return {'Error':err.message},400 
         return {"Status" : "Deben indicarse datos para el blog"}, 400
 

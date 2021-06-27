@@ -5,8 +5,6 @@ from schemas.proyectoSchema import NuevoBlogProyectoSchema,ObtenerBlogsProyectoS
 from servicios.usuarioService import UsuarioService
 from exceptions.exception import ErrorProyectoInexistente
 from servicios.blogService import BlogService
-#from servicios.jaulaService import JaulaService
-#from servicios.experimentoService import ExperimentoService
 
 class ProyectoService:
     @classmethod
@@ -61,7 +59,6 @@ class ProyectoService:
         ObtenerBlogsProyectoSchema().load(datos)
         proyecto = cls.find_by_id(datos['id_proyecto'])
         return BlogService.blogsProyecto(proyecto.id_proyecto,datos['fechaDesde'],datos['fechaHasta'])
-
         
     @classmethod
     def nuevoBlogsProyecto(cls,datos):

@@ -8,14 +8,13 @@ from servicios.proyectoService import ProyectoService
 from servicios.commonService import CommonService
 from schemas.usuarioSchema import UsuarioSchema
 from schemas.blogSchema import BlogSchema
-class Proyectos(Resource):
 
+class Proyectos(Resource):
     #@jwt_required()
     def get(self):
         return CommonService.jsonMany(ProyectoService.find_all(),ProyectoSchema)
 
 class NuevoProyecto(Resource):
-
     # @jwt_required()
     def post(self):
         datos = request.get_json()
@@ -84,7 +83,7 @@ class ObtenerBlogsProyecto(Resource):
             except ValidationError as err:
                 return {'error': err.messages}, 400
             except ErrorProyectoInexistente as err:
-                return {'Error':err.message},400 
+                return {'Error':err.message},400
         return {"Status" : "Deben indicarse datos para el blog"}, 400
 
 class NuevoBlogProyecto(Resource):
