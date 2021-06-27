@@ -1,5 +1,5 @@
 from models.mongo.proyecto import Proyecto
-from models.mongo.experimento import Experimento
+from models.mongo.experimento import Experimento, MuestraExterna
 from models.mongo.muestra import Muestra
 from models.mongo.grupoExperimental import GrupoExperimental
 from models.mongo.fuenteExperimental import FuenteExperimental
@@ -20,23 +20,31 @@ class Validacion():
         return Proyecto.objects(id_proyecto=idProyecto, finalizado = False).first() != None
     
     @classmethod
+    def elExperimentoExiste(cls, idExperimento):
+        return Experimento.objects(id_experimento=idExperimento).first() != None
+    
+    @classmethod
     def elExperimentoEstaFinalizado(cls, id_experimento):
         return Experimento.objects(id_experimento = id_experimento, finalizado = False).first() != None
     
     @classmethod
     def elExperimentoPerteneceAlProyecto(cls, id_experimento, id_proyecto):
         return Experimento.objects(id_experimento = id_experimento, id_proyecto = id_proyecto).first() != None
+
+    @classmethod
+    def elExperimentoTieneLaMuestra(cls, idExperimento, idMuestra):
+        return Experimento.objects(id_experimento = idExperimento, muestrasExternas__id_muestra=idMuestra).first() != None
     
     @classmethod
     def elGrupoExperimentalPerteneceAlExperimento(cls, id_experimento, id_grupoExperimental):
         return GrupoExperimental.objects(id_grupoExperimental=id_grupoExperimental, id_experimento=id_experimento).first() != None
 
     @classmethod
-    def existeLaMuestra(self, idMuestra):
+    def existeLaMuestra(cls, idMuestra):
         return Muestra.objects(id_muestra=idMuestra).first() != None
     
     @classmethod
-    def laMuestraEstaHabilitada(self, idMuestra):
+    def laMuestraEstaHabilitada(cls, idMuestra):
         return Muestra.objects(id_muestra=idMuestra, habilitada = True).first() != None
 
     def existeElgrupoExperimental(grupoExperimental):

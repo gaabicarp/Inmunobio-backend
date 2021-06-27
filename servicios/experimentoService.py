@@ -1,3 +1,4 @@
+from .validationService import Validacion
 from models.mongo.experimento import Experimento, ExperimentoSchema, ModificarExperimentoSchema, AltaExperimentoSchema, CerrarExperimentoSchema, AgregarMuestrasAlExperimentoSchema
 from servicios.muestraService import MuestraService
 from dateutil import parser
@@ -42,7 +43,7 @@ class ExperimentoService:
         return all(experimento.id_proyecto == muestraExterna.id_proyecto for muestraExterna in experimento.muestrasExternas)
     
     def lasMuestrasEstanHabilitadas(self, experimento):
-        return all(MuestraService.validarMuestra(muestra.id_muestra) for muestra in experimento.muestras)
+        return all(MuestraService.validarMuestra(muestra.id_muestra) for muestra in experimento.muestrasExternas)
 
     def validarMuestrasExternas(self, experimento):
         if self.lasMuestrasSonDelMismoProyectoDelExperimento(self, experimento):
@@ -55,3 +56,16 @@ class ExperimentoService:
         experimento = AgregarMuestrasAlExperimentoSchema().load(datos)
         cls.validarMuestrasExternas(cls, experimento)
         Experimento.objects(id_experimento = experimento.id_experimento).update(muestrasExternas=experimento.muestrasExternas)
+
+    @classmethod
+    def removerMuestraDeExperimento(cls, idExperimento, idMuestra):
+        cls.validarRemoverMuestraExperimento(idExperimento, idMuestra)
+        Experimento.objects(id_experimento=idExperimento).update(pull__muestrasExternas__id_muestra=idMuestra)
+    
+    def validarRemoverMuestraExperimento(idExperimento, idMuestra):
+        if not Validacion().elExperimentoExiste(idExperimento):
+            raise Exception(f"El experimento con id {idExperimento} no existe.")
+        if not Validacion().existeLaMuestra(idMuestra):
+            raise Exception(f"La muestra con id {idMuestra} no existe.")
+        if not Validacion().elExperimentoTieneLaMuestra(idExperimento, idMuestra):
+            raise Exception(f"El experimento con id {idExperimento} no tiene la muestra con id {idMuestra}.")

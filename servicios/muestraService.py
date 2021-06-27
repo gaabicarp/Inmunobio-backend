@@ -46,19 +46,19 @@ class MuestraService:
             if not Validacion().elGrupoExperimentalPerteneceAlExperimento(muestra.id_experimento, muestra.id_grupoExperimental):
                 raise Exception(f"El grupo experimental con id {muestra.id_grupoExperimental} no pertenece al experimento con id {muestra.id_experimento}")
 
-    def actualizarMuestrasEnGrupoExperimental(self, idGrupoExperimental):
+    def actualizarMuestrasEnGrupoExperimental(idGrupoExperimental):
         muestras = Muestra.objects.filter(id_grupoExperimental=idGrupoExperimental, habilitada = True).all()
         muestrasPropiasDict = MuestraSchema(exclude=['id_contenedor', 'id_grupoExperimental', 'id_experimento', 'id_proyecto', 'habilitada']).dump(muestras, many=True)
         muestrasPropias = MuestraPropiaSchema().load(muestrasPropiasDict, many=True)
         GrupoExperimental.objects(id_grupoExperimental= idGrupoExperimental).update(muestras = muestrasPropias)
     
-    def removerMuestraExternaDelExperimento(self, muestra):
-        Experimento.objects(meustras__id_muestra=muestra.id_muestra).update(pop__muestras__S__id_muestra =muestra.id_muestra)
+    def removerMuestraExternaDelExperimento(muestra):
+        Experimento.objects(muestrasExternas__id_muestra=muestra.id_muestra).update(pull__muestrasExternas__id_muestra=muestra.id_muestra)
         
-    def validarMuestra(self, idMuestra):
-        if not Validacion().existeLaMuestra(self, idMuestra):
+    def validarMuestra(idMuestra):
+        if not Validacion().existeLaMuestra(idMuestra):
             raise Exception(f"No existe muestra con el id {idMuestra}.")
-        if not Validacion().laMuestraEstaHabilitada(self, idMuestra):
+        if not Validacion().laMuestraEstaHabilitada(idMuestra):
             raise Exception(f"La muestra con id {idMuestra} se encuentra deshabilitada.")
 
     @classmethod
@@ -80,8 +80,8 @@ class MuestraService:
     #Falta agregar la actualización en experimentos
     @classmethod
     def darDeBajaMuestra(cls, idMuestra):
-        cls.validarMuestra(cls, idMuestra)
+        cls.validarMuestra(idMuestra)
         muestra = Muestra.objects(id_muestra=idMuestra).first()
         Muestra.objects(id_muestra = idMuestra).update(habilitada = False)
-        cls.actualizarMuestrasEnGrupoExperimental(cls, muestra.id_grupoExperimental)
-        cls.removerMuestraExternaDelExperimento(cls, muestra)
+        cls.actualizarMuestrasEnGrupoExperimental(muestra.id_grupoExperimental)
+        cls.removerMuestraExternaDelExperimento(muestra)

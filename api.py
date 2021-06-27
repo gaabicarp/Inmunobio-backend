@@ -82,6 +82,7 @@ api.add_resource(DistribuidoraID, '/api/v1/distribuidora/<int:id_distribuidora>'
 api.add_resource(Experimentos, '/api/v1/proyecto/<int:idProyecto>/experimentos', endpoint='experimentos')
 api.add_resource(ExperimentoResource, '/api/v1/experimento/<int:idExperimiento>', endpoint='experimento')
 api.add_resource(ExperimentoResource, '/api/v1/nuevoExperimento', endpoint='nuevo_experimento')
+api.add_resource(ExperimentoMuestra, '/api/v1/experimento/<int:idExperimento>/muestra/<int:idMuestra>', endpoint='remover_muestraExterna_de_experimento')
 api.add_resource(CerrarExperimento, '/api/v1/cerrarExperimento', endpoint='cerrar_experimento')
 api.add_resource(ExperimentoResource, '/api/v1/modificarExperimento', endpoint='modificar_experimento')
 api.add_resource(ExperimentoMuestra, '/api/v1/agregarMuestrasExternasAlExperimento', endpoint='agregar_muestras_externas_al_experimento')
