@@ -2,7 +2,7 @@ from models.mongo.jaula import Jaula
 from servicios.fuenteExperimentalService import FuenteExperimentalService
 from servicios.blogService import BlogService
 from exceptions.exception import ErrorJaulaInexistente,ErrorBlogInexistente
-from schemas.jaulaSchema import  BusquedaBlogJaula,NuevaJaulaSchema, ActualizarProyectoJaulaSchema, ActualizarJaulaSchema,NuevoBlogJaulaSchema
+from schemas.jaulaSchema import  BusquedaBlogsJaulas,BusquedaBlogJaula,NuevaJaulaSchema, ActualizarProyectoJaulaSchema, ActualizarJaulaSchema,NuevoBlogJaulaSchema
 from servicios.animalService import AnimalService
 class JaulaService:
     @classmethod
@@ -87,7 +87,21 @@ class JaulaService:
     def obtenerBlogs(cls,datos):
         BusquedaBlogJaula().load(datos)
         jaula = cls.find_by_id(datos['id_jaula'])
-        return BlogService.busquedaPorFecha(jaula.blogs,datos['fechaDesde'],datos['fechaHasta'])
+        return cls.blogServiceJaulas(jaula.blogs,datos['fechaDesde'],datos['fechaHasta'])
+
+    @classmethod
+    def blogServiceJaulas(cls,blogs,fechaDesde,fechaHasta):
+        return BlogService.busquedaPorFecha(blogs,fechaDesde,fechaHasta)
+
+    @classmethod
+    def obtenerTodosLosBlogs(cls,datos):
+        BusquedaBlogsJaulas().load(datos)
+        blogs = []
+        jaulas = cls.obtenerJaulas()
+        for jaula in jaulas:
+            blogsJaula= cls.blogServiceJaulas(jaula.blogs,datos['fechaDesde'],datos['fechaHasta'])
+            blogs.append({"id_jaula":jaula.id_jaula, "blogs":blogsJaula})
+        return blogs
 
     @classmethod
     def obtenerJaulas(cls):

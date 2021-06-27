@@ -15,7 +15,7 @@ from resources.productoResource import ProductoResource,ObtenerProductosResource
 from resources.distribuidoraResource import DistribuidoraResource,ObtenerDistribuidorasResource,DistribuidoraID
 
 from resources.grupoExperimentalResource import GrupoExperimental, GruposExperimentales
-from resources.jaulaResource import JaulaXId,ObtenerBlogsJaula,Jaula, JaulasSinProyecto, JaulasDelProyecto,BlogJaula,BorrarBlogJaula,Jaulas
+from resources.jaulaResource import JaulasBlogs,JaulaXId,ObtenerBlogsJaula,Jaula, JaulasSinProyecto, JaulasDelProyecto,BlogJaula,BorrarBlogJaula,Jaulas
 from resources.fuenteExperimentalResource import FuenteExperimental
 from resources.animalResource import  Animal, Animales, AnimalesSinJaula, AnimalesDeLaJaula, AnimalesProyecto
 
@@ -103,6 +103,7 @@ api.add_resource(ObtenerBlogsJaula, '/api/v1/proyecto/blogsJaula')
 api.add_resource(BorrarBlogJaula, '/api/v1/proyecto/borrarBlogJaula/<int:id_jaula>/<int:id_blog>' )
 api.add_resource(Jaulas, '/api/v1/jaulas')
 api.add_resource(JaulaXId, '/api/v1/jaula/<int:id_jaula>', endpoint="jaula_por_id")
+api.add_resource(JaulasBlogs, '/api/v1/blogsJaulas')
 
 
 #FuenteExperimental
