@@ -2,8 +2,9 @@ from models.mongo.jaula import Jaula
 from servicios.fuenteExperimentalService import FuenteExperimentalService
 from servicios.blogService import BlogService
 from exceptions.exception import ErrorJaulaInexistente,ErrorBlogInexistente
-from schemas.jaulaSchema import  BusquedaBlogsJaulas,BusquedaBlogJaula,NuevaJaulaSchema, ActualizarProyectoJaulaSchema, ActualizarJaulaSchema,NuevoBlogJaulaSchema
+from schemas.jaulaSchema import  BlogSchema,BusquedaBlogsJaulas,BusquedaBlogJaula,NuevaJaulaSchema, ActualizarProyectoJaulaSchema, ActualizarJaulaSchema,NuevoBlogJaulaSchema
 from servicios.animalService import AnimalService
+
 class JaulaService:
     @classmethod
     def find_by_id(cls, idJaula):
@@ -100,8 +101,21 @@ class JaulaService:
         jaulas = cls.obtenerJaulas()
         for jaula in jaulas:
             blogsJaula= cls.blogServiceJaulas(jaula.blogs,datos['fechaDesde'],datos['fechaHasta'])
-            blogs.append({"id_jaula":jaula.id_jaula, "blogs":blogsJaula})
+            blogs.extend(cls.deserializarBlogsJaulas(blogsJaula,jaula.id_jaula))
         return blogs
+
+    @classmethod
+    def deserializarBlogsJaulas(cls,blogs,idJaula):
+        blogsDic = []
+        for blog in blogs:
+            blogsDic.append(cls.deserializarBlogJaula(blog,idJaula))
+        return blogsDic
+
+    @classmethod
+    def deserializarBlogJaula(cls,blog,idJaula):
+        dictBlog =  BlogSchema().dump(blog)
+        dictBlog['id_jaula'] = idJaula
+        return dictBlog
 
     @classmethod
     def obtenerJaulas(cls):
