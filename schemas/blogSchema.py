@@ -19,4 +19,6 @@ class BlogSchema(NuevoBlogSchema):
     tipo = fields.String()
 
 
-
+class BlogsJaulasSchema(Schema):
+    id_jaula = fields.Integer(required=True, error_messages={"required": {"message" : "Es necesario indicar el id de jaula ", "code" : 400}})
+    blogs = fields.Nested(BlogSchema,many=True)
