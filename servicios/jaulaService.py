@@ -115,8 +115,7 @@ class JaulaService:
     @classmethod
     def deserializarBlogsJaulas(cls,blogs,idJaula):
         blogsDic = []
-        for blog in blogs:
-            blogsDic.append(cls.deserializarBlogJaula(blog,idJaula))
+        for blog in blogs: blogsDic.append(cls.deserializarBlogJaula(blog,idJaula))
         return blogsDic
 
     @classmethod

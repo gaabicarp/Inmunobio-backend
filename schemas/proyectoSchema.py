@@ -46,8 +46,11 @@ class ObtenerBlogsProyectoSchema(Schema):
     fechaHasta = fields.String(required=True,error_messages={"required": {"message": "Debe indicarse  fecha-hasta", "code": 400}}) 
     id_proyecto = fields.Integer(required=True, error_messages={"required": {"message": "Es necesario el id_proyecto. Este campo no puede estar vacío", "code:": 400}})
 
+
+    
 class NuevoBlogProyectoSchema(Schema):
     #id obligatoria puede ser id de jaula o de exp
     id = fields.Integer(required=True, error_messages={"required": {"message": "Es necesario el id", "code:": 400}})
     id_proyecto = fields.Integer(required=True, error_messages={"required": {"message": "Es necesario el id_proyecto. Este campo no puede estar vacío", "code:": 400}})
     blogs = fields.Nested(NuevoBlogProyecto)
+

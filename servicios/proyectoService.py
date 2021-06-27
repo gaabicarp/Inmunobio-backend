@@ -62,8 +62,16 @@ class ProyectoService:
         
     @classmethod
     def nuevoBlogsProyecto(cls,datos):
-        NuevoBlogProyectoSchema().load(datos)
-        return BlogService.nuevoBlogsProyecto(datos)
+        datosBlog = NuevoBlogProyectoSchema().load(datos)
+        print(datosBlog)
+        if cls.esBlogJaula(datosBlog['blogs']):
+            from servicios.jaulaService import JaulaService
+            JaulaService.crearBlogJaula(datos['id'],datos['blogs'])
+        else: print('soy blog de exp')
+        
+    
 
-     
+    @classmethod
+    def esBlogJaula(cls,blog):
+        return blog.tipo == "Jaula"
 

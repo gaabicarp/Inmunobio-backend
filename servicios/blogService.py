@@ -1,13 +1,9 @@
 from marshmallow import ValidationError
 #from servicios.commonService import CommonService
-from servicios.blogProyectoService import BlogProyectoService
 from schemas.blogSchema import BlogSchema,NuevoBlogSchema
 from exceptions.exception import ErrorFechasInvalidas
 from datetime import datetime
-#from models.mongo.jaula import Jaula
-#from models.mongo.experimento import Experimento
-#from servicios.jaulaService import JaulaService
-#from servicios.experimentoService import ExperimentoService
+
 
 class BlogService():
     @classmethod
@@ -17,8 +13,6 @@ class BlogService():
         
     @classmethod
     def convertirFecha(cls,fecha,hr,min,seg):
-        #return datetime.strptime(fecha, "%Y-%m-%dT%H:%M:%S.%f").replace(hour=0, minute=0, second=0, microsecond=0)
-        #"Sat Jun 12 2021"
         return datetime.strptime(fecha, "%a %b %d %Y").replace(hour=hr, minute=min, second=seg, microsecond=0)
 
     @classmethod
@@ -36,6 +30,34 @@ class BlogService():
 
     @classmethod
     def blogsProyecto(cls,id_proyecto,fechaDesde,fechaHasta):
-        blogsJaula = BlogProyectoService.obtenerBlogsJaulaProyecto(id_proyecto)
-        blogsExperimento = BlogProyectoService.obtenerBlogsExperimento(id_proyecto)
+        blogsJaula = cls.obtenerBlogsJaulaProyecto(id_proyecto)
+        blogsExperimento = cls.obtenerBlogsExperimento(id_proyecto)
         return cls.busquedaPorFecha(blogsJaula+blogsExperimento,fechaDesde,fechaHasta)
+  
+    @classmethod
+    def blogsProyecto(cls,id_proyecto,fechaDesde,fechaHasta):
+        blogsJaula = cls.obtenerBlogsJaulaProyecto(id_proyecto)
+        blogsExperimento = cls.obtenerBlogsExperimento(id_proyecto)
+        return cls.busquedaPorFecha(blogsJaula+blogsExperimento,fechaDesde,fechaHasta)
+
+    @classmethod
+    def obtenerBlogsJaulaProyecto(cls,_id_proyecto):
+        from servicios.jaulaService import JaulaService
+        jaulas = JaulaService.jaulasDelProyecto(_id_proyecto)
+        return cls.appendBlogs(jaulas)
+
+    @classmethod
+    def obtenerBlogsExperimento(cls,_id_proyecto):
+        from servicios.experimentoService import ExperimentoService 
+        experimentos = ExperimentoService.find_all_by_id(_id_proyecto)
+        return cls.appendBlogs(experimentos)
+
+    @classmethod
+    def appendBlogs(objetos):
+        listaBlogs = []
+        for objeto in objetos:listaBlogs.append(objeto.blogs)
+        return listaBlogs
+    
+
+
+
