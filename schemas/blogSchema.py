@@ -6,7 +6,6 @@ class NuevoBlogSchema(Schema):
     detalle = fields.String(required=True, error_messages={"required": {"message" : "Es necesario dar detalle del blog", "code" : 400}})
     id_usuario = fields.Integer(required=True, error_messages={"required": {"message" : "Es necesario indicar el id del usuario autor", "code" : 400}})
     tipo = fields.String()
-
     @post_load
     def makeBlog(self, data, **kwargs):
         return Blog(**data)
@@ -19,4 +18,6 @@ class BlogSchema(NuevoBlogSchema):
     tipo = fields.String()
 
 
-
+class BlogsJaulasSchema(Schema):
+    id_jaula = fields.Integer(required=True, error_messages={"required": {"message" : "Es necesario indicar el id de jaula ", "code" : 400}})
+    blogs = fields.Nested(BlogSchema,many=True)
