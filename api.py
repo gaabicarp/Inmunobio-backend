@@ -7,7 +7,7 @@ from resources.grupoDeTrabajoResource import GrupoDeTrabajoID,GrupoDeTrabajo,Gru
 from resources.experimentoResource import ExperimentoResource, Experimentos, ExperimentoMuestra
 from resources.proyectoResource import *
 from resources.experimentoResource import ExperimentoResource, Experimentos, CerrarExperimento
-from resources.contenedorResource import Contenedor, ContenedorProyecto, ContenedorParent
+from resources.contenedorResource import Contenedor, ContenedorProyecto, ContenedorParent,ContenedorProyectoId
 
 from resources.grupoExperimentalResource import GrupoExperimental, GruposExperimentales, DevidirGrupoExperimental
 from resources.stockResource import ObtenerProductosStock,ProductoEnStock,BorrarTodoStock,ConsumirStockResource,ProductoEnStockID
@@ -15,7 +15,7 @@ from resources.productoResource import ProductoResource,ObtenerProductosResource
 from resources.distribuidoraResource import DistribuidoraResource,ObtenerDistribuidorasResource,DistribuidoraID
 
 from resources.grupoExperimentalResource import GrupoExperimental, GruposExperimentales
-from resources.jaulaResource import JaulaXId,ObtenerBlogsJaula,Jaula, JaulasSinProyecto, JaulasDelProyecto,BlogJaula,BorrarBlogJaula,Jaulas
+from resources.jaulaResource import JaulasBlogs,JaulaXId,ObtenerBlogsJaula,Jaula, JaulasSinProyecto, JaulasDelProyecto,BlogJaula,BorrarBlogJaula,Jaulas
 from resources.fuenteExperimentalResource import FuenteExperimental
 from resources.animalResource import  Animal, Animales, AnimalesSinJaula, AnimalesDeLaJaula, AnimalesProyecto
 from resources.muestraResource import Muestra, MuestraGrupoExperimental, MuestraProyecto
@@ -99,13 +99,13 @@ api.add_resource(Jaula, '/api/v1/asignarJaulaAProyecto', endpoint="asignar_jaula
 api.add_resource(Jaula, '/api/v1/nuevaJaula', endpoint="nueva_jaula")
 api.add_resource(Jaula, '/api/v1/bajarJaula/<int:id_jaula>', endpoint="bajar_jaula")
 api.add_resource(JaulasSinProyecto, '/api/v1/jaulasDisponibles', endpoint="jaulas_disponibles")
-api.add_resource(JaulasDelProyecto, '/api/v1/proyecto/<int:id_proyecto>/jaulasDelProyecto', endpoint="jaulas_del_proyecto")
+api.add_resource(JaulasDelProyecto, '/api/v1/proyecto/<int:idProyecto>/jaulasDelProyecto', endpoint="jaulas_del_proyecto")
 api.add_resource(BlogJaula, '/api/v1/proyecto/blogJaula')
 api.add_resource(ObtenerBlogsJaula, '/api/v1/proyecto/blogsJaula')
 api.add_resource(BorrarBlogJaula, '/api/v1/proyecto/borrarBlogJaula/<int:id_jaula>/<int:id_blog>' )
 api.add_resource(Jaulas, '/api/v1/jaulas')
 api.add_resource(JaulaXId, '/api/v1/jaula/<int:id_jaula>', endpoint="jaula_por_id")
-
+api.add_resource(JaulasBlogs, '/api/v1/blogsJaulas')
 
 #FuenteExperimental
 api.add_resource(FuenteExperimental, '/api/v1/fuenteExperimental/<string:codigo>', endpoint="fuente_experimental")
@@ -124,11 +124,14 @@ api.add_resource(AnimalesProyecto, '/api/v1/proyecto/<int:idProyecto>/animales',
 
 #contenedor
 api.add_resource(Contenedor, '/api/v1/contenedores', endpoint='contenedores')
-api.add_resource(Contenedor, '/api/v1/nuevoContenedor', endpoint='nuevo_contenedore')
+api.add_resource(Contenedor, '/api/v1/nuevoContenedor', endpoint='nuevo_contenedores')
+api.add_resource(Contenedor, '/api/v1/modificarContenedor', endpoint='modificar_contenedor')
+api.add_resource(Contenedor, '/api/v1/eliminarContenedor/<int:idContenedor>', endpoint='eliminar_contenedor')
 api.add_resource(ContenedorProyecto, '/api/v1/contenedoresDelProyecto', endpoint='contenedores_del_proyecto')
 api.add_resource(ContenedorProyecto, '/api/v1/asignarProyectoAlContenedor', endpoint='asignar_proyecto_al_contenedor')
 api.add_resource(ContenedorParent, '/api/v1/subcontenedores', endpoint='subcontenedores')
-api.add_resource(ContenedorParent, '/api/v1/asignarParentAContenedores', endpoint='asignar_parent_a_contenedores')
+api.add_resource(ContenedorParent, '/api/v1/asignarParentAContenedor', endpoint='asignar_parent_a_contenedor')
+api.add_resource(ContenedorProyectoId, '/api/v1/contenedoresDelProyecto/<int:id_proyecto>')
 
 #Muestra
 api.add_resource(Muestra, '/api/v1/muestra/<int:idMuestra>', endpoint='muestra')
@@ -137,6 +140,7 @@ api.add_resource(Muestra, '/api/v1/modificarMuestra', endpoint='modificar_muestr
 api.add_resource(Muestra, '/api/v1/bajarMuestra/<int:idMuestra>', endpoint='bajar_muestra')
 api.add_resource(MuestraGrupoExperimental, '/api/v1/grupoExperimental/<int:idGrupoExperimental>/muestras', endpoint='muestras_grupo_experimental')
 api.add_resource(MuestraProyecto, '/api/v1/proyecto/<int:idProyecto>/muestras', endpoint='muestras_proyecto')
+
 #Herramientas
 api.add_resource(HerramientaResource, '/api/v1/herramienta')
 api.add_resource(HerramientaPorId, '/api/v1/herramienta/<int:id_herramienta>')

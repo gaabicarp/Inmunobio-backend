@@ -55,7 +55,7 @@ class AnimalesDeLaJaula(Resource):
 
     def get(self, idJaula):
         if idJaula:
-            animales = AnimalService.animalesDeLaJaula(idJaula)
+            animales = AnimalService.animalesDeLaJaulaSchema(idJaula)
             if animales:
                 return animales, 200
             return {'Status': f'No se encontraron animales para el id {idJaula} de la jaula.'}, 200

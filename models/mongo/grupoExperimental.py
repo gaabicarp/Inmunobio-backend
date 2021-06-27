@@ -14,6 +14,7 @@ class MuestraPropia(dbMongo.EmbeddedDocument):
 
 class FuenteExperimentalPropia(dbMongo.EmbeddedDocument):
     id_fuenteExperimental = dbMongo.IntField()
+    id_proyecto = dbMongo.IntField()
     codigo = dbMongo.StringField()
     codigoGrupoExperimental = dbMongo.StringField()
     especie = dbMongo.StringField()
@@ -52,6 +53,7 @@ class MuestraPropiaSchema(Schema):
 
 class FuenteExperimentalPropiaSchema(Schema):
     id_fuenteExperimental = fields.Int()
+    id_proyecto = fields.Int()
     codigo = fields.Str()
     codigoGrupoExperimental = fields.Str()
     especie = fields.Str()
