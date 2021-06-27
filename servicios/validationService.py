@@ -3,6 +3,7 @@ from models.mongo.experimento import Experimento
 from models.mongo.muestra import Muestra
 from models.mongo.grupoExperimental import GrupoExperimental
 from models.mongo.fuenteExperimental import FuenteExperimental
+from models.mongo.contenedor import Contenedor
 class ValidacionesUsuario():
     @classmethod
     def desvincularDeProyectos(cls,id_usuario):
@@ -13,6 +14,10 @@ class Validacion():
     @classmethod
     def elProyectoExiste(cls, idProyecto):
         return Proyecto.objects(id_proyecto=idProyecto).first() != None
+    
+    @classmethod
+    def elProyectoEstaActivo(cls, idProyecto):
+        return Proyecto.objects(id_proyecto=idProyecto, finalizado = False).first() != None
     
     @classmethod
     def elExperimentoEstaFinalizado(cls, id_experimento):
@@ -51,4 +56,20 @@ class Validacion():
     
     def losAnimalesPertenecenAlMismoProyectoDelExperimento(grupoExperimental):
         experimento = Experimento.objects(id_experimento = grupoExperimental.id_experimento).first()
+        for animal in grupoExperimental.fuentesExperimentales:
+            print(f"Fuente: {animal.id_fuenteExperimental}  y el proyecto es {animal.id_proyecto}" )
         return all(experimento.id_proyecto == animal.id_proyecto for animal in grupoExperimental.fuentesExperimentales)
+    
+    def elContenedorTieneContenedoresHijos(idContenedor):
+        contenedores = Contenedor.objects(parent = idContenedor).all()
+        return len(contenedores) != 0
+    
+    def elContenedorTieneMuestrasAsociadas(idContenedor):
+        muestras = Muestra.objects(id_contenedor = idContenedor).all()
+        return len(muestras) != 0
+    
+    def elContenedorExiste(idContenedor):
+        return Contenedor.objects(id_contenedor = idContenedor).first() != None
+    
+    def elContenedorPadreEstaDisponible(contenedor):
+        return Contenedor.objects(id_contenedor = contenedor.parent, disponible = True).first() != None
