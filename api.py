@@ -127,7 +127,7 @@ api.add_resource(Contenedor, '/api/v1/eliminarContenedor/<int:idContenedor>', en
 api.add_resource(ContenedorProyecto, '/api/v1/contenedoresDelProyecto', endpoint='contenedores_del_proyecto')
 api.add_resource(ContenedorProyecto, '/api/v1/asignarProyectoAlContenedor', endpoint='asignar_proyecto_al_contenedor')
 api.add_resource(ContenedorParent, '/api/v1/subcontenedores', endpoint='subcontenedores')
-api.add_resource(ContenedorParent, '/api/v1/asignarParentAContenedores', endpoint='asignar_parent_a_contenedores')
+api.add_resource(ContenedorParent, '/api/v1/asignarParentAContenedor', endpoint='asignar_parent_a_contenedor')
 api.add_resource(ContenedorProyectoId, '/api/v1/contenedoresDelProyecto/<int:id_proyecto>')
 
 #Muestra

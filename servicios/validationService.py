@@ -16,6 +16,10 @@ class Validacion():
         return Proyecto.objects(id_proyecto=idProyecto).first() != None
     
     @classmethod
+    def elProyectoEstaActivo(cls, idProyecto):
+        return Proyecto.objects(id_proyecto=idProyecto, finalizado = False).first() != None
+    
+    @classmethod
     def elExperimentoEstaFinalizado(cls, id_experimento):
         return Experimento.objects(id_experimento = id_experimento, finalizado = False).first() != None
     
@@ -63,3 +67,9 @@ class Validacion():
     def elContenedorTieneMuestrasAsociadas(idContenedor):
         muestras = Muestra.objects(id_contenedor = idContenedor).all()
         return len(muestras) != 0
+    
+    def elContenedorExiste(idContenedor):
+        return Contenedor.objects(id_contenedor = idContenedor).first() != None
+    
+    def elContenedorPadreEstaDisponible(contenedor):
+        return Contenedor.objects(id_contenedor = contenedor.parent, disponible = True).first() != None

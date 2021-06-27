@@ -13,6 +13,8 @@ class Contenedor(Resource):
             return contenedores, 200
         except ValidationError as err:
             return {'error': err.messages}, 400
+        except Exception as err:
+            return {'Error': str(err)}, 400
 
     #@jwt_required()
     def post(self):
@@ -23,6 +25,8 @@ class Contenedor(Resource):
                 return {'Status' : 'ok'}, 200
             except ValidationError as err:
                 return {'error': err.messages},400
+            except Exception as err:
+                return {'Error': str(err)}, 400
         return {'error': 'Se deben enviar datos para la creación del contenedor'},400
     
     def put(self):
@@ -55,10 +59,12 @@ class ContenedorProyecto(Resource):
         if datos:
             try:
                 contenedores = ContenedorService.asignarProyectoAlContenedor(datos)
-                return {'status': 'ok'}, 200
+                return {'Status': 'Ok'}, 200
             except ValidationError as err:
-                return {'error': err.messages}, 400
-        return {'error': 'Se debe enviar un atributo id_proyecto válido'}, 400
+                return {'Error': err.messages}, 400
+            except Exception as err:
+                return {'Error': str(err)}, 400
+        return {'Error': 'Se debe enviar un atributo id_proyecto válido'}, 400
 
 class ContenedorProyectoId(Resource):
     #@jwt_required()
@@ -68,8 +74,10 @@ class ContenedorProyectoId(Resource):
                 contenedores = ContenedorService.find_all_by_id_proyecto(id_proyecto)
                 return contenedores, 200
             except ValidationError as err:
-                return {'error': err.messages}, 400
-        return {'error': 'Se debe enviar un atributo id_proyecto válido'}, 400
+                return {'Error': err.messages}, 400
+            except Exception as err:
+                return {'Error': str(err)}, 400
+        return {'Error': 'Se debe enviar un atributo id_proyecto válido'}, 400
 
 class ContenedorEspFisicoID(Resource):
     #@jwt_required()
@@ -80,8 +88,10 @@ class ContenedorEspFisicoID(Resource):
                 #contenedores = ContenedorService.find_all_by_id_proyecto(id_espacioFisico)
                 return 200
             except ValidationError as err:
-                return {'error': err.messages}, 400
-        return {'error': 'Se debe enviar un atributo id_espacioFisico válido'}, 400
+                return {'Error': err.messages}, 400
+            except Exception as err:
+                return {'Error': str(err)}, 400
+        return {'Error': 'Se debe enviar un atributo id_espacioFisico válido'}, 400
 
 class ContenedorParent(Resource):
     #@jwt_required()
@@ -92,8 +102,10 @@ class ContenedorParent(Resource):
                 contenedores = ContenedorService.subContenedoresDelContenedor(datos)
                 return contenedores, 200
             except ValidationError as err:
-                return {'error': err.messages}, 400
-        return {'error': 'Se debe enviar el id del contenedor'}, 400
+                return {'Error': err.messages}, 400
+            except Exception as err:
+                return {'Error': str(err)}, 400
+        return {'Error': 'Se debe enviar el id del contenedor'}, 400
 
     #@jwt_required()
     def put(self):
@@ -101,7 +113,9 @@ class ContenedorParent(Resource):
         if datos:
             try:
                 ContenedorService.asignarParents(datos)
-                return {'status':'ok'}
+                return {'Status':'Ok'}
             except ValidationError as err:
-                return {'error' : err.messages}, 400
-        return {'error': 'Se debe enviar el id del contenedor y el parent'}
+                return {'Error' : err.messages}, 400
+            except Exception as err:
+                return {'Error': str(err)}, 400
+        return {'Error': 'Se debe enviar el id del contenedor y el parent'}
