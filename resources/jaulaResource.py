@@ -51,7 +51,8 @@ class JaulasSinProyecto(Resource):
 class JaulasDelProyecto(Resource):
     def get(self, idProyecto):
         jaulas = JaulaService.jaulasDelProyecto(idProyecto)
-        return CommonService.jsonMany(jaulas,JaulaSchema), 200
+        print(jaulas)
+        return CommonService.jsonMany(jaulas,JaulaSchema)
 
 class BlogJaula(Resource):
     def post(self):

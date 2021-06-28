@@ -87,8 +87,21 @@ class ErrorFechasInvalidas(Exception):
         self.message = message 
         super().__init__(self.message)    
 
-
 class ErrorJaulaBaja(Exception):
     def __init__(self, message="La jaula debe estar vacía para poder darla de baja "):
         self.message = message 
+        super().__init__(self.message)    
+
+class ErrorJaulaDeProyecto(Exception):
+    def __init__(self,id_proyecto,id_jaula):
+        self.message = "La jaula "  + str(id_jaula)+" no se encuentra asignada al proyecto con id " + str(id_proyecto)
+        super().__init__(self.message)    
+class ErrorExpDeProyecto(Exception):
+    def __init__(self,id_proyecto,id_experimento):
+        self.message = "El experimento "  + str(id_experimento)+" no se encuentra asignada al proyecto con id " + str(id_proyecto)
+        super().__init__(self.message)    
+
+class ErrorExperimentoInexistente(Exception):
+    def __init__(self,id_experimento):
+        self.message = "No existe experimento asociado con id  "  + str(id_experimento)
         super().__init__(self.message)    

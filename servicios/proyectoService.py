@@ -62,16 +62,32 @@ class ProyectoService:
         
     @classmethod
     def nuevoBlogsProyecto(cls,datos):
-        datosBlog = NuevoBlogProyectoSchema().load(datos)
-        print(datosBlog)
-        if cls.esBlogJaula(datosBlog['blogs']):
-            from servicios.jaulaService import JaulaService
-            JaulaService.crearBlogJaula(datos['id'],datos['blogs'])
-        else: print('soy blog de exp')
-        
-    
+        NuevoBlogProyectoSchema().load(datos)
+        if cls.esBlogJaula(datos['blogs']): cls.crearBlogProyectoJaula(datos)
+        else: cls.crearBlogProyectoExperimento(datos)
+
+    @classmethod
+    def crearBlogProyectoExperimento(cls,datos):
+        from servicios.experimentoService import ExperimentoService
+        ExperimentoService.crearBlogExp(datos['id'],datos['blogs'])
+
+    @classmethod
+    def crearBlogProyectoJaula(cls,datos):
+        from servicios.jaulaService import JaulaService
+        cls.validarBlogJaulaDeProyecto(datos)
+        JaulaService.crearBlogJaula(datos['id'],datos['blogs'])
+
+    @classmethod
+    def validarBlogJaulaDeProyecto(cls,datos):
+        from servicios.jaulaService import JaulaService
+        JaulaService.jaulaPerteneceAlProyecto(datos['id_proyecto'],datos['id'])
+
+    @classmethod
+    def validarExpDeProyecto(cls,datos):
+        from servicios.experimentoService import ExperimentoService
+        ExperimentoService.expPerteneceAlProyecto(datos['id_proyecto'],datos['id'])
 
     @classmethod
     def esBlogJaula(cls,blog):
-        return blog.tipo == "Jaula"
+        return blog['tipo'] == "Jaula"
 
