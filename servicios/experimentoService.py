@@ -1,21 +1,32 @@
+from models.mongo.experimento import Experimento
+from schemas.experimentoSchema import BusquedaBlogExp,NuevoBlogExpSchema, ExperimentoSchema, ModificarExperimentoSchema, AltaExperimentoSchema, CerrarExperimentoSchema, AgregarMuestrasAlExperimentoSchema
 from .validationService import Validacion
-from models.mongo.experimento import Experimento, ExperimentoSchema, ModificarExperimentoSchema, AltaExperimentoSchema, CerrarExperimentoSchema, AgregarMuestrasAlExperimentoSchema
+from models.mongo.experimento import Experimento 
+
 from servicios.muestraService import MuestraService
+from servicios.blogService import BlogService
 from dateutil import parser
 import datetime
+from exceptions.exception import ErrorExperimentoInexistente,ErrorExpDeProyecto
 
 class ExperimentoService:    
 
     @classmethod
     def find_by_id(cls, idExperimento):
-        return Experimento.objects.filter(id_experimento=idExperimento).first()
+        exp =  Experimento.objects.filter(id_experimento=idExperimento).first()
+        if not exp : raise ErrorExperimentoInexistente(idExperimento)
+        return exp
 
     @classmethod
     def find_all_by_idProyecto(cls, idProyecto):
         return ExperimentoSchema().dump(Experimento.objects.filter(id_proyecto=idProyecto).all(), many=True)
-
+    @classmethod
+    def find_all_by_id(cls, idProyecto):
+        return Experimento.objects.filter(id_proyecto=idProyecto).all()
+    
     @classmethod
     def nuevoExperimento(cls, datos):
+        #falta validar q exista el proyecto
         experimento = AltaExperimentoSchema().load(datos)
         experimento.save()
     
@@ -57,7 +68,30 @@ class ExperimentoService:
         cls.validarMuestrasExternas(cls, experimento)
         Experimento.objects(id_experimento = experimento.id_experimento).update(muestrasExternas=experimento.muestrasExternas)
 
+
+    def nuevoBlogExperimento(cls, datos):
+        NuevoBlogExpSchema().load(datos)
+        cls.crearBlogExp(cls,datos['id_experimento'],datos['blogs'])
+
     @classmethod
+    def crearBlogExp(cls,id_experimento,datosBlog):
+        from servicios.blogService import BlogService
+        experimento = cls.find_by_id(id_experimento)
+        blog = BlogService.nuevoBlog(datosBlog)
+        experimento.blogs.append(blog)
+        experimento.save()
+
+    @classmethod
+    def expPerteneceAlProyecto(cls,id_proyecto,id_experimento):
+        exp = cls.find_by_id(id_experimento)
+        if not exp.id_proyecto == id_proyecto: raise ErrorExpDeProyecto(id_proyecto,id_experimento)
+
+    @classmethod
+    def obtenerBlogs(cls,datos):
+        BusquedaBlogExp().load(datos)
+        experimento = cls.find_by_id(datos['id_experimento'])
+        return BlogService.busquedaPorFecha(experimento.blogs,datos['fechaDesde'],datos['fechaHasta'])
+
     def removerMuestraDeExperimento(cls, idExperimento, idMuestra):
         cls.validarRemoverMuestraExperimento(idExperimento, idMuestra)
         Experimento.objects(id_experimento=idExperimento).update(pull__muestrasExternas__id_muestra=idMuestra)

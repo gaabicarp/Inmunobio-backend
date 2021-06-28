@@ -39,7 +39,8 @@ api.init_app(app)
 @app.route("/")
 def Prueba():
 	from models.mysql.usuario import Usuario, Permiso
-	u = Usuario.find_by_username('naye')
+	from servicios.usuarioService import UsuarioService
+	u = UsuarioService.find_by_email('naye')
 	p = Permiso.query.limit(5).all()
 	f = UsuarioService.findUsuariosHabilitados()
 	return f"{f}"

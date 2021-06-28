@@ -6,7 +6,7 @@ from resources.permisosResource import Permisos,ObtenerPermisoPorId
 from resources.grupoDeTrabajoResource import GrupoDeTrabajoID,GrupoDeTrabajo,GruposDeTrabajo,RenombrarJefeGrupo
 from resources.experimentoResource import ExperimentoResource, Experimentos, ExperimentoMuestra
 from resources.proyectoResource import *
-from resources.experimentoResource import ExperimentoResource, Experimentos, CerrarExperimento
+from resources.experimentoResource import ObtenerBlogsExp,ExperimentoResource, Experimentos, CerrarExperimento,BlogExperimento
 from resources.contenedorResource import Contenedor, ContenedorProyecto, ContenedorParent,ContenedorProyectoId
 
 from resources.grupoExperimentalResource import GrupoExperimental, GruposExperimentales, DevidirGrupoExperimental
@@ -18,17 +18,13 @@ from resources.grupoExperimentalResource import GrupoExperimental, GruposExperim
 from resources.jaulaResource import JaulasBlogs,JaulaXId,ObtenerBlogsJaula,Jaula, JaulasSinProyecto, JaulasDelProyecto,BlogJaula,BorrarBlogJaula,Jaulas
 from resources.fuenteExperimentalResource import FuenteExperimental
 from resources.animalResource import  Animal, Animales, AnimalesSinJaula, AnimalesDeLaJaula, AnimalesProyecto
-
 from resources.muestraResource import Muestra, MuestraGrupoExperimental, MuestraProyecto
-
-
 from resources.animalResource import  Animal, Animales, AnimalesSinJaula, AnimalesDeLaJaula
 from resources.espacioFisicoResource import EspaciosFisicos,EspacioFisico,EspacioFisicoID,CrearBlogEspacioFisico,BorrarBlogEspacioFisico,ObtenerBlogsEspFisico
 from resources.herramientaResource import HerramientaResource,HerramientaPorId,Herramientas,BorrarBlogHeramienta,BlogHerramientaXId,CrearBlogHerramientas
 api = Api()
 
 #Espacio fisico
-
 api.add_resource(EspacioFisico, '/api/v1/espacioFisico')
 api.add_resource(EspacioFisicoID, '/api/v1/espacioFisico/<int:id_espacioFisico>')
 api.add_resource(EspaciosFisicos, '/api/v1/espaciosFisicos')
@@ -53,6 +49,8 @@ api.add_resource(ProyectoID, '/api/v1/proyecto/<int:id_proyecto>')
 api.add_resource(CerrarProyecto, '/api/v1/cerrarProyecto')
 api.add_resource(ModificarProyecto, '/api/v1/modificarProyecto')
 api.add_resource(ObtenerUsuariosProyecto, '/api/v1/obtenerUsuariosProyecto/<int:id_proyecto>')
+api.add_resource(ObtenerBlogsProyecto, '/api/v1/blogsProyecto')
+api.add_resource(NuevoBlogProyecto, '/api/v1/crearblogProyecto')
 
 #Grupo de trabajo
 api.add_resource(GrupoDeTrabajo,'/api/v1/grupoDeTrabajo')
@@ -86,6 +84,9 @@ api.add_resource(ExperimentoMuestra, '/api/v1/experimento/<int:idExperimento>/mu
 api.add_resource(CerrarExperimento, '/api/v1/cerrarExperimento', endpoint='cerrar_experimento')
 api.add_resource(ExperimentoResource, '/api/v1/modificarExperimento', endpoint='modificar_experimento')
 api.add_resource(ExperimentoMuestra, '/api/v1/agregarMuestrasExternasAlExperimento', endpoint='agregar_muestras_externas_al_experimento')
+api.add_resource(BlogExperimento, '/api/v1/nuevoBlogExperimento', endpoint='nuevo_blog_exp')
+api.add_resource(ObtenerBlogsExp, '/api/v1/blogExperimento', endpoint='obtener_blog_exp')
+
 
 #Grupo Experimental
 api.add_resource(GrupoExperimental, '/api/v1/grupoExperimental/<int:idGrupoExperimental>', endpoint='grupo_experimental')

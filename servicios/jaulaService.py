@@ -1,7 +1,6 @@
 from models.mongo.jaula import Jaula
 from servicios.fuenteExperimentalService import FuenteExperimentalService
-from servicios.blogService import BlogService
-from exceptions.exception import ErrorJaulaInexistente,ErrorBlogInexistente
+from exceptions.exception import ErrorJaulaInexistente,ErrorBlogInexistente,ErrorJaulaDeProyecto
 from schemas.jaulaSchema import  BlogSchema,BusquedaBlogsJaulas,BusquedaBlogJaula,NuevaJaulaSchema, ActualizarProyectoJaulaSchema, ActualizarJaulaSchema,NuevoBlogJaulaSchema
 from servicios.animalService import AnimalService
 
@@ -11,32 +10,35 @@ class JaulaService:
         jaula =  Jaula.objects(id_jaula = idJaula).first()
         if not jaula: raise ErrorJaulaInexistente(idJaula)
         return jaula
-    
+
     @classmethod
     def jaulasSinAsignar(cls):
         return Jaula.objects(id_proyecto = 0).all()
     
     @classmethod
     def jaulasDelProyecto(cls, idProyecto):
-        jaulas = Jaula.objects(id_proyecto = idProyecto).all()
-        if not jaulas:
-             raise ErrorJaulaInexistente(idProyecto)
-        return jaulas
+        return Jaula.objects(id_proyecto = idProyecto).all()
+
+    @classmethod
+    def jaulaPerteneceAlProyecto(cls,_id_proyecto,_id_jaula):
+        if not cls.jaulasDelProyecto(_id_proyecto).filter(id_jaula = _id_jaula):
+            raise ErrorJaulaDeProyecto(_id_proyecto,_id_jaula)
 
     @classmethod
     def crearJaula(cls, datos):
         jaula = NuevaJaulaSchema().load(datos)
-        ##chequear que cuando pasan id proyecto distinto de cero se busca el nombre dep roy y se asgina
         jaula.save()
-    
+
     @classmethod
     def actualizarProyectoDeLaJaula(cls, datos):
+        from servicios.proyectoService import ProyectoService
+
         print(datos)
         jaula = ActualizarProyectoJaulaSchema().load(datos)
-        print(jaula)
+
+        ProyectoService.find_by_id(jaula.id_proyecto)
         Jaula.objects(id_jaula = jaula.id_jaula).update(
-            id_proyecto = jaula.id_proyecto,
-            nombre_proyecto = jaula.nombre_proyecto
+            id_proyecto = jaula.id_proyecto
         )
 
     @classmethod
@@ -57,7 +59,6 @@ class JaulaService:
             if not cls.laJaulaTieneAnimales(cls, idJaula):
                 jaula = Jaula.objects(id_jaula = idJaula)
                 jaula.delete()
-
                 return {'Status':'Ok'}, 200
             else:
                 return {'Status':'La jaula debe estar vacía para poder darla de baja'}, 400
@@ -69,12 +70,16 @@ class JaulaService:
 
     @classmethod
     def nuevoBlogJaula(cls, datos):
-            NuevoBlogJaulaSchema().load(datos)
-            jaula = cls.find_by_id(datos['id_jaula'])
-            blog = BlogService.nuevoBlog(datos['blogs'])
-            jaula.blogs.append(blog)
-            jaula.save()
-            return {'Status':'Ok'}, 200
+        NuevoBlogJaulaSchema().load(datos)
+        cls.crearBlogJaula(cls,datos['id_jaula'],datos['blogs'])
+
+    @classmethod
+    def crearBlogJaula(cls,id_jaula,datosBlog):
+        from servicios.blogService import BlogService
+        jaula = cls.find_by_id(id_jaula)
+        blog = BlogService.nuevoBlog(datosBlog)
+        jaula.blogs.append(blog)
+        jaula.save()
 
     @classmethod
     def borrarBlogJaula(cls,_id_jaula,_id_blog):
@@ -92,6 +97,7 @@ class JaulaService:
 
     @classmethod
     def blogServiceJaulas(cls,blogs,fechaDesde,fechaHasta):
+        from servicios.blogService import BlogService
         return BlogService.busquedaPorFecha(blogs,fechaDesde,fechaHasta)
 
     @classmethod
@@ -107,8 +113,7 @@ class JaulaService:
     @classmethod
     def deserializarBlogsJaulas(cls,blogs,idJaula):
         blogsDic = []
-        for blog in blogs:
-            blogsDic.append(cls.deserializarBlogJaula(blog,idJaula))
+        for blog in blogs: blogsDic.append(cls.deserializarBlogJaula(blog,idJaula))
         return blogsDic
 
     @classmethod
@@ -119,4 +124,20 @@ class JaulaService:
 
     @classmethod
     def obtenerJaulas(cls):
-        return Jaula.objects.all()
+        jaulas =  Jaula.objects.all()
+        for jaula in jaulas:jaula = cls.asignarNombreProyecto(jaula) 
+        return jaulas
+
+    @classmethod
+    def obtenerJaula(cls,id_jaula):
+        jaula = cls.find_by_id(id_jaula)
+        jaula = cls.asignarNombreProyecto(jaula) 
+        return jaula
+
+    @classmethod    
+    def asignarNombreProyecto(cls,jaula):
+        from servicios.proyectoService import ProyectoService
+        proyecto = ProyectoService.find_by_id(jaula.id_proyecto)
+        jaula.nombre_proyecto= proyecto.nombre
+        return jaula
+

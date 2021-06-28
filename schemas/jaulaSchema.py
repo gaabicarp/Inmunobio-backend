@@ -31,13 +31,16 @@ class NuevaJaulaSchema(Schema):
         return Jaula(**data)
 
 class ActualizarProyectoJaulaSchema(JaulaSchema):
+
+    #class ActualizarProyectoJaulaSchema(Schema):
     id_jaula = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar el id de la jaula", "code" : 400}})
     id_proyecto = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar el id del proyecto", "code": 400}})
-    nombre_proyecto = fields.String(required=True, error_messages={"required": {"message" : "Es necesario indicar el nombre de proyecto", "code" : 400}})
-
+    #nombre_proyecto = fields.String(required=True, error_messages={"required": {"message" : "Es necesario indicar el nombre de proyecto", "code" : 400}})
+    
     @post_load
     def makeJaula(self, data, **kwargs):
         return Jaula(**data)
+
 
 class ActualizarJaulaSchema(JaulaSchema):
     id_jaula = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar el id de la jaula", "code" : 400}})
@@ -49,5 +52,6 @@ class NuevoBlogJaulaSchema(Schema):
 class BusquedaBlogsJaulas(Schema):
     fechaDesde = fields.String(required=True,error_messages={"required": {"message": "Debe indicarse  fecha-desde.", "code": 400}}) 
     fechaHasta = fields.String(required=True,error_messages={"required": {"message": "Debe indicarse  fecha-hasta", "code": 400}}) 
+
 class BusquedaBlogJaula(BusquedaBlogsJaulas):
     id_jaula = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse  id_jaula", "code": 400}}) 

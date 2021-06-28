@@ -14,7 +14,7 @@ class EspacioFisico(Resource):
         datos = request.get_json()
         if(datos):
             try:
-                EspacioFisicoService().altaEspacioFisico(datos)
+                EspacioFisicoService.altaEspacioFisico(datos)
                 return {'Status':'ok'},200
             except ValidationError as err:
                     return {'error': err.messages},400 
@@ -24,7 +24,7 @@ class EspacioFisico(Resource):
         datos = request.get_json()
         if(datos): 
             try:           
-                EspacioFisicoService().modificarEspacio(datos)
+                EspacioFisicoService.modificarEspacio(datos)
                 return {'Status':'ok'},200
             except ValidationError as err:
                 return {'error': err.messages},400 
@@ -37,7 +37,7 @@ class EspacioFisicoID(Resource):
     def get(self,id_espacioFisico):
         if id_espacioFisico:
             try:
-                espacio = EspacioFisicoService().find_by_id(id_espacioFisico)
+                espacio = EspacioFisicoService.find_by_id(id_espacioFisico)
                 return CommonService.json(espacio,EspacioFisicoSchema)
             except ValidationError as err:
                 return {'error': err.messages},400 
@@ -49,7 +49,7 @@ class EspacioFisicoID(Resource):
     def delete(self,id_espacioFisico):
         if(id_espacioFisico):
             try:
-                EspacioFisicoService().borrarEspacio(id_espacioFisico)
+                EspacioFisicoService.borrarEspacio(id_espacioFisico)
                 return {'Status':'ok'},200
             except ErrorEspacioFisicoInexistente as err:
                 return {'error':err.message},400
@@ -60,7 +60,7 @@ class CrearBlogEspacioFisico(Resource):
         datos = request.get_json()
         if(datos):
             try:
-                EspacioFisicoService().crearBlogEspacioFisico(datos)
+                EspacioFisicoService.crearBlogEspacioFisico(datos)
                 return {'Status':'ok'},200
             except ValidationError as err:
                 return {'error': err.messages},400 
@@ -83,7 +83,7 @@ class ObtenerBlogsEspFisico(Resource):
         datos = request.get_json()
         if(datos):
             try:
-                blogs = EspacioFisicoService().obtenerBlogs(datos)
+                blogs = EspacioFisicoService.obtenerBlogs(datos)
                 return CommonService.jsonMany(blogs,BlogSchema)
             except (ErrorEspacioFisicoInexistente,ErrorFechasInvalidas) as err:
                 return {'error':err.message},400
@@ -93,7 +93,7 @@ class ObtenerBlogsEspFisico(Resource):
         
 class EspaciosFisicos(Resource):
     def get(self): 
-        return CommonService.jsonMany(EspacioFisicoService().obtenerEspacios(),EspacioFisicoSchema)
+        return CommonService.jsonMany(EspacioFisicoService.obtenerEspacios(),EspacioFisicoSchema)
 
 
 
