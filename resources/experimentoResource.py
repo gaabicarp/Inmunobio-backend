@@ -67,7 +67,7 @@ class CerrarExperimento(Resource):
 class ExperimentoMuestra(Resource):
 
     #@jwt_required()
-    def put(self, datos):
+    def put(self):
         datos = request.get_json()
         if datos:
             try:
@@ -79,6 +79,15 @@ class ExperimentoMuestra(Resource):
                 return {"Error" : str(err)}, 400
         return {"Error" : "Se deben enviar datos para poder agregar muestras."}, 400
 
+
+    def delete(self, idExperimento, idMuestra):
+        if idExperimento and idMuestra:
+            try:
+                ExperimentoService.removerMuestraDeExperimento(idExperimento, idMuestra)
+                return {'Status':'ok'}, 200
+            except Exception as err:
+                return {'Error': str(err)}, 400
+        return {'Error': 'Se debe enviar el id del experimento y el id de la muestra'}, 400
 class BlogExperimento(Resource):
     def post(self):
         datos = request.get_json()
