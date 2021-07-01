@@ -105,3 +105,8 @@ class ErrorExperimentoInexistente(Exception):
     def __init__(self,id_experimento):
         self.message = "No existe experimento asociado con id  "  + str(id_experimento)
         super().__init__(self.message)    
+
+class ErrorEspacioDeproyecto(Exception):
+    def __init__(self,id_espFisico,id_proyecto):
+        self.message = "El espacio fisico con id."  + str(id_espFisico) + " asociado al proyecto id."+str(id_proyecto)+" ya no se encuentra disponible"
+        super().__init__(self.message)    

@@ -16,6 +16,7 @@ class JaulaSchema(Schema):
     habilitado = fields.Bool()
 #    blogs = fields.Nested(BlogSchema, many=True)
 
+
 class NuevaJaulaSchema(Schema):
     id_espacioFisico = fields.Int(required=True, error_messages={"required" : {"message" : "Es necesario indicar el id del espacio físico", "code": 400}})
     codigo = fields.Str(required=True, error_messages={"required": {"message" : "Es necesario indicar el código de la jaula", "code": 400}})

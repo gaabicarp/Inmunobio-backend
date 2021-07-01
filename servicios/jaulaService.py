@@ -1,7 +1,6 @@
 from models.mongo.jaula import Jaula
-from servicios.fuenteExperimentalService import FuenteExperimentalService
-from exceptions.exception import ErrorJaulaInexistente,ErrorBlogInexistente,ErrorJaulaDeProyecto,ErrorJaulaBaja
-from schemas.jaulaSchema import  BlogSchema,BusquedaBlogJaula,NuevaJaulaSchema, ActualizarProyectoJaulaSchema, ActualizarJaulaSchema,NuevoBlogJaulaSchema
+from exceptions.exception import ErrorEspacioFisicoInexistente,ErrorJaulaInexistente,ErrorBlogInexistente,ErrorJaulaDeProyecto,ErrorJaulaBaja,ErrorEspacioDeproyecto
+from schemas.jaulaSchema import  JaulaSchema,BlogSchema,BusquedaBlogJaula,NuevaJaulaSchema, ActualizarProyectoJaulaSchema, ActualizarJaulaSchema,NuevoBlogJaulaSchema
 from servicios.animalService import AnimalService
 from servicios.commonService import CommonService
 
@@ -27,7 +26,7 @@ class JaulaService:
 
     @classmethod
     def crearJaula(cls, datos):
-        #si aca se pasa id de proyecto hay que verif si existe
+        #aca nunca validar si existe el proyecto, se asigna aparte
         jaula = NuevaJaulaSchema().load(datos)
         jaula.save()
 
@@ -108,20 +107,32 @@ class JaulaService:
     @classmethod
     def deserializarBlogsJaulas(cls,blogs,idJaula):
         blogsDic = []
-        for blog in blogs: blogsDic.append(cls.deserializarBlogJaula(blog,idJaula))
+        for blog in blogs: blogsDic.append(cls.agregarIdJaulaBlog(blog,idJaula))
         return blogsDic
 
     @classmethod
-    def deserializarBlogJaula(cls,blog,idJaula):
+    def agregarIdJaulaBlog(cls,blog,idJaula):
         dictBlog =  BlogSchema().dump(blog)
         dictBlog['id_jaula'] = idJaula
         return dictBlog
 
     @classmethod
     def obtenerJaulas(cls):
+        jaulasDict = []
         jaulas =  Jaula.objects.all()
-        for jaula in jaulas:jaula = cls.asignarNombreProyecto(jaula) 
-        return jaulas
+        for jaula in jaulas: 
+            jaula = cls.asignarNombreProyecto(jaula) 
+            jaulasDict.append(cls.asignarNombreEspacioFisico(JaulaSchema().dump(jaula)))
+        return jaulasDict
+
+    @classmethod
+    def asignarNombreEspacioFisico(cls,jaula):
+        from servicios.espacioFisicoService import EspacioFisicoService
+        try:
+            jaula['nombreEspFisico'] = EspacioFisicoService.nombreEspacio(jaula['id_espacioFisico'])
+            return jaula
+        except ErrorEspacioFisicoInexistente as err:
+            raise ErrorEspacioDeproyecto(jaula['id_espacioFisico'],jaula['id_jaula'])
 
     @classmethod
     def obtenerJaula(cls,id_jaula):

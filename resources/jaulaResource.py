@@ -1,10 +1,11 @@
 from flask_restful import Resource
 from flask_jwt import jwt_required
-from flask import request
+from flask import request, jsonify
+
 from marshmallow import ValidationError
-from exceptions.exception import ErrorProyectoInexistente,ErrorJaulaBaja
+from exceptions.exception import ErrorProyectoInexistente,ErrorJaulaBaja,ErrorEspacioDeproyecto
 from servicios.jaulaService import JaulaService
-from schemas.jaulaSchema import  JaulaSchema, NuevaJaulaSchema, ActualizarProyectoJaulaSchema, ActualizarJaulaSchema,NuevoBlogJaulaSchema
+from schemas.jaulaSchema import  JaulaSchema
 from marshmallow import ValidationError
 from servicios.commonService import CommonService
 from exceptions.exception import ErrorJaulaInexistente,ErrorBlogInexistente,ErrorFechasInvalidas
@@ -113,8 +114,8 @@ class BorrarBlogJaula(Resource):
 class Jaulas(Resource):
     def get(self):
         try:
-            return  CommonService.jsonMany(JaulaService.obtenerJaulas() ,JaulaSchema)
-        except (ErrorJaulaInexistente,ErrorProyectoInexistente) as err:
+            return jsonify(JaulaService.obtenerJaulas())
+        except (ErrorJaulaInexistente,ErrorProyectoInexistente,ErrorEspacioDeproyecto) as err:
             return {'Error':err.message},400
 
 class JaulaXId(Resource):
