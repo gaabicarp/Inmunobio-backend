@@ -32,7 +32,7 @@ class CerrarExperimentoSchema(ExperimentoSchema):
     resultados = fields.Str(required=True, validate=Validacion.not_empty_string, error_messages={"required": {"message": "El campo resultados es necesario, no puede estar vacío", "code": 400}})
     conclusiones = fields.Str(required=True, validate=Validacion.not_empty_string, error_messages={"required": {"message": "El campo resultados es necesario, no puede estar vacío", "code": 400}})
 class ModificarExperimentoSchema(ExperimentoSchema):
-    id_experimento = fields.Int(required=True, validate=Validacion.not_empty_string, error_messages={"required": {"message": "El campo id_experimento es necesario, no puede estar vacío", "code": 400}})
+    id_experimento = fields.Int(required=True, validate=Validacion.not_empty_int, error_messages={"required": {"message": "El campo id_experimento es necesario, no puede estar vacío", "code": 400}})
 
 class MuestraExternaSchema(MuestraSchema):
     id_muestra = fields.Int(required=True, validate=Validacion.not_empty_int, error_messages={"required": {"message" : "Es necesario indicar el id de la muestra externa", "code": 400}})
