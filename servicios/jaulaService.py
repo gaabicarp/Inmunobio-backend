@@ -60,7 +60,7 @@ class JaulaService:
     @classmethod
     def nuevoBlogJaula(cls, datos):
         NuevoBlogJaulaSchema().load(datos)
-        cls.crearBlogJaula(cls,datos['id_jaula'],datos['blogs'])
+        cls.crearBlogJaula(datos['id_jaula'],datos['blogs'])
 
     @classmethod
     def crearBlogJaula(cls,id_jaula,datosBlog):
