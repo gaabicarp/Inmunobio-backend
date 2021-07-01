@@ -16,11 +16,16 @@ class EspacioFisicoService():
             espacioNuevo.save()
  
     @classmethod
+    def nombreEspacio(cls,id):
+        espacio = cls.find_by_id(id)
+        return espacio.nombre
+        
+    @classmethod
     def find_by_id(cls,id):
-        producto =  EspacioFisico.objects(id_espacioFisico = id).first()
-        if(not producto):
+        espacio =  EspacioFisico.objects(id_espacioFisico = id).first()
+        if(not espacio):
             raise ErrorEspacioFisicoInexistente(id)
-        return producto     
+        return espacio     
 
     @classmethod
     def modificarEspacio(cls,datos):
