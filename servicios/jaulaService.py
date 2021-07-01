@@ -1,6 +1,6 @@
 from models.mongo.jaula import Jaula
 from exceptions.exception import ErrorEspacioFisicoInexistente,ErrorJaulaInexistente,ErrorBlogInexistente,ErrorJaulaDeProyecto,ErrorJaulaBaja,ErrorEspacioDeproyecto
-from schemas.jaulaSchema import  JaulaSchema,BlogSchema,BusquedaBlogJaula,NuevaJaulaSchema, ActualizarProyectoJaulaSchema, ActualizarJaulaSchema,NuevoBlogJaulaSchema
+from schemas.jaulaSchema import  JaulaSchemaBlogs,BusquedaBlogsJaula,JaulaSchema,BlogSchema,BusquedaBlogJaula,NuevaJaulaSchema, ActualizarProyectoJaulaSchema, ActualizarJaulaSchema,NuevoBlogJaulaSchema
 from servicios.animalService import AnimalService
 from servicios.commonService import CommonService
 
@@ -43,11 +43,6 @@ class JaulaService:
     def actualizarJaula(cls, datos):
         jaulaAct = ActualizarJaulaSchema().dump(datos)
         jaula = cls.find_by_id(datos['id_jaula'])
-        """ jaula.codigo = datos['codigo']
-        jaula.rack = datos['rack'] 
-        jaula.estante = datos['estante'] 
-        jaula.capacidad = datos['capacidad'] 
-        jaula.tipo = datos['tipo'] """
         CommonService.updateAtributes(jaula,datos)
         jaula.save()
 
@@ -96,7 +91,7 @@ class JaulaService:
 
     @classmethod
     def obtenerTodosLosBlogs(cls,datos):
-        BusquedaBlogJaula().load(datos)
+        BusquedaBlogsJaula().load(datos)
         blogs = []
         jaulas = cls.obtenerJaulas()
         for jaula in jaulas:
@@ -118,8 +113,12 @@ class JaulaService:
 
     @classmethod
     def obtenerJaulas(cls):
+        return  Jaula.objects.all()
+
+    @classmethod
+    def obtenerTodasLasJaulas(cls):
         jaulasDict = []
-        jaulas =  Jaula.objects.all()
+        jaulas =  cls.obtenerJaulas()
         for jaula in jaulas: 
             jaula = cls.asignarNombreProyecto(jaula) 
             jaulasDict.append(cls.asignarNombreEspacioFisico(JaulaSchema().dump(jaula)))

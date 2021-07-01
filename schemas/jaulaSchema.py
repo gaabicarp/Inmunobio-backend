@@ -16,6 +16,8 @@ class JaulaSchema(Schema):
     habilitado = fields.Bool()
 #    blogs = fields.Nested(BlogSchema, many=True)
 
+class JaulaSchemaBlogs(JaulaSchema):
+    blogs = fields.Nested(BlogSchema, many=True)
 
 class NuevaJaulaSchema(Schema):
     id_espacioFisico = fields.Int(required=True, error_messages={"required" : {"message" : "Es necesario indicar el id del espacio físico", "code": 400}})
@@ -47,9 +49,9 @@ class NuevoBlogJaulaSchema(Schema):
     id_jaula = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar el id de la jaula", "code" : 400}})
     blogs = fields.Nested(BlogSchema,required=True, error_messages={"required": {"message" : "Es necesario indicar datos de blog de jaula", "code" : 400}})
 
-class BusquedaBlogJaula(Schema):
+class BusquedaBlogsJaula(Schema):
     fechaDesde = fields.String(required=True,error_messages={"required": {"message": "Debe indicarse  fecha-desde.", "code": 400}}) 
     fechaHasta = fields.String(required=True,error_messages={"required": {"message": "Debe indicarse  fecha-hasta", "code": 400}}) 
+
+class BusquedaBlogJaula(BusquedaBlogsJaula):
     id_jaula = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse  id_jaula", "code": 400}}) 
-
-

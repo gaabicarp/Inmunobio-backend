@@ -114,7 +114,7 @@ class BorrarBlogJaula(Resource):
 class Jaulas(Resource):
     def get(self):
         try:
-            return jsonify(JaulaService.obtenerJaulas())
+            return jsonify(JaulaService.obtenerTodasLasJaulas())
         except (ErrorJaulaInexistente,ErrorProyectoInexistente,ErrorEspacioDeproyecto) as err:
             return {'Error':err.message},400
 
