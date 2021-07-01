@@ -4,6 +4,7 @@ from exceptions.exception import ErrorJaulaInexistente,ErrorBlogInexistente,Erro
 from schemas.jaulaSchema import  BlogSchema,BusquedaBlogJaula,NuevaJaulaSchema, ActualizarProyectoJaulaSchema, ActualizarJaulaSchema,NuevoBlogJaulaSchema
 from servicios.animalService import AnimalService
 from servicios.commonService import CommonService
+
 class JaulaService:
     @classmethod
     def find_by_id(cls, idJaula):
@@ -26,6 +27,7 @@ class JaulaService:
 
     @classmethod
     def crearJaula(cls, datos):
+        #si aca se pasa id de proyecto hay que verif si existe
         jaula = NuevaJaulaSchema().load(datos)
         jaula.save()
 

@@ -22,7 +22,7 @@ class NuevaJaulaSchema(Schema):
     rack = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar el número de rack donde va a estar ubicada la jaula", "code": 400}})
     estante = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar el número del estante", "code": 400}})
     capacidad = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar la capacidad de la jaula", "code": 400}})
-    id_proyecto = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar id proyecto", "code": 400}})
+    id_proyecto = fields.Int()
     tipo = fields.Str()
 
     @post_load
@@ -41,7 +41,6 @@ class ActualizarProyectoJaulaSchema(JaulaSchema):
 
 class ActualizarJaulaSchema(JaulaSchema):
     id_jaula = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar el id de la jaula", "code" : 400}})
-
 
 class NuevoBlogJaulaSchema(Schema):
     id_jaula = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar el id de la jaula", "code" : 400}})
