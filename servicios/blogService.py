@@ -8,6 +8,7 @@ from datetime import datetime
 class BlogService():
     @classmethod
     def nuevoBlog(cls,datos):
+        #falta validar usuario q crea
         nuevoBlog = NuevoBlogSchema().load(datos)
         return nuevoBlog
         

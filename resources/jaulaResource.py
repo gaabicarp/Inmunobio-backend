@@ -26,20 +26,20 @@ class Jaula(Resource):
         datos = request.get_json()
         if datos:
             try:
-                JaulaService.actualizarProyectoDeLaJaula(datos)
-                return {"status" : "Se asignó la jaula al proyecto"}, 200
+                JaulaService.actualizarJaula(datos)
+                return {"status": "Jaula modificada"}, 200
             except ValidationError as err:
-                return {"Error" : err.messages}, 400
-            except ErrorProyectoInexistente as err:
+                return {'Error': err.messages},400
+            except ErrorJaulaInexistente as err:
                 return {'Error':err.message},400 
-        return  {'Error':'Se deben enviar datos para la modificación de la jaula.'},400
+        return  {'Error':'Se deben enviar datos para la modificion de la jaula.'},400
 
     def delete(self, id_jaula):
         if id_jaula:
             try:
                 JaulaService.bajarJaula(id_jaula)
                 return {"Status" : "Ok"}, 200
-            except ErrorJaulaBaja as err:
+            except (ErrorJaulaBaja,ErrorJaulaInexistente) as err:
                 return {'Error':err.message},400 
         return {'Error': 'Se debe indicar un id para la jaula.'}, 400
 
@@ -53,6 +53,18 @@ class JaulasDelProyecto(Resource):
         jaulas = JaulaService.jaulasDelProyecto(idProyecto)
         print(jaulas)
         return CommonService.jsonMany(jaulas,JaulaSchema)
+
+    def put(self):
+        datos = request.get_json()
+        if datos:
+            try:
+                JaulaService.actualizarProyectoDeLaJaula(datos)
+                return {"status" : "Se asignó la jaula al proyecto"}, 200
+            except ValidationError as err:
+                return {"Error" : err.messages}, 400
+            except ErrorProyectoInexistente as err:
+                return {'Error':err.message},400 
+        return  {'Error':'Se deben enviar datos para la modificación de la jaula.'},400
 
 class BlogJaula(Resource):
     def post(self):

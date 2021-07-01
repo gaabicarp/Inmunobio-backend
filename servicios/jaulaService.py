@@ -1,9 +1,9 @@
 from models.mongo.jaula import Jaula
 from servicios.fuenteExperimentalService import FuenteExperimentalService
-from exceptions.exception import ErrorJaulaInexistente,ErrorBlogInexistente,ErrorJaulaDeProyecto
-from schemas.jaulaSchema import  BlogSchema,BusquedaBlogsJaulas,BusquedaBlogJaula,NuevaJaulaSchema, ActualizarProyectoJaulaSchema, ActualizarJaulaSchema,NuevoBlogJaulaSchema
+from exceptions.exception import ErrorJaulaInexistente,ErrorBlogInexistente,ErrorJaulaDeProyecto,ErrorJaulaBaja
+from schemas.jaulaSchema import  BlogSchema,BusquedaBlogJaula,NuevaJaulaSchema, ActualizarProyectoJaulaSchema, ActualizarJaulaSchema,NuevoBlogJaulaSchema
 from servicios.animalService import AnimalService
-
+from servicios.commonService import CommonService
 class JaulaService:
     @classmethod
     def find_by_id(cls, idJaula):
@@ -32,10 +32,7 @@ class JaulaService:
     @classmethod
     def actualizarProyectoDeLaJaula(cls, datos):
         from servicios.proyectoService import ProyectoService
-
-        print(datos)
         jaula = ActualizarProyectoJaulaSchema().load(datos)
-
         ProyectoService.find_by_id(jaula.id_proyecto)
         Jaula.objects(id_jaula = jaula.id_jaula).update(
             id_proyecto = jaula.id_proyecto
@@ -43,30 +40,26 @@ class JaulaService:
 
     @classmethod
     def actualizarJaula(cls, datos):
-        jaula = ActualizarJaulaSchema().dump(datos)
-        Jaula.objects(id_jaula = jaula.id_jaula).update(
-            codigo = jaula.codigo,
-            rack = jaula.rack,
-            estante = jaula.estante,
-            capacidad = jaula.capacidad,
-            tipo = jaula.tipo
-        )
-    
+        jaulaAct = ActualizarJaulaSchema().dump(datos)
+        jaula = cls.find_by_id(datos['id_jaula'])
+        """ jaula.codigo = datos['codigo']
+        jaula.rack = datos['rack'] 
+        jaula.estante = datos['estante'] 
+        jaula.capacidad = datos['capacidad'] 
+        jaula.tipo = datos['tipo'] """
+        CommonService.updateAtributes(jaula,datos)
+        jaula.save()
+
     @classmethod
     def bajarJaula(cls, idJaula):
-        jaula = Jaula.objects(id_jaula = idJaula).first()
-        if jaula:
-            if not cls.laJaulaTieneAnimales(cls, idJaula):
-                jaula = Jaula.objects(id_jaula = idJaula)
-                jaula.delete()
-                return {'Status':'Ok'}, 200
-            else:
-                return {'Status':'La jaula debe estar vacía para poder darla de baja'}, 400
-        return {'Status': f'No se encontró una jaula con el id {idJaula}.'}, 200
+        jaula = cls.find_by_id(idJaula)
+        cls.laJaulaTieneAnimales(idJaula)
+        jaula.delete()
+        return {'Status':'Ok'}, 200
 
     def laJaulaTieneAnimales(self, idJaula):
         animales = AnimalService.animalesDeLaJaula(idJaula)
-        return  len(animales) > 0
+        if len(animales) > 0 : raise ErrorJaulaBaja
 
     @classmethod
     def nuevoBlogJaula(cls, datos):
@@ -102,7 +95,7 @@ class JaulaService:
 
     @classmethod
     def obtenerTodosLosBlogs(cls,datos):
-        BusquedaBlogsJaulas().load(datos)
+        BusquedaBlogJaula().load(datos)
         blogs = []
         jaulas = cls.obtenerJaulas()
         for jaula in jaulas:
