@@ -52,8 +52,8 @@ class JaulaService:
         cls.laJaulaTieneAnimales(idJaula)
         jaula.delete()
         return {'Status':'Ok'}, 200
-
-    def laJaulaTieneAnimales(self, idJaula):
+    @classmethod
+    def laJaulaTieneAnimales(cls, idJaula):
         animales = AnimalService.animalesDeLaJaula(idJaula)
         if len(animales) > 0 : raise ErrorJaulaBaja
 
@@ -142,7 +142,10 @@ class JaulaService:
     @classmethod    
     def asignarNombreProyecto(cls,jaula):
         from servicios.proyectoService import ProyectoService
-        proyecto = ProyectoService.find_by_id(jaula.id_proyecto)
-        jaula.nombre_proyecto= proyecto.nombre
+        if(cls.validaIdValidoProyecto(jaula.id_proyecto)):
+            jaula.nombre_proyecto = ProyectoService.find_by_id(jaula.id_proyecto).nombre
         return jaula
 
+    @classmethod
+    def validaIdValidoProyecto(cls,id):
+        return id != 0 
