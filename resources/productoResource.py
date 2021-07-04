@@ -1,7 +1,7 @@
 from servicios.productoService import ProductoService
 from flask_restful import Resource
 from flask_jwt import jwt_required
-from flask import request
+from flask import request,jsonify
 from exceptions.exception import ErrorProductoInexistente,ErrorDistribuidoraInexistente
 from marshmallow import ValidationError
 
@@ -10,10 +10,9 @@ class ProductoResource(Resource):
         datos = request.get_json()
         if(datos):
             try:
-                ProductoService().altaProducto(datos)
+                return ProductoService().altaProducto(datos),200
                 #aca devuelve el id del producto para luego pasarselo a l subida del archivo
                 #y guardar el archivo con esa id
-                return {'Status':'ok'},200
             except ValidationError as err:
                 return {'Error': err.messages},400
             except ErrorDistribuidoraInexistente as err:
@@ -34,7 +33,7 @@ class ProductoResource(Resource):
 
 class ObtenerProductosResource(Resource):
     def get(self):
-        return ProductoService().obtenerProductos()
+        return jsonify(ProductoService.obtenerProductos())
     
 class ProductoID(Resource):
     def get(self,id_producto):

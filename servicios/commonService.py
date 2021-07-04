@@ -34,4 +34,14 @@ class CommonService():
         return objetos
     
 
-            
+    @classmethod
+    def asignarNombreDistribuidora(cls,objetos):
+        for objeto in objetos: cls.asignacionNombresDistribuidora(objeto,objeto['id_distribuidora'])
+        return objetos
+
+    @classmethod
+    def asignacionNombresDistribuidora(cls,objeto,valor):
+        from servicios.distribuidoraService import DistribuidoraService
+        if valor : objeto['nombreDistribuidora'] = DistribuidoraService.find_by_id(valor).nombre 
+        else:  objeto['nombreDistribuidora'] = valor
+        return objeto

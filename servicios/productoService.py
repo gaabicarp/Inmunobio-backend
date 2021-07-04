@@ -13,10 +13,9 @@ class ProductoService():
             #aca devuelve el id del producto para luego pasarselo a l subida del archivo
             #y guardar el archivo con esa id
             nuevoProducto = NuevoProductoSchema().load(datos)
-            print('valido producto y obtengo',nuevoProducto)
             cls.validacionAltaProducto(datos['id_distribuidora'])
             nuevoProducto.save()
-            print(nuevoProducto.id_producto)
+            return nuevoProducto.id_producto
        
 
     @classmethod
@@ -28,7 +27,6 @@ class ProductoService():
             producto.update(set__detallesTecnicos = filename)
             producto.reload() 
  
-
     def validacionAltaProducto(id_distribuidora):
         #valida que exista la distribuidora y qué mas??
         DistribuidoraService().find_by_id(id_distribuidora)
@@ -46,7 +44,8 @@ class ProductoService():
    
     @classmethod
     def obtenerProductos(cls):
-        return CommonService.jsonMany(Producto.objects(),ProductoSchema)
+        productos = ProductoSchema().dump(Producto.objects(),many=True)
+        return CommonService.asignarNombreDistribuidora(productos)
 
     @classmethod
     def modificarProducto(cls,datos):
@@ -58,7 +57,7 @@ class ProductoService():
     def obtenerProducto(cls,id_producto):
         try:
             producto = cls.find_by_id(id_producto)
-            return CommonService.json(producto,ProductoSchema)
+            return CommonService.asignacionNombresDistribuidora(ProductoSchema().dump(producto),producto.id_distribuidora)
         except ErrorProductoInexistente as err:
             return {'Error': err.message},400
         
