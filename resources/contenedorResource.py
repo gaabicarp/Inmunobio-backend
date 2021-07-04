@@ -81,12 +81,11 @@ class ContenedorProyectoId(Resource):
 
 class ContenedorEspFisicoID(Resource):
     #@jwt_required()
-    ##falta resolverlo
     def get(self,id_espacioFisico):
         if id_espacioFisico:
             try:
-                #contenedores = ContenedorService.find_all_by_id_proyecto(id_espacioFisico)
-                return 200
+                contenedores = ContenedorService.find_all_by_id_esp(id_espacioFisico)
+                return contenedores,200
             except ValidationError as err:
                 return {'Error': err.messages}, 400
             except Exception as err:

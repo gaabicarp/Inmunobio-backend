@@ -18,3 +18,20 @@ class CommonService():
     
     def json(datos,schema):
         return schema().dump(datos)
+    
+    @classmethod
+    def asignarNombreEspacioFisico(cls,objetos):
+        from servicios.espacioFisicoService import EspacioFisicoService
+        for objeto in objetos: objeto['nombreEspFisico']  =  EspacioFisicoService.find_by_id(objeto['id_espacioFisico']).nombre
+        return objetos
+    
+    @classmethod
+    def asignarNombreProyecto(cls,objetos):
+        from servicios.proyectoService import ProyectoService
+        for objeto in objetos: 
+            if objeto['id_proyecto']: objeto['nombreProyecto'] = ProyectoService.find_by_id(objeto['id_proyecto']).nombre 
+            else:  objeto['nombreProyecto'] = objeto['id_proyecto']
+        return objetos
+    
+
+            

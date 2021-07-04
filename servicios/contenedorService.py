@@ -1,5 +1,8 @@
-from models.mongo.contenedor import ContenedorPrincipalSchema,Contenedor, ContenedorSchema, ContenedorNuevoSchema, ContenedorProyectoSchema, ContenedorParentSchema, ModificarContenedorSchema
+from models.mongo.contenedor import Contenedor
+from schemas.contenedorSchema import ContenedorPrincipalSchema, ContenedorSchema, ContenedorNuevoSchema, ContenedorProyectoSchema, ContenedorParentSchema, ModificarContenedorSchema
 from .validationService import Validacion
+from .commonService import CommonService
+
 class ContenedorService:
 
     @classmethod
@@ -8,11 +11,13 @@ class ContenedorService:
 
     @classmethod
     def find_all(cls):
-        return  ContenedorSchema().dump(Contenedor.objects.all(), many=True)
-    
+        contenedores =  ContenedorSchema().dump(Contenedor.objects.all(), many=True)
+        return CommonService.asignarNombreProyecto(CommonService.asignarNombreEspacioFisico(contenedores))
+
     @classmethod
     def find_all_by_id_proyecto(cls, id):
-        return  ContenedorSchema().dump(Contenedor.objects.filter(id_proyecto=id).all(), many=True)
+        contenedores =  ContenedorSchema().dump(Contenedor.objects.filter(id_proyecto=id).all(), many=True)
+        return CommonService.asignarNombreProyecto(CommonService.asignarNombreEspacioFisico(contenedores))
 
     @classmethod
     def nuevoContenedor(cls, datos):
@@ -85,3 +90,12 @@ class ContenedorService:
             raise Exception(f"El contenedor padre con id {contenedor.parent} no existe.")
         if not Validacion.elContenedorPadreEstaDisponible(contenedor):
             raise Exception("El contenedor padre tiene que estar disponible.")
+
+    @classmethod
+    def find_all_by_id_esp(cls,_id_espacioFisico):
+        contenedores = ContenedorSchema().dump(Contenedor.objects.filter(id_espacioFisico=_id_espacioFisico).all())
+        return cls.asignarDatosExtra(contenedores)
+    @classmethod
+    def asignarDatosExtra(contenedores):
+        return CommonService.asignarNombreProyecto(CommonService.asignarNombreEspacioFisico(contenedores))
+
