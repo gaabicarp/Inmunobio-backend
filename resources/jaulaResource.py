@@ -89,7 +89,7 @@ class ObtenerBlogsJaula(Resource):
                 return CommonService.jsonMany(blogs,BlogSchema)
             except ValidationError as err:
                 return {"Error" : err.messages}, 400
-            except ErrorJaulaInexistente as err:
+            except (ErrorJaulaInexistente,ErrorFechasInvalidas) as err:
                 return {'Error':err.message},400 
         return {"Status" : "Deben indicarse datos para el blog"}, 400
 
