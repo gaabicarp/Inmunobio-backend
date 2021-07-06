@@ -4,7 +4,7 @@ from flask import request
 from servicios.stockService import  StockService
 from marshmallow import ValidationError,EXCLUDE
 from schemas.stockSchema import StockSchema
-from exceptions.exception import ErrorGrupoInexistente,ErrorProductoInexistente,ErrorProductoEnStockInexistente,ErrorStockInexistente,ErrorUnidadStock,ErrorStockVacio,ErrorEspacioFisicoInexistente                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+from exceptions.exception import ErrorGrupoInexistente,ErrorProductoInexistente,ErrorProductoEnStockInexistente,ErrorStockInexistente,ErrorUnidadStock,ErrorEspacioFisicoInexistente                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
 from servicios.commonService import CommonService
 
 class ProductoEnStock(Resource):
@@ -18,7 +18,7 @@ class ProductoEnStock(Resource):
                 return {'Status':'ok'},200
             except ValidationError as err:
                 return {'error': err.messages},400
-            except (ErrorGrupoInexistente,ErrorProductoInexistente,ErrorUnidadStock ,ErrorStockVacio,ErrorEspacioFisicoInexistente) as err:
+            except (ErrorGrupoInexistente,ErrorProductoInexistente,ErrorUnidadStock ,ErrorUnidadStock,ErrorEspacioFisicoInexistente) as err:
                 return {'error':err.message},400
         return {'Error':'Deben suministrarse datos para la alta'},400
 
@@ -47,13 +47,13 @@ class BorrarTodoStock(Resource):
 
 class ProductoEnStockID(Resource):
     def delete(self,id_productoEnStock,id_productos):
-            try:
-                StockService.borrarProductoEnStock(id_productoEnStock,id_productos)           
-                return {'Status':'ok'},200
-            except ValidationError as err:
-                return {'error': err.messages},400 
-            except (ErrorProductoEnStockInexistente,ErrorStockInexistente) as err:
-                return {'Error':err.message},400  
+        try:
+            StockService.borrarProductoEnStock(id_productoEnStock,id_productos)           
+            return {'Status':'ok'},200
+        except ValidationError as err:
+            return {'error': err.messages},400 
+        except (ErrorProductoEnStockInexistente,ErrorStockInexistente) as err:
+            return {'Error':err.message},400  
 
 class ConsumirStockResource(Resource):
     def put(self):

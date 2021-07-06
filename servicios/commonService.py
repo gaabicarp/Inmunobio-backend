@@ -4,7 +4,6 @@ class CommonService():
     
     def updateAtributes(object,atribute,keyExclude = ""):
         for key,value in atribute.items():
-            #print(key,value)
             if keyExclude != key and hasattr(object, key) :
                 setattr(object, key, value)
   
