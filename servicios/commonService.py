@@ -1,5 +1,5 @@
 from flask import jsonify
-
+from exceptions.exception import ErrorNombreInvalido
 class CommonService():
     
     def updateAtributes(object,atribute,keyExclude = ""):
@@ -33,7 +33,6 @@ class CommonService():
             else:  objeto['nombreProyecto'] = objeto['id_proyecto']
         return objetos
     
-
     @classmethod
     def asignarNombreDistribuidora(cls,objetos):
         for objeto in objetos: cls.asignacionNombresDistribuidora(objeto,objeto['id_distribuidora'])
@@ -45,3 +44,20 @@ class CommonService():
         if valor : objeto['nombreDistribuidora'] = DistribuidoraService.find_by_id(valor).nombre 
         else:  objeto['nombreDistribuidora'] = valor
         return objeto
+
+    @classmethod
+    def asignarNombreContenedor(cls,objeto):
+        from servicios.contenedorService import ContenedorService
+        try:
+            cls.validarId(objeto['codigoContenedor'])
+            cls.asignaNombre(ContenedorService.obtenerNombreContenedor(objeto['codigoContenedor']), 'nombreContenedor',objeto)
+        except ErrorNombreInvalido as err:
+            cls.asignaNombre(objeto['codigoContenedor'], 'nombreContenedor',objeto)
+
+    @classmethod
+    def validarId(cls,id):
+        if not id : raise ErrorNombreInvalido
+
+    @classmethod
+    def asignaNombre(cls,valor,clave,objeto):
+        objeto[clave] = valor
