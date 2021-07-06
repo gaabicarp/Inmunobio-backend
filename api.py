@@ -85,7 +85,7 @@ api.add_resource(CerrarExperimento, '/api/v1/cerrarExperimento', endpoint='cerra
 api.add_resource(ExperimentoResource, '/api/v1/modificarExperimento', endpoint='modificar_experimento')
 api.add_resource(ExperimentoMuestra, '/api/v1/agregarMuestrasExternasAlExperimento', endpoint='agregar_muestras_externas_al_experimento')
 #api.add_resource(BlogExperimento, '/api/v1/nuevoBlogExperimento', endpoint='nuevo_blog_exp')
-#api.add_resource(ObtenerBlogsExp, '/api/v1/blogExperimento', endpoint='obtener_blog_exp')
+api.add_resource(ObtenerBlogsExp, '/api/v1/blogExperimento', endpoint='obtener_blog_exp')
 
 #Grupo Experimental
 api.add_resource(GrupoExperimental, '/api/v1/grupoExperimental/<int:idGrupoExperimental>', endpoint='grupo_experimental')
