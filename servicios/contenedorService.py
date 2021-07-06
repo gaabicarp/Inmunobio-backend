@@ -2,12 +2,16 @@ from models.mongo.contenedor import Contenedor
 from schemas.contenedorSchema import ContenedorPrincipalSchema, ContenedorSchema, ContenedorNuevoSchema, ContenedorProyectoSchema, ContenedorParentSchema, ModificarContenedorSchema
 from .validationService import Validacion
 from .commonService import CommonService
+from exceptions.exception import ErrorContenedorInexistente
 
 class ContenedorService:
 
     @classmethod
     def find_by_id(cls, id):
-        return Contenedor.objects.filter(id_contenedor=id).first()
+        contenedor = Contenedor.objects.filter(id_contenedor=id).first()
+        if not contenedor : raise ErrorContenedorInexistente(id)
+        return contenedor 
+        
 
     @classmethod
     def find_all(cls):
@@ -99,3 +103,6 @@ class ContenedorService:
     def asignarDatosExtra(contenedores):
         return CommonService.asignarNombreProyecto(CommonService.asignarNombreEspacioFisico(contenedores))
 
+    @classmethod 
+    def obtenerNombreContenedor(cls,id):
+        return cls.find_by_id(id).nombre
