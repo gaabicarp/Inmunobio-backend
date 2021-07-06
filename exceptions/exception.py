@@ -6,18 +6,13 @@ class ErrorProductoInexistente(Exception):
         super().__init__(self.message)
 
 class ErrorProductoEnStockInexistente(Exception):
-    def __init__(self,id, message="No hay productos activos con id_productos "):
+    def __init__(self,id=0, message="No hay productos activos con id_productos "):
         self.message = message + str(id)
         super().__init__(self.message)
 
-class ErrorStockVacio(Exception):
-    def __init__(self, message= "Deben indicarse unidades positivas y mayores a cero"):
-        self.message = message 
-        super().__init__(self.message)
-
 class ErrorStockInexistente(Exception):
-    def __init__(self, message="Stock con id_productos inexistente"):
-        self.message = message
+    def __init__(self,id, message="No existe stock asociado con id_productoEnStock "):
+        self.message = message + str(id)
         super().__init__(self.message)
 
 class ErrorDistribuidoraInexistente(Exception):
@@ -37,7 +32,7 @@ class ErrorEspacioFisicoInexistente(Exception):
 
 
 class ErrorUnidadStock(Exception):
-    def __init__(self, message="Las unidades de Stock deben ser numeros enteros positivos "):
+    def __init__(self, message="Las unidades de Stock deben ser numeros enteros positivos / la consumicion de stock no debe pasar del total de unidades"):
         self.message = message
         super().__init__(self.message)
 
@@ -121,4 +116,7 @@ class ErrorNombreInvalido(Exception):
         self.message = ""
         super().__init__(self.message)      
        
-        
+class ErrorStockVacio(Exception):
+    def __init__(self):
+        self.message = ""
+        super().__init__(self.message)          
