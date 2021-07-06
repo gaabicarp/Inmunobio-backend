@@ -96,19 +96,20 @@ class JaulaService:
         jaulas = cls.obtenerJaulas()
         for jaula in jaulas:
             blogsJaula= cls.blogServiceJaulas(jaula.blogs,datos['fechaDesde'],datos['fechaHasta'])
-            blogs.extend(cls.deserializarBlogsJaulas(blogsJaula,jaula.id_jaula))
+            blogs.extend(cls.deserializarBlogsJaulas(blogsJaula,jaula))
         return blogs
 
     @classmethod
-    def deserializarBlogsJaulas(cls,blogs,idJaula):
+    def deserializarBlogsJaulas(cls,blogs,jaula):
         blogsDic = []
-        for blog in blogs: blogsDic.append(cls.agregarIdJaulaBlog(blog,idJaula))
+        for blog in blogs: blogsDic.append(cls.agregarDatosExtraBlogJaula(blog,jaula))
         return blogsDic
 
     @classmethod
-    def agregarIdJaulaBlog(cls,blog,idJaula):
+    def agregarDatosExtraBlogJaula(cls,blog,jaula):
         dictBlog =  BlogSchema().dump(blog)
-        dictBlog['id_jaula'] = idJaula
+        dictBlog['id_jaula'] = jaula.id_jaula
+        dictBlog['codigoJaula'] = jaula.codigo
         return dictBlog
 
     @classmethod
