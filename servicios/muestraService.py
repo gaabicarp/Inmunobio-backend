@@ -33,7 +33,7 @@ class MuestraService:
         cls.validarRelacionDeMuestras(cls, muestras)
         for muestra in muestras:
             muestra.save()
-        cls.actualizarMuestrasEnGrupoExperimental(cls,muestras[0].id_grupoExperimental)
+        cls.actualizarMuestrasEnGrupoExperimental(muestras[0].id_grupoExperimental)
     
     def validarRelacionDeMuestras(self, muestras):
         for muestra in muestras:
