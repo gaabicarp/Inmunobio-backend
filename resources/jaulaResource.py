@@ -85,8 +85,7 @@ class ObtenerBlogsJaula(Resource):
         datos = request.get_json()
         if datos:
             try:
-                blogs = JaulaService.obtenerBlogs(datos)       
-                return CommonService.jsonMany(blogs,BlogSchema)
+                return JaulaService.obtenerBlogs(datos)       
             except ValidationError as err:
                 return {"Error" : err.messages}, 400
             except (ErrorJaulaInexistente,ErrorFechasInvalidas) as err:
@@ -102,14 +101,6 @@ class JaulasBlogs(Resource):
             except (ErrorFechasInvalidas,ErrorProyectoInexistente) as err:
                 return {'Error':err.message},400 
         return {"Status" : "Deben indicarse datos para el blog"}, 400
-
-class BorrarBlogJaula(Resource):
-    def delete(self,id_jaula,id_blog):
-        try:
-            JaulaService.borrarBlogJaula(id_jaula,id_blog)      
-            return {"Status" : "Ok"}, 200
-        except (ErrorBlogInexistente,ErrorJaulaInexistente) as err:
-            return {'Error':err.message},400
 
 class Jaulas(Resource):
     def get(self):
@@ -128,3 +119,11 @@ class JaulaXId(Resource):
             except (ErrorJaulaInexistente,ErrorProyectoInexistente) as err:    
                 return {'Error':err.message},400 
         return {"Error" : "Se debe indicar el id de una jaula."}, 400
+
+class BorrarBlogJaula(Resource):
+    def delete(self,id_jaula,id_blog):
+        try:
+            JaulaService.borrarBlogJaula(id_jaula,id_blog)      
+            return {"Status" : "Ok"}, 200
+        except (ErrorBlogInexistente,ErrorJaulaInexistente) as err:
+            return {'Error':err.message},400

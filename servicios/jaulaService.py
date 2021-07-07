@@ -21,12 +21,11 @@ class JaulaService:
 
     @classmethod
     def jaulaPerteneceAlProyecto(cls,_id_proyecto,_id_jaula):
-        if not cls.jaulasDelProyecto(_id_proyecto).filter(id_jaula = _id_jaula):
-            raise ErrorJaulaDeProyecto(_id_proyecto,_id_jaula)
+        if not cls.jaulasDelProyecto(_id_proyecto).filter(id_jaula = _id_jaula).first(): raise ErrorJaulaDeProyecto(_id_proyecto,_id_jaula)
 
     @classmethod
     def crearJaula(cls, datos):
-        #aca nunca validar si existe el proyecto, se asigna aparte
+        #aca nunca validar si existe el proyecto ->no porque siempre se asigna aparte
         jaula = NuevaJaulaSchema().load(datos)
         jaula.save()
 
@@ -38,10 +37,9 @@ class JaulaService:
         Jaula.objects(id_jaula = jaula.id_jaula).update(
             id_proyecto = jaula.id_proyecto
         )
-
     @classmethod
     def actualizarJaula(cls, datos):
-        jaulaAct = ActualizarJaulaSchema().dump(datos)
+        ActualizarJaulaSchema().dump(datos)
         jaula = cls.find_by_id(datos['id_jaula'])
         CommonService.updateAtributes(jaula,datos)
         jaula.save()
@@ -52,10 +50,10 @@ class JaulaService:
         cls.laJaulaTieneAnimales(idJaula)
         jaula.delete()
         return {'Status':'Ok'}, 200
+
     @classmethod
     def laJaulaTieneAnimales(cls, idJaula):
-        animales = AnimalService.animalesDeLaJaula(idJaula)
-        if len(animales) > 0 : raise ErrorJaulaBaja
+        if len(AnimalService.animalesDeLaJaula(idJaula)) > 0 : raise ErrorJaulaBaja
 
     @classmethod
     def nuevoBlogJaula(cls, datos):
@@ -66,23 +64,29 @@ class JaulaService:
     def crearBlogJaula(cls,id_jaula,datosBlog):
         from servicios.blogService import BlogService
         jaula = cls.find_by_id(id_jaula)
-        blog = BlogService.nuevoBlog(datosBlog)
-        jaula.blogs.append(blog)
+        jaula.blogs.append(BlogService.nuevoBlog(datosBlog))
         jaula.save()
 
     @classmethod
     def borrarBlogJaula(cls,_id_jaula,_id_blog):
-        if(Jaula.objects.filter(id_jaula = _id_jaula).first()):
-            if (Jaula.objects.filter(id_jaula = _id_jaula, blogs__id_blog= _id_blog).first()):
-                return Jaula.objects.filter(id_jaula = _id_jaula).first().modify(pull__blogs__id_blog =_id_blog)
-            raise ErrorBlogInexistente(_id_blog)
-        raise ErrorJaulaInexistente(_id_jaula)
+        cls.validarBlogJaula(_id_jaula,_id_blog)
+        return Jaula.objects.filter(id_jaula = _id_jaula).first().modify(pull__blogs__id_blog =_id_blog)
+            
+    @classmethod
+    def validarBlogJaula(cls,_id_jaula,_id_blog):
+        cls.find_by_id(_id_jaula)
+        cls.validarExistenciaBlog(_id_jaula,_id_blog)
+
+    @classmethod
+    def validarExistenciaBlog(_id_jaula,_id_blog):
+        if not Jaula.objects.filter(id_jaula = _id_jaula, blogs__id_blog= _id_blog).first() : raise ErrorBlogInexistente(_id_blog) 
 
     @classmethod
     def obtenerBlogs(cls,datos):
         BusquedaBlogJaula().load(datos)
         jaula = cls.find_by_id(datos['id_jaula'])
-        return cls.blogServiceJaulas(jaula.blogs,datos['fechaDesde'],datos['fechaHasta'])
+        blogs = cls.blogServiceJaulas(jaula.blogs,datos['fechaDesde'],datos['fechaHasta'])
+        return cls.deserializarBlogsJaulas(blogs,jaula)
 
     @classmethod
     def blogServiceJaulas(cls,blogs,fechaDesde,fechaHasta):
@@ -93,8 +97,7 @@ class JaulaService:
     def obtenerTodosLosBlogs(cls,datos):
         BusquedaBlogsJaula().load(datos)
         blogs = []
-        jaulas = cls.obtenerJaulas()
-        for jaula in jaulas:
+        for jaula in cls.obtenerJaulas():
             blogsJaula= cls.blogServiceJaulas(jaula.blogs,datos['fechaDesde'],datos['fechaHasta'])
             blogs.extend(cls.deserializarBlogsJaulas(blogsJaula,jaula))
         return blogs
