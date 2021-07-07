@@ -19,39 +19,34 @@ class CommonService():
         return schema().dump(datos)
     
     @classmethod
-    def asignarNombreEspacioFisico(cls,objetos):
+    def asignarNombreEspacioFisico(cls,objeto):
         from servicios.espacioFisicoService import EspacioFisicoService
-        for objeto in objetos: objeto['nombreEspFisico']  =  EspacioFisicoService.find_by_id(objeto['id_espacioFisico']).nombre
-        return objetos
-    
-    @classmethod
-    def asignarNombreProyecto(cls,objetos):
-        from servicios.proyectoService import ProyectoService
-        for objeto in objetos: 
-            if objeto['id_proyecto']: objeto['nombreProyecto'] = ProyectoService.find_by_id(objeto['id_proyecto']).nombre 
-            else:  objeto['nombreProyecto'] = objeto['id_proyecto']
-        return objetos
-    
-    @classmethod
-    def asignarNombreDistribuidora(cls,objetos):
-        for objeto in objetos: cls.asignacionNombresDistribuidora(objeto,objeto['id_distribuidora'])
-        return objetos
+        return cls.asignarNombreAObjeto(objeto,EspacioFisicoService.obtenerNombreEspacioFisico, objeto['id_espacioFisico'],'nombreEspFisico')
 
     @classmethod
-    def asignacionNombresDistribuidora(cls,objeto,valor):
+    def asignarNombreProyecto(cls,objeto):
+        from servicios.proyectoService import ProyectoService
+        return cls.asignarNombreAObjeto(objeto,ProyectoService.obtenerNombreProyecto, objeto['id_proyecto'],'nombreProyecto')
+
+    @classmethod
+    def asignacionNombresDistribuidora(cls,objeto):
         from servicios.distribuidoraService import DistribuidoraService
-        if valor : objeto['nombreDistribuidora'] = DistribuidoraService.find_by_id(valor).nombre 
-        else:  objeto['nombreDistribuidora'] = valor
-        return objeto
+        return cls.asignarNombreAObjeto(objeto,DistribuidoraService.obtenerNombreDistribuidora, objeto['id_distribuidora'],'nombreDistribuidora',)
 
     @classmethod
     def asignarNombreContenedor(cls,objeto):
         from servicios.contenedorService import ContenedorService
+        return cls.asignarNombreAObjeto(objeto,ContenedorService.obtenerNombreContenedor, objeto['codigoContenedor'],'nombreContenedor',)
+        
+
+    @classmethod
+    def asignarNombreAObjeto(cls,objeto,functionGetNameOf, id,etiqueta):
         try:
-            cls.validarId(objeto['codigoContenedor'])
-            cls.asignaNombre(ContenedorService.obtenerNombreContenedor(objeto['codigoContenedor']), 'nombreContenedor',objeto)
+            cls.validarId(id)
+            cls.asignaNombre(functionGetNameOf(id), etiqueta,objeto)
         except ErrorNombreInvalido as err:
-            cls.asignaNombre(objeto['codigoContenedor'], 'nombreContenedor',objeto)
+            cls.asignaNombre(id, etiqueta,objeto)
+        finally: return objeto
 
     @classmethod
     def validarId(cls,id):

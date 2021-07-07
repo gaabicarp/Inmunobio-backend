@@ -38,3 +38,6 @@ class DistribuidoraService():
             CommonService.updateAtributes(distribuidora,datos,'id_distribuidora')
             distribuidora.save()
        
+    @classmethod
+    def obtenerNombreDistribuidora(cls,id):
+        return cls.find_by_id(id).nombre

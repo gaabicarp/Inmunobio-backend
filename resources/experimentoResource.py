@@ -7,6 +7,7 @@ from servicios.experimentoService import ExperimentoService
 from servicios.commonService import CommonService
 from schemas.experimentoSchema import NuevoBlogExpSchema, ExperimentoSchema, ModificarExperimentoSchema, AltaExperimentoSchema, CerrarExperimentoSchema, AgregarMuestrasAlExperimentoSchema
 from schemas.blogSchema import BlogSchema
+
 class Experimentos(Resource):
 
     #@jwt_required()
@@ -88,6 +89,7 @@ class ExperimentoMuestra(Resource):
             except Exception as err:
                 return {'Error': str(err)}, 400
         return {'Error': 'Se debe enviar el id del experimento y el id de la muestra'}, 400
+        
 class BlogExperimento(Resource):
     def post(self):
         datos = request.get_json()
@@ -99,7 +101,7 @@ class BlogExperimento(Resource):
                 return {"Error" : err.messages}, 400
             except ErrorExperimentoInexistente as err:
                 return {'Error':err.message},400 
-        return {"Status" : "Deben indicarse datos para el blog"}, 400
+        return {"Status" : "Deben indicarse datos para la creación del blog"}, 400
 
 class ObtenerBlogsExp(Resource):
     def post(self):
@@ -112,4 +114,4 @@ class ObtenerBlogsExp(Resource):
                 return {'error':err.message},400
             except ValidationError as err:
                 return {'error': err.messages},400            
-        return {'Error': 'Parametros requeridos'},400
+        return {'Error': 'Parametros id de experimento,fecha-desde y fecha-hasta requeridos'},400

@@ -91,3 +91,6 @@ class ProyectoService:
     def esBlogJaula(cls,blog):
         return blog['tipo'] == "Jaula"
 
+    @classmethod
+    def obtenerNombreProyecto(cls,id):
+        return cls.find_by_id(id).nombre

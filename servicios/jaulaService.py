@@ -118,35 +118,18 @@ class JaulaService:
 
     @classmethod
     def obtenerTodasLasJaulas(cls):
-        jaulasDict = []
-        jaulas =  cls.obtenerJaulas()
-        for jaula in jaulas: 
-            jaula = cls.asignarNombreProyecto(jaula) 
-            jaulasDict.append(cls.asignarNombreEspacioFisico(JaulaSchema().dump(jaula)))
-        return jaulasDict
+        jaulas = JaulaSchema().dump(cls.obtenerJaulas(),many=True)
+        cls.asignarDatosExtra(jaulas)
+        return jaulas
 
     @classmethod
-    def asignarNombreEspacioFisico(cls,jaula):
-        from servicios.espacioFisicoService import EspacioFisicoService
-        try:
-            jaula['nombreEspFisico'] = EspacioFisicoService.nombreEspacio(jaula['id_espacioFisico'])
-            return jaula
-        except ErrorEspacioFisicoInexistente as err:
-            raise ErrorEspacioDeproyecto(jaula['id_espacioFisico'],jaula['id_jaula'])
+    def asignarDatosExtra(cls,jaulas):
+        for jaula in jaulas: cls.asignarProyectoYEspFisico(jaula)
 
+    @classmethod
+    def asignarProyectoYEspFisico(cls,jaula):
+        return CommonService.asignarNombreProyecto(CommonService.asignarNombreEspacioFisico(jaula))
+    
     @classmethod
     def obtenerJaula(cls,id_jaula):
-        jaula = cls.find_by_id(id_jaula)
-        jaula = cls.asignarNombreProyecto(jaula) 
-        return jaula
-
-    @classmethod    
-    def asignarNombreProyecto(cls,jaula):
-        from servicios.proyectoService import ProyectoService
-        if(cls.validaIdValidoProyecto(jaula.id_proyecto)):
-            jaula.nombre_proyecto = ProyectoService.find_by_id(jaula.id_proyecto).nombre
-        return jaula
-
-    @classmethod
-    def validaIdValidoProyecto(cls,id):
-        return id != 0 
+        return cls.asignarProyectoYEspFisico(JaulaSchema().dump(cls.find_by_id(id_jaula))) 

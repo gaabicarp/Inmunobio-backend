@@ -16,10 +16,9 @@ class EspacioFisicoService():
             espacioNuevo.save()
  
     @classmethod
-    def nombreEspacio(cls,id):
-        espacio = cls.find_by_id(id)
-        return espacio.nombre
-        
+    def obtenerNombreEspacioFisico(cls,id):
+        return cls.find_by_id(id).nombre
+   
     @classmethod
     def find_by_id(cls,id):
         espacio =  EspacioFisico.objects(id_espacioFisico = id).first()
