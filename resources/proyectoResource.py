@@ -78,7 +78,7 @@ class ObtenerBlogsProyecto(Resource):
         datos = request.get_json()
         if datos:
             try:
-                blogs =  ProyectoService.obtenerBlogsProyecto(datos)
+                return ProyectoService.obtenerBlogsProyecto(datos)
                 return CommonService.jsonMany(blogs,BlogSchema)
             except ValidationError as err:
                 return {'error': err.messages}, 400

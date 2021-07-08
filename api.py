@@ -22,6 +22,7 @@ from resources.muestraResource import Muestra, MuestraGrupoExperimental, Muestra
 from resources.animalResource import  Animal, Animales, AnimalesSinJaula, AnimalesDeLaJaula
 from resources.espacioFisicoResource import EspaciosFisicos,EspacioFisico,EspacioFisicoID,CrearBlogEspacioFisico,BorrarBlogEspacioFisico,ObtenerBlogsEspFisico
 from resources.herramientaResource import HerramientaResource,HerramientaPorId,Herramientas,BorrarBlogHeramienta,BlogHerramientaXId,CrearBlogHerramientas
+
 api = Api()
 
 #Espacio fisico
@@ -102,7 +103,7 @@ api.add_resource(JaulasDelProyecto, '/api/v1/proyecto/<int:idProyecto>/jaulasDel
 api.add_resource(JaulasDelProyecto, '/api/v1/asignarJaulaAProyecto', endpoint="asignar_jaula_a_proyecto")
 api.add_resource(BlogJaula, '/api/v1/proyecto/blogJaula')
 api.add_resource(ObtenerBlogsJaula, '/api/v1/proyecto/blogsJaula')
-api.add_resource(BorrarBlogJaula, '/api/v1/proyecto/borrarBlogJaula/<int:id_jaula>/<int:id_blog>' )
+#api.add_resource(BorrarBlogJaula, '/api/v1/proyecto/borrarBlogJaula/<int:id_jaula>/<int:id_blog>' )
 api.add_resource(Jaulas, '/api/v1/jaulas')
 api.add_resource(JaulaXId, '/api/v1/jaula/<int:id_jaula>', endpoint="jaula_por_id")
 api.add_resource(JaulasBlogs, '/api/v1/blogsJaulas')

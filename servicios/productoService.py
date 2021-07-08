@@ -45,7 +45,8 @@ class ProductoService():
     @classmethod
     def obtenerProductos(cls):
         productos = ProductoSchema().dump(Producto.objects(),many=True)
-        return CommonService.asignarNombreDistribuidora(productos)
+        for producto in productos : CommonService.asignacionNombresDistribuidora(producto)
+        return productos
 
     @classmethod
     def modificarProducto(cls,datos):
@@ -62,4 +63,3 @@ class ProductoService():
             return {'Error': err.message},400
         
 
-         

@@ -87,7 +87,8 @@ class ExperimentoService:
     def obtenerBlogs(cls,datos):
         BusquedaBlogExp().load(datos)
         experimento = cls.find_by_id(datos['id_experimento'])
-        return BlogService.busquedaPorFecha(experimento.blogs,datos['fechaDesde'],datos['fechaHasta'])
+        blogs= BlogService.busquedaPorFecha(experimento.blogs,datos['fechaDesde'],datos['fechaHasta'])
+        return cls.deserializarBlogsExp(blogs,experimento)
 
     def removerMuestraDeExperimento(cls, idExperimento, idMuestra):
         cls.validarRemoverMuestraExperimento(idExperimento, idMuestra)
@@ -100,3 +101,35 @@ class ExperimentoService:
             raise Exception(f"La muestra con id {idMuestra} no existe.")
         if not Validacion().elExperimentoTieneLaMuestra(idExperimento, idMuestra):
             raise Exception(f"El experimento con id {idExperimento} no tiene la muestra con id {idMuestra}.")
+
+    @classmethod
+    def obtenerBlogsExperimento(cls,_id_proyecto,datos):
+        experimentos = cls.find_all_by_id(_id_proyecto)
+        return cls.obtenerLosBlogs(experimentos,datos)
+
+        #BlogSchema().dump(many=True))
+    @classmethod
+    def blogServiceExp(cls,blogs,fechaDesde,fechaHasta):
+        from servicios.blogService import BlogService
+        return BlogService.busquedaPorFecha(blogs,fechaDesde,fechaHasta)
+
+    @classmethod
+    def obtenerLosBlogs(cls,experimentos,datos):
+        blogs = []
+        for exp in experimentos:
+            blogsExperimentos= cls.blogServiceExp(exp.blogs,datos['fechaDesde'],datos['fechaHasta'])
+            blogs.extend(cls.deserializarBlogsExp(blogsExperimentos,exp))
+        return blogs
+
+    @classmethod
+    def deserializarBlogsExp(cls,blogs,exp):
+        blogsDic = []
+        for blog in blogs: blogsDic.append(cls.agregarDatosExtraBlogExp(blog,exp))
+        return blogsDic
+
+    @classmethod
+    def agregarDatosExtraBlogExp(cls,blog,exp):
+        from schemas.blogSchema import BlogSchema
+        dictBlog =  BlogSchema().dump(blog)
+        dictBlog['codigoExperimento'] = exp.codigo
+        return dictBlog

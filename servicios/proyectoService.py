@@ -58,8 +58,16 @@ class ProyectoService:
     def obtenerBlogsProyecto(cls,datos):
         ObtenerBlogsProyectoSchema().load(datos)
         proyecto = cls.find_by_id(datos['id_proyecto'])
-        return BlogService.blogsProyecto(proyecto.id_proyecto,datos['fechaDesde'],datos['fechaHasta'])
-        
+        return cls.blogsProyecto(proyecto.id_proyecto,datos)
+
+    @classmethod
+    def blogsProyecto(cls,id_proyecto,datos):
+        from servicios.jaulaService import JaulaService
+        blogsJaula = JaulaService.obtenerBlogsJaulaDeProyecto(id_proyecto,datos)
+        from servicios.experimentoService import ExperimentoService
+        blogsExperimento = ExperimentoService.obtenerBlogsExperimento(id_proyecto,datos)
+        return blogsJaula+blogsExperimento    
+
     @classmethod
     def nuevoBlogsProyecto(cls,datos):
         NuevoBlogProyectoSchema().load(datos)
@@ -91,3 +99,6 @@ class ProyectoService:
     def esBlogJaula(cls,blog):
         return blog['tipo'] == "Jaula"
 
+    @classmethod
+    def obtenerNombreProyecto(cls,id):
+        return cls.find_by_id(id).nombre
