@@ -29,24 +29,6 @@ class BlogService():
     def validarFechas(fechaDesde,fechaHasta):
         if not fechaDesde<fechaHasta: raise ErrorFechasInvalidas()
 
-    @classmethod
-    def blogsProyecto(cls,id_proyecto,fechaDesde,fechaHasta):
-        blogsJaula = cls.obtenerBlogsJaulaProyecto(id_proyecto)
-        blogsExperimento = cls.obtenerBlogsExperimento(id_proyecto)
-        return cls.busquedaPorFecha(blogsJaula+blogsExperimento,fechaDesde,fechaHasta)
-
-
-    @classmethod
-    def obtenerBlogsJaulaProyecto(cls,_id_proyecto):
-        from servicios.jaulaService import JaulaService
-        jaulas = JaulaService.jaulasDelProyecto(_id_proyecto)
-        return cls.appendBlogs(jaulas)
-
-    @classmethod
-    def obtenerBlogsExperimento(cls,_id_proyecto):
-        from servicios.experimentoService import ExperimentoService 
-        experimentos = ExperimentoService.find_all_by_id(_id_proyecto)
-        return cls.appendBlogs(experimentos)
 
     @classmethod
     def appendBlogs(cls,objetos):

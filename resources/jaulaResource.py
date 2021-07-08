@@ -52,7 +52,6 @@ class JaulasSinProyecto(Resource):
 class JaulasDelProyecto(Resource):
     def get(self, idProyecto):
         jaulas = JaulaService.jaulasDelProyecto(idProyecto)
-        print(jaulas)
         return CommonService.jsonMany(jaulas,JaulaSchema)
 
     def put(self):
@@ -97,7 +96,7 @@ class JaulasBlogs(Resource):
         datos = request.get_json()
         if datos:
             try:
-                return JaulaService.obtenerTodosLosBlogs(datos)  
+                return JaulaService.blogsDeTodasLasJaulas(datos)  
             except (ErrorFechasInvalidas,ErrorProyectoInexistente) as err:
                 return {'Error':err.message},400 
         return {"Status" : "Deben indicarse datos para el blog"}, 400

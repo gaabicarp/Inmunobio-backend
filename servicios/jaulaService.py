@@ -17,7 +17,7 @@ class JaulaService:
     
     @classmethod
     def jaulasDelProyecto(cls, idProyecto):
-        return Jaula.objects(id_proyecto = idProyecto).all()
+        return Jaula.objects(id_proyecto = idProyecto)
 
     @classmethod
     def jaulaPerteneceAlProyecto(cls,_id_proyecto,_id_jaula):
@@ -94,10 +94,14 @@ class JaulaService:
         return BlogService.busquedaPorFecha(blogs,fechaDesde,fechaHasta)
 
     @classmethod
-    def obtenerTodosLosBlogs(cls,datos):
+    def blogsDeTodasLasJaulas(cls,datos):
         BusquedaBlogsJaula().load(datos)
+        return cls.obtenerTodosLosBlogs(cls.obtenerJaulas(),datos)
+
+    @classmethod
+    def obtenerTodosLosBlogs(cls,jaulas,datos):
         blogs = []
-        for jaula in cls.obtenerJaulas():
+        for jaula in jaulas:
             blogsJaula= cls.blogServiceJaulas(jaula.blogs,datos['fechaDesde'],datos['fechaHasta'])
             blogs.extend(cls.deserializarBlogsJaulas(blogsJaula,jaula))
         return blogs
@@ -114,6 +118,11 @@ class JaulaService:
         dictBlog['id_jaula'] = jaula.id_jaula
         dictBlog['codigoJaula'] = jaula.codigo
         return dictBlog
+
+    @classmethod
+    def obtenerBlogsJaulaDeProyecto(cls,_id_proyecto,datos):
+        jaulas = cls.jaulasDelProyecto(_id_proyecto)
+        return cls.obtenerTodosLosBlogs(jaulas,datos)
 
     @classmethod
     def obtenerJaulas(cls):

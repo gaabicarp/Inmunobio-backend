@@ -108,8 +108,7 @@ class ObtenerBlogsExp(Resource):
         datos = request.get_json()
         if(datos):
             try:
-                blogs = ExperimentoService.obtenerBlogs(datos)
-                return CommonService.jsonMany(blogs,BlogSchema)
+                return ExperimentoService.obtenerBlogs(datos)
             except (ErrorExperimentoInexistente,ErrorFechasInvalidas) as err:
                 return {'error':err.message},400
             except ValidationError as err:
