@@ -38,6 +38,10 @@ class CommonService():
         from servicios.contenedorService import ContenedorService
         return cls.asignarNombreAObjeto(objeto,ContenedorService.obtenerNombreContenedor, objeto['codigoContenedor'],'nombreContenedor',)
         
+    @classmethod
+    def asignarNombreProducto(cls,objeto):
+        from servicios.productoService import ProductoService
+        return cls.asignarNombreAObjeto(objeto,ProductoService.obtenerNombreProducto, objeto['id_producto'],'nombre')
 
     @classmethod
     def asignarNombreAObjeto(cls,objeto,functionGetNameOf, id,etiqueta):

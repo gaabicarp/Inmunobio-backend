@@ -26,7 +26,7 @@ class DistribuidoraService():
             #valida si existe producto activo con esta id?
             distribuidora = cls.find_by_id(id_distribuidora)
             from servicios.productoService import ProductoService
-            ProductoService.bajaDistribuidora(id_distribuidora)
+            ProductoService.bajaStockExterno(id_distribuidora)
             distribuidora.delete()
 
     @classmethod
