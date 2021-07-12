@@ -30,12 +30,27 @@ class ProductoService():
     def validacionAltaProducto(id_distribuidora):
         #valida que exista la distribuidora y qué mas??
         DistribuidoraService().find_by_id(id_distribuidora)
+
     @classmethod
     def find_by_id(cls,id):
         producto =  Producto.objects(id_producto = id).first()
         if(not producto):
             raise ErrorProductoInexistente(id)
         return producto     
+    @classmethod
+    def find_by_id(cls,id):
+        producto =  Producto.objects(id_producto = id).first()
+        if(not producto):
+            raise ErrorProductoInexistente(id)
+        return producto 
+
+    @classmethod
+    def find_by_idDistribuidora(cls,_id_distribuidora):
+        productos =  Producto.objects(id_distribuidora = _id_distribuidora).all()
+        if(not productos):
+            #raise ErrorProductoInexistente(id) -> Ver
+            print("No hay productos con id distribuidora")
+        return productos 
 
     @classmethod
     def bajaProducto(cls,id_producto):
@@ -62,4 +77,18 @@ class ProductoService():
         except ErrorProductoInexistente as err:
             return {'Error': err.message},400
         
+    @classmethod
+    def bajaDistribuidora(cls,_id_distribuidora):
+        print('Entro a baja de producto')
+        from servicios.stockService import StockService
+        StockService.bajaDistribuidora(list(map(cls.obtenerIdProducto,cls.find_by_idDistribuidora(_id_distribuidora))))
+        cls.borrarProductosDistribuidora(_id_distribuidora)
+    
+    @classmethod
+    def borrarProductosDistribuidora(cls,_id_distribuidora):
+        Producto.objects(id_distribuidora = _id_distribuidora).delete()
+
+    @classmethod
+    def obtenerIdProducto(cls,producto):
+        return producto.id_producto
 

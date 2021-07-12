@@ -9,7 +9,6 @@ from servicios.commonService import CommonService
 from servicios.productosEnStockService import ProductoEnStockService
 
 class StockService():
-
     @classmethod
     def validarStock(cls,id_grupoDeTrabajo,id_espacioFisico):
         from servicios.espacioFisicoService import EspacioFisicoService
@@ -90,6 +89,7 @@ class StockService():
         for prod in productos:
             if prod.id_productos == _id_productos: return prod
         raise ErrorProductoEnStockInexistente(_id_productos)
+
     @classmethod
     def obtenerProductos(cls,id_grupoDeTrabajo,id_espacioFisico):
         cls.validarStock(id_grupoDeTrabajo,id_espacioFisico)
@@ -140,4 +140,10 @@ class StockService():
         Stock.objects.filter(id_grupoDeTrabajo = _id_grupoDeTrabajo).delete()
         return {'Status':'ok'},200
 
-
+    @classmethod
+    def bajaDistribuidora(cls,idsProducto):
+        for id in idsProducto : cls.bajaProducto(id)
+    
+    @classmethod 
+    def bajaProducto(cls,idProducto):
+        return Stock.objects(id_producto = idProducto).delete()
