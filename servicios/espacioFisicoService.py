@@ -54,6 +54,7 @@ class EspacioFisicoService():
 
     @classmethod
     def BorrarBlogEspacioFisico(cls,_id_espacioFisico,_id_blog):
+        #TO-DO ; arreglar este codigo 
         if(EspacioFisico.objects.filter(id_espacioFisico = _id_espacioFisico).first()):
             if (EspacioFisico.objects.filter(id_espacioFisico = _id_espacioFisico, blogs__id_blog= _id_blog).first()):
                 return EspacioFisico.objects.filter(id_espacioFisico = _id_espacioFisico).first().modify(pull__blogs__id_blog =_id_blog)

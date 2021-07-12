@@ -17,7 +17,7 @@ class ProductoResource(Resource):
                 return {'Error': err.messages},400
             except ErrorDistribuidoraInexistente as err:
                 return {'Error': err.message},400 
-        return {'name': 'None'},400
+        return {'Error': 'Deben indicarse datos para el alta del producto'},400
 
     def put(self):
         datos = request.get_json()
@@ -29,7 +29,7 @@ class ProductoResource(Resource):
                 return {'error': err.messages},400
             except ErrorProductoInexistente as err:
                 return {'Error': err.message},400
-        return {'name': 'None'},400
+        return {'Error': 'Deben indicarse datos para modificar el producto'},400
 
 class ObtenerProductosResource(Resource):
     def get(self):
@@ -37,18 +37,25 @@ class ObtenerProductosResource(Resource):
     
 class ProductoID(Resource):
     def get(self,id_producto):
-        return ProductoService().obtenerProducto(id_producto)
+        if(id_producto):
+            try:
+                return ProductoService().obtenerProducto(id_producto)
+            except ErrorProductoInexistente as err:
+                return {'Error': err.message},400
+        return {'Error': 'Debe indicarse id_producto'},400
 
     def delete(self,id_producto):
         #ver: borramos el producto ¿que sucede con los productos activos en stock? -> se preg primero
         #si llega aca quiere decir q ya se valido
-        try:
-            ProductoService().bajaProducto(id_producto)
-            return {'Status':'ok'},200
-        except ValidationError as err:
-            return {'error': err.messages},400
-        except ErrorProductoInexistente as err:
-            return {'Error': err.message},400
+        if(id_producto):
+            try:
+                ProductoService().bajaProducto(id_producto)
+                return {'Status':'ok'},200
+            except ValidationError as err:
+                return {'error': err.messages},400
+            except ErrorProductoInexistente as err:
+                return {'Error': err.message},400   
+        return {'Error': 'Debe indicarse id_producto'},400
 
 class ArchivoProducto(Resource):
     def post(self,id_producto):
@@ -60,5 +67,5 @@ class ArchivoProducto(Resource):
             except ErrorProductoInexistente as err:
                 return {'Error': err.message},400
             except:
-                return {'Error':'no se pudo borrar archivo'},400
-        return {'name': 'None'},400
+                return {'Error':'no se pudo borrar archivo al hacer el update'},400
+        return {'Error': 'Debe subirse el archivo correspondiente al campo detallesTecnicos'},400

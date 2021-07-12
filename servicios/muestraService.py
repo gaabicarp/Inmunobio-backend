@@ -31,8 +31,7 @@ class MuestraService:
     def nuevasMuestras(cls, datos):
         muestras = NuevaMuestraSchema().load(datos, many=True)
         cls.validarRelacionDeMuestras(cls, muestras)
-        for muestra in muestras:
-            muestra.save()
+        for muestra in muestras: muestra.save()
         cls.actualizarMuestrasEnGrupoExperimental(muestras[0].id_grupoExperimental)
     
     def validarRelacionDeMuestras(self, muestras):

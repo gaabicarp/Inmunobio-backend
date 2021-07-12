@@ -7,4 +7,5 @@ class ProductoEnStockService():
         return CommonService.comparar(objeto,otro,['lote','codigoContenedor','fechaVencimiento'])
 
 
+
        

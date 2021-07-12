@@ -1,7 +1,6 @@
-from marshmallow import ValidationError
 from models.mongo.producto import Producto
-from schemas.productoSchema import ProductoSchema,NuevoProductoSchema,IdProductoSchema,ModificarProductoSchema
-from exceptions.exception import ErrorProductoInexistente,ErrorDistribuidoraInexistente
+from schemas.productoSchema import ProductoSchema,NuevoProductoSchema,ModificarProductoSchema
+from exceptions.exception import ErrorProductoInexistente
 from servicios.commonService import CommonService
 from servicios.distribuidoraService import DistribuidoraService
 from servicios.fileService import FileService
@@ -30,17 +29,29 @@ class ProductoService():
     def validacionAltaProducto(id_distribuidora):
         #valida que exista la distribuidora y qué mas??
         DistribuidoraService().find_by_id(id_distribuidora)
+
     @classmethod
     def find_by_id(cls,id):
         producto =  Producto.objects(id_producto = id).first()
         if(not producto):
             raise ErrorProductoInexistente(id)
         return producto     
+    @classmethod
+    def find_by_id(cls,id):
+        producto =  Producto.objects(id_producto = id).first()
+        if(not producto):
+            raise ErrorProductoInexistente(id)
+        return producto 
 
     @classmethod
+    def find_by_idDistribuidora(cls,_id_distribuidora):
+        return Producto.objects(id_distribuidora = _id_distribuidora).all()
+       
+    @classmethod
     def bajaProducto(cls,id_producto):
-            producto = cls.find_by_id(id_producto)
-            producto.delete()
+        producto = cls.find_by_id(id_producto)
+        cls.bajaProductoStockExterno([id_producto])
+        producto.delete()
    
     @classmethod
     def obtenerProductos(cls):
@@ -56,10 +67,27 @@ class ProductoService():
             producto.save()
 
     def obtenerProducto(cls,id_producto):
-        try:
-            producto = cls.find_by_id(id_producto)
-            return CommonService.asignacionNombresDistribuidora(ProductoSchema().dump(producto),producto.id_distribuidora)
-        except ErrorProductoInexistente as err:
-            return {'Error': err.message},400
-        
+        producto = cls.find_by_id(id_producto)
+        return CommonService.asignacionNombresDistribuidora(ProductoSchema().dump(producto),producto.id_distribuidora)
 
+    @classmethod
+    def bajaStockExterno(cls,_id_distribuidora):
+        cls.bajaProductoStockExterno(list(map(cls.obtenerIdProducto,cls.find_by_idDistribuidora(_id_distribuidora))))
+        cls.borrarProductosDistribuidora(_id_distribuidora)
+    
+    @classmethod
+    def borrarProductosDistribuidora(cls,_id_distribuidora):
+        Producto.objects(id_distribuidora = _id_distribuidora).delete()
+
+    @classmethod
+    def obtenerIdProducto(cls,producto):
+        return producto.id_producto
+
+    @classmethod
+    def obtenerNombreProducto(cls,id):
+        return cls.find_by_id(id).nombre
+
+    @classmethod
+    def bajaProductoStockExterno(cls,idProductos):
+        from servicios.stockService import StockService
+        StockService.bajaExterna(idProductos)

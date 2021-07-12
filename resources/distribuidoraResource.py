@@ -45,13 +45,14 @@ class DistribuidoraID(Resource):
     def delete(self,id_distribuidora):
         #ver: borramos el producto ¿que sucede con los productos activos en stock?
         #se da de baja!!
-        try:
-            #valida si existe producto activo con esta id?
-            DistribuidoraService().bajaDistribuidora(id_distribuidora)
-            return {'Status':'ok'},200
-        except ValidationError as err:
-            return {'error': err.messages},400
-        except ErrorDistribuidoraInexistente as err:
-          return {'Error': err.message},400
-
+        if(id_distribuidora):
+            try:
+                #valida si existe producto activo con esta id? -> se hace en una instancia anterior
+                DistribuidoraService().bajaDistribuidora(id_distribuidora)
+                return {'Status':'ok'},200
+            except ValidationError as err:
+                return {'error': err.messages},400
+            except ErrorDistribuidoraInexistente as err:
+                return {'Error': err.message},400
+        return {'Error': 'Debe indicarse id de distribuidora.'},400
      

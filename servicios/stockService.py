@@ -9,7 +9,6 @@ from servicios.commonService import CommonService
 from servicios.productosEnStockService import ProductoEnStockService
 
 class StockService():
-
     @classmethod
     def validarStock(cls,id_grupoDeTrabajo,id_espacioFisico):
         from servicios.espacioFisicoService import EspacioFisicoService
@@ -90,13 +89,18 @@ class StockService():
         for prod in productos:
             if prod.id_productos == _id_productos: return prod
         raise ErrorProductoEnStockInexistente(_id_productos)
+
     @classmethod
     def obtenerProductos(cls,id_grupoDeTrabajo,id_espacioFisico):
         cls.validarStock(id_grupoDeTrabajo,id_espacioFisico)
         stocks = StockSchema().dump(cls.BusquedaEnStock(id_grupoDeTrabajo,id_espacioFisico),many=True)       
-        for stock in stocks:  
-            for producto in stock['producto']:CommonService.asignarNombreContenedor(producto)
+        for stock in stocks:  cls.asignarDatosExtraStock(stock)
         return stocks
+    
+    @classmethod
+    def asignarDatosExtraStock(cls,stock):
+        CommonService.asignarNombreProducto(stock)
+        for producto in stock['producto']: CommonService.asignarNombreContenedor(producto)
 
     @classmethod
     def borrarProductoEnStock(cls,id_productoEnStock,id_productos):
@@ -140,4 +144,10 @@ class StockService():
         Stock.objects.filter(id_grupoDeTrabajo = _id_grupoDeTrabajo).delete()
         return {'Status':'ok'},200
 
-
+    @classmethod
+    def bajaExterna(cls,idsProducto):
+        for id in idsProducto : cls.bajaProductoExterno(id)
+    
+    @classmethod 
+    def bajaProductoExterno(cls,idProducto):
+        return Stock.objects(id_producto = idProducto).delete()
