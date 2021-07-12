@@ -10,6 +10,7 @@ class ValidacionesUsuario():
     def desvincularDeProyectos(cls,id_usuario):
         proyectos = Proyecto.objects.update(pull__participantes=id_usuario)
 
+
 class Validacion():
     @classmethod
     def elProyectoExiste(cls, idProyecto):
