@@ -21,6 +21,7 @@ class JaulaService:
 
     @classmethod
     def jaulaPerteneceAlProyecto(cls,_id_proyecto,_id_jaula):
+        cls.find_by_id(_id_jaula)
         if not cls.jaulasDelProyecto(_id_proyecto).filter(id_jaula = _id_jaula).first(): raise ErrorJaulaDeProyecto(_id_proyecto,_id_jaula)
 
     @classmethod

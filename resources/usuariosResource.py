@@ -1,10 +1,8 @@
-from warnings import catch_warnings
 from servicios.usuarioService import UsuarioService
 from flask_restful import Resource,Api
 from flask import request
-#from exceptions.exception import ErrorUsuariosInexistentes
 from servicios.validationService import ValidacionesUsuario
-from exceptions.exception import ErrorPermisoInexistente,ErrorUsuarioInexistente
+from exceptions.exception import ErrorPermisoGeneral,ErrorPermisoInexistente,ErrorUsuarioInexistente,ErrorUsuarioExistente
 from marshmallow import ValidationError
 from servicios.commonService import CommonService
 from schemas.usuarioSchema import UsuarioSchema
@@ -13,7 +11,7 @@ class ObtenerUsuariosResource(Resource):
     '''devuelve todos los usuarios de la base que se encuentren habilitados 
     '''
     def get(self):
-            return UsuarioService.findUsuariosHabilitados() 
+            return CommonService.jsonMany(UsuarioService.findUsuariosHabilitados() ,UsuarioSchema) 
 
 class UsuarioResource(Resource): 
     #@jwt_required()
@@ -22,12 +20,12 @@ class UsuarioResource(Resource):
         if (datos):
             try:
                 UsuarioService.modificarUsuario(datos)
-                return {'Status':'ok'},200
+                return {'Status':'Usuario modificado.'},200
             except ValidationError as err:
                 return {'Error': err.messages}, 400
             except (ErrorUsuarioInexistente,ErrorPermisoInexistente) as err:
                 return {'Error': err.message},400
-        return {'name': 'None'},400
+        return {'Error': 'Deben suministrarse los datos para modificar el usuario.'},400
        
     # @jwt_required()
     def post(self):
@@ -35,12 +33,12 @@ class UsuarioResource(Resource):
         if (datos):
             try:
                 UsuarioService.nuevoUsuario(datos)
-                return {'Status':'ok'},200
+                return {'Status':'Usuario creado.'},200
             except ValidationError as err:
                 return {'error': err.messages},400
-            except ErrorPermisoInexistente as err:
+            except (ErrorPermisoInexistente,ErrorUsuarioExistente,ErrorPermisoGeneral) as err:
                 return {'error': err.message},400
-        return {'name': 'None'},400
+        return {'Error': 'Deben suministrarse los datos para el alta de usuario.'},400
 
 class UsuarioID(Resource):
  #@jwt_required()

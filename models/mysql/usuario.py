@@ -33,8 +33,7 @@ class Usuario(db.Model):
 
     def __repr__(self):
         return f"{self.id_usuario}||Nombre:{self.nombre} \r\n direccion:{self.direccion} \r\n  Telefono:{self.telefono} \r\n  password: {self.password}, Permisos: {self.permisos[0]}"
-    def setPermiso(self,permisos):
-        self.permisos = permisos
+
     
         
 

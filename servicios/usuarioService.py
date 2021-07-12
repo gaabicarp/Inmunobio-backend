@@ -1,9 +1,8 @@
 from db import db 
 from models.mysql.usuario import Usuario
-from schemas.usuarioSchema import UsuarioSchema,UsuarioSchemaModificar,UsuarioNuevoSchema,usuarioIDSchema
-from marshmallow import ValidationError
+from schemas.usuarioSchema import UsuarioSchema,UsuarioSchemaModificar,UsuarioNuevoSchema
 from servicios.permisosService import PermisosService,Permiso
-from exceptions.exception import ErrorPermisoInexistente,ErrorUsuarioInexistente
+from exceptions.exception import ErrorUsuarioExistente,ErrorUsuarioInexistente
 from servicios.commonService import CommonService
 from servicios.validationService import ValidacionesUsuario
 
@@ -22,17 +21,22 @@ class UsuarioService():
         '''recibe una lista con diccionarios de permisos y un usuario de la base
         si pudo encontrar los permisos en la base actualiza al usuario, sino devuelve
         mensaje de error.'''
-        permisosObject = PermisosService.permisosById(permisosDicts)
-        usuario.setPermiso(permisosObject)
+        #PermisosService.validarPermisos(permisosDicts)
+        usuario.permisos = PermisosService.permisosById(permisosDicts)
 
     @classmethod
     def nuevoUsuario(cls,datos):
         #minimo un permiso  el 5, aun no esta validado , solo valida que sean permisos que existen
             usuario = UsuarioNuevoSchema().load(datos) 
+            cls.validarUsuarioExistente(usuario)
             cls.asignarPermisos(usuario,datos['permisos'])
             db.session.add(usuario)
             db.session.commit()
  
+    @classmethod
+    def validarUsuarioExistente(cls,usuario):
+        if (cls.find_by_email(usuario.email)): raise ErrorUsuarioExistente(usuario.email)
+
     @classmethod
     def find_by_email(cls, _email):
         return Usuario.query.filter_by(email=_email).first()
@@ -46,9 +50,8 @@ class UsuarioService():
         
     @classmethod
     def findUsuariosHabilitados(cls):
-        resultado = Usuario.query.filter_by(habilitado=1).all()
-        return CommonService.jsonMany(resultado,UsuarioSchema) 
-    
+        return Usuario.query.filter_by(habilitado=1).all()
+        
     @classmethod
     def usuariosSinElPermiso(cls,id_permiso):
         user = Usuario.query.filter(~Usuario.id_permisos.any(Permiso.id_permiso.in_([id_permiso])))
