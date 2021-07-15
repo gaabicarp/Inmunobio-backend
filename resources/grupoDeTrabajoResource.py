@@ -2,7 +2,7 @@ from db import dbMongo
 from flask_restful import Resource
 from flask import request
 from servicios.grupoDeTrabajoService import GrupoDeTrabajoService
-from exceptions.exception import ErrorGrupoInexistente,ErrorUsuarioInexistente,ErrorGrupoDeTrabajoGeneral
+from exceptions.exception import ErrorPermisosJefeDeGrupo,ErrorJefeDeOtroGrupo,ErrorIntegranteDeOtroGrupo,ErrorGrupoInexistente,ErrorUsuarioInexistente,ErrorGrupoDeTrabajoGeneral
 from marshmallow import  ValidationError
 from servicios.commonService import CommonService
 from schemas.grupoTrabajoSchema import GrupoDeTrabajoSchema
@@ -29,7 +29,7 @@ class GrupoDeTrabajo(Resource):
                 return {'Status':'ok'},200  
             except ValidationError as err:
                 return {'error': err.messages},400
-            except ErrorUsuarioInexistente as err:
+            except (ErrorPermisosJefeDeGrupo,ErrorUsuarioInexistente,ErrorIntegranteDeOtroGrupo,ErrorJefeDeOtroGrupo) as err:
                 return {'Error': err.message},400
         return {'name': 'None'},400
 

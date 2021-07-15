@@ -1,14 +1,12 @@
 from schemas.grupoTrabajoSchema import jefeDeGrupoSchema,ModificarGrupoDeTrabajoSchema,GrupoDeTrabajoSchema,GrupoDeTrabajo,NuevoGrupoDeTrabajoSchema,GrupoDeTrabajoIDSchema
-from marshmallow import  ValidationError
 from servicios.usuarioService import UsuarioService
-from exceptions.exception import ErrorGrupoInexistente,ErrorUsuarioInexistente,ErrorGrupoDeTrabajoGeneral
+from exceptions.exception import ErrorGrupoInexistente,ErrorGrupoDeTrabajoGeneral
 from servicios.commonService import CommonService
 
 class GrupoDeTrabajoService():
     def find_by_id(id):
         grupo = GrupoDeTrabajo.objects.filter(id_grupoDeTrabajo=id).first()
-        if(not grupo):
-            raise ErrorGrupoInexistente()
+        if(not grupo): raise ErrorGrupoInexistente()
         return grupo
 
     def find_by_nombre(_nombre):
@@ -18,7 +16,7 @@ class GrupoDeTrabajoService():
     def modificarMiembrosGrupo(cls,datos):
             ModificarGrupoDeTrabajoSchema().load(datos)
             grupoAModificar = cls.find_by_id(datos['id_grupoDeTrabajo'])
-            cls.validarMiembros(datos['integrantes']+[datos['jefeDeGrupo']])
+            cls.validarMiembros(datos['integrantes'],datos['jefeDeGrupo'])
             grupoAModificar.update(integrantes=datos['integrantes'],
             jefeDeGrupo=datos['jefeDeGrupo'],nombre= datos['nombre']
             )
@@ -26,15 +24,17 @@ class GrupoDeTrabajoService():
     @classmethod
     def nuevoGrupo(cls,datos):
             grupoCreado = NuevoGrupoDeTrabajoSchema().load(datos)
-            cls.validarMiembros([grupoCreado.jefeDeGrupo]+datos['integrantes'])
-            #falta ver si tiene permisos nivel 4 
+            print(grupoCreado.integrantes)
+            cls.validarMiembros(grupoCreado.integrantes)
+            cls.validarJefe(grupoCreado.jefeDeGrupo)
             grupoCreado.save()
-            cls.asignarIDGrupo(grupoCreado)
+            cls.asignarIDGrupo(grupoCreado,grupoCreado.id_grupoDeTrabajo)
 
     @classmethod
     def removerGrupo(cls,id_grupoDeTrabajo):
             grupoABorrar = GrupoDeTrabajoService.find_by_id(id_grupoDeTrabajo)
             cls.validarDelete(grupoABorrar)
+            cls.asignarIDGrupo(grupoABorrar,0)
             grupoABorrar.delete()
 
     def obtenerGrupoPorId(idGrupoDeTrabajo):
@@ -43,18 +43,21 @@ class GrupoDeTrabajoService():
         return grupoConsulta,jefeDeGrupo.nombre
 
     def validarDelete(grupo):
-        if grupo.grupoGral:
-            raise ErrorGrupoDeTrabajoGeneral()
+        if grupo.grupoGral: raise ErrorGrupoDeTrabajoGeneral()
 
-    def validarMiembros(integrantes):
-        for idIntegrante in integrantes:
-            UsuarioService.find_by_id(idIntegrante)
+    @classmethod
+    def validarMiembros(cls,integrantes):
+        [UsuarioService.validaAsignacionGrupo(idIntegrante) for idIntegrante in integrantes]
 
-    def asignarIDGrupo(grupo):
+    @classmethod
+    def validarJefe(cls, id_jefeDeGrupo):
+        UsuarioService.validarJefeDeGrupo(id_jefeDeGrupo)
+
+    def asignarIDGrupo(grupo,id):
         for idIntegrante in grupo.integrantes:
-            UsuarioService.cambiarIdGrupo(idIntegrante,grupo.id_grupoDeTrabajo)
-        UsuarioService.cambiarIdGrupo(grupo.jefeDeGrupo,grupo.id_grupoDeTrabajo)
-        UsuarioService.asignarGrupo(grupo.jefeDeGrupo,grupo.id_grupoDeTrabajo)
+            UsuarioService.cambiarIdGrupo(idIntegrante,id)
+        UsuarioService.cambiarIdGrupo(grupo.jefeDeGrupo,id)
+        UsuarioService.asignarGrupoAJefe(grupo.jefeDeGrupo,id)
 
     def obtenerTodosLosGrupos():
         return CommonService.jsonMany(GrupoDeTrabajo.objects.all(),GrupoDeTrabajoSchema)
@@ -65,5 +68,6 @@ class GrupoDeTrabajoService():
             grupoAModificar = cls.find_by_id(datos['id_grupoDeTrabajo'])
             cls.validarMiembros([datos['jefeDeGrupo']])
             grupoAModificar.update(jefeDeGrupo=datos['jefeDeGrupo'])
+            #TO-DO ver la asignacion esta de miembros
             cls.asignarIDGrupo(grupoAModificar)
   

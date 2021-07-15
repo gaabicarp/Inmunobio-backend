@@ -5,6 +5,7 @@ from flask import jsonify
 from schemas.permisosSchema import PermisoSchema
 from servicios.commonService import CommonService
 from exceptions.exception import ErrorPermisoInexistente,ErrorPermisoGeneral
+
 class PermisosService():
     @classmethod
     def json(cls,datos):
@@ -46,4 +47,10 @@ class PermisosService():
             return CommonService.json(PermisosService.find_by_id(id_permiso),PermisoSchema)
         except ErrorPermisoInexistente as err:
             return {'error': err.message},400
+
+    @classmethod
+    def tieneElPermiso(cls,usuario,idPermiso):
+        return any( permiso.id_permiso == idPermiso for permiso in usuario.permisos)
+
+
 

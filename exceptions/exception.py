@@ -120,7 +120,21 @@ class ErrorNombreInvalido(Exception):
     def __init__(self):
         self.message = ""
         super().__init__(self.message)      
-       
+
+class ErrorIntegranteDeOtroGrupo(Exception):
+    def __init__(self,id_usuario,id_grupo):
+        self.message = f"El usuario con id {id_usuario} ya se encuentra asignado al grupo de trabajo con id.{id_grupo}" 
+        super().__init__(self.message)      
+class ErrorJefeDeOtroGrupo(Exception):
+    def __init__(self,id_usuario,id_grupo):
+        self.message = f"El usuario con id {id_usuario} ya es jefe del grupo {id_grupo}" 
+        super().__init__(self.message)
+             
+class ErrorPermisosJefeDeGrupo(Exception):
+    def __init__(self,id_usuario):
+        self.message = f"El usuario con id {id_usuario} no posee permisos para ser jefe de grupo." 
+        super().__init__(self.message)
+
 class ErrorStockVacio(Exception):
     def __init__(self):
         self.message = ""
