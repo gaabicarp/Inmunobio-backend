@@ -99,10 +99,9 @@ class UsuarioService():
                 _id_usuario, usuario.id_grupoDeTrabajo)
 
     @classmethod
-    def validarJefeDeGrupo(cls, _id_usuario):
+    def validarJefeDeGrupo(cls, _id_usuario,idNueva = 0):
         jefe = cls.find_by_id(_id_usuario)
-        if jefe.esJefeDe:
-            raise ErrorJefeDeOtroGrupo(_id_usuario, jefe.esJefeDe)
-        if not PermisosService.tieneElPermiso(jefe, 4):
+        if jefe.esJefeDe and jefe.esJefeDe != idNueva : raise ErrorJefeDeOtroGrupo(_id_usuario, jefe.esJefeDe)
+        if not PermisosService.tieneElPermiso(jefe, PermisosService.jefeDeGrupo):
             raise ErrorPermisosJefeDeGrupo(_id_usuario)
 

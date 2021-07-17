@@ -7,6 +7,8 @@ from servicios.commonService import CommonService
 from exceptions.exception import ErrorPermisoInexistente,ErrorPermisoGeneral
 
 class PermisosService():
+    jefeDeGrupo = 4
+    
     @classmethod
     def json(cls,datos):
         return jsonify( PermisoSchema().dump(datos))
