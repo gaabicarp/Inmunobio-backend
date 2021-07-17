@@ -23,7 +23,7 @@ class UsuarioResource(Resource):
                 return {'Status':'Usuario modificado.'},200
             except ValidationError as err:
                 return {'Error': err.messages}, 400
-            except (ErrorUsuarioInexistente,ErrorPermisoInexistente) as err:
+            except (ErrorUsuarioInexistente,ErrorPermisoInexistente,ErrorPermisoGeneral) as err:
                 return {'Error': err.message},400
         return {'Error': 'Deben suministrarse los datos para modificar el usuario.'},400
        
