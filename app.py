@@ -28,8 +28,6 @@ nojwt = JWT(app, authenticate, identity)
 CORS(app)
 cors = CORS(app,resources={r"/api/*":{"origins":"*"}})
 
-
-
 ############################ Api configuracion
 from api import api
 api.init_app(app)

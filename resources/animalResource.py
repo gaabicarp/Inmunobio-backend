@@ -37,6 +37,7 @@ class Animal(Resource):
 
 class Animales(Resource):
 
+    @jwt_required()
     def get(self):
         animales =AnimalService.todosLosAnimales()
         if animales:

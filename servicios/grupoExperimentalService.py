@@ -28,10 +28,10 @@ class GrupoExperimentalService:
         
         for fuenteVieja in grupoExperimentalViejo.fuentesExperimentalesNuevas:
             if any(fuenteExperimentalNueva.id_fuenteExperimental != fuenteVieja.id_fuenteExperimental for fuenteExperimentalNueva in fuentesExperimentalesNuevas):
-                self.desasociarDeGrupoExperimental(fuenteVieja)
+                cls.desasociarDeGrupoExperimental(fuenteVieja)
         for fuenteNueva in fuentesExperimentalesNuevas:
             if fuenteNueva.tipo == "Animal":
-                self.asociarAGrupoExperimental(fuenteNueva)
+                cls.asociarAGrupoExperimental(fuenteNueva)
             else:
                 fuenteNueva.save()
 

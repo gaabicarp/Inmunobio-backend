@@ -3,7 +3,7 @@ from marshmallow import Schema, fields, post_load,ValidationError
 from schemas.permisosSchema import PermisoSchema,PermisoExistenteSchema
 
 class UsuarioSchema(Schema):
-    id_usuario = fields.Integer(dump_only=True)
+    id = fields.Integer(dump_only=True)
     email = fields.Str()
     nombre = fields.Str()
     password = fields.Str()    
@@ -29,7 +29,7 @@ class UsuarioNuevoSchema(UsuarioSchema):
         return Usuario(**data)
 
 class usuarioIDSchema(Schema):
-    id_usuario = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse id Usuario", "code": 400}})
+    id = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse id Usuario", "code": 400}})
 
 class UsuarioSchemaModificar(usuarioIDSchema):
 

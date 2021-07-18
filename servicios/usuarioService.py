@@ -5,7 +5,8 @@ from marshmallow import ValidationError
 from servicios.permisosService import PermisosService,Permiso
 from exceptions.exception import ErrorPermisoInexistente,ErrorUsuarioInexistente,ErrorUsuariosInexistentes
 from servicios.commonService import CommonService
-from servicios.validationService import ValidacionesUsuario
+from servicios.validationService import Validacion, ValidacionesUsuario
+from werkzeug.security import generate_password_hash
 class UsuarioService():
 
     @classmethod
@@ -34,8 +35,11 @@ class UsuarioService():
     def nuevoUsuario(cls,datos):
         #minimo un permiso  el 5, aun no esta validado , solo valida que sean permisos que existen
         try:
-            usuario = UsuarioNuevoSchema().load(datos) 
+            usuario = UsuarioNuevoSchema().load(datos)
+            cls.validarNuevoUsuario(usuario)
             cls.asignarPermisos(usuario,datos['permisos'])
+            hashed_password = generate_password_hash(usuario.password, method='sha256')
+            usuario.password = hashed_password
             db.session.add(usuario)
             db.session.commit()
             return {'Status':'ok'},200
@@ -43,15 +47,24 @@ class UsuarioService():
             return {'error': err.messages},400
         except ErrorPermisoInexistente as err:
             return {'error': err.message},400
+        except Exception as err:
+            return {'error': str(err)}, 400
+    
+    def validarNuevoUsuario(usuario):
+        if len(usuario.password) < 8:
+            raise Exception("La contraseña debe tener como mínimo 8 caracteres.")
+        if Validacion.elMailEstaEnUso(usuario.email):
+            raise Exception("El email ya se encuentra en uso.")
 
     @classmethod
     def find_by_email(cls, _email):
-        return Usuario.query.filter_by(email=_email).first()
+        usuario = Usuario.query.filter_by(email=_email).first()
+        return usuario
 
     @classmethod
     def find_by_id(cls, _id):
         '''dada una id de usuario devuelve usuario si esta habilitado '''
-        resultado = Usuario.query.filter_by(id_usuario=_id,habilitado=True).first()
+        resultado = Usuario.query.filter_by(id=_id,habilitado=True).first()
         if not resultado: raise ErrorUsuarioInexistente(_id)
         return resultado
         
@@ -96,10 +109,12 @@ class UsuarioService():
             usuario = UsuarioService.find_by_id(id)
             usuarios.append(usuario)
         return usuarios
+
     @classmethod
     def cambiarIdGrupo(cls,_id_usuario, idGrupo):
         UsuarioService.find_by_id(_id_usuario).id_grupoDeTrabajo = idGrupo
         db.session.commit()
+        
     @classmethod
     def asignarGrupo(cls,_id_usuario, idGrupo):
         UsuarioService.find_by_id(_id_usuario).esJefeDe = idGrupo

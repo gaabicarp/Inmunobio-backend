@@ -1,3 +1,4 @@
+from models.mysql.usuario import Usuario
 from models.mongo.proyecto import Proyecto
 from models.mongo.experimento import Experimento, MuestraExterna
 from models.mongo.muestra import Muestra
@@ -10,6 +11,10 @@ class ValidacionesUsuario():
         proyectos = Proyecto.objects.update(pull__participantes=id_usuario)
 
 class Validacion():
+
+    @classmethod
+    def elMailEstaEnUso(cls, _email):
+        return Usuario.query.filter_by(email=_email).first() != None
 
     @classmethod
     def elProyectoExiste(cls, idProyecto):
