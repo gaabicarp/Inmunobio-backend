@@ -16,6 +16,8 @@ class JaulaSchema(Schema):
     habilitado = fields.Bool()
 #    blogs = fields.Nested(BlogSchema, many=True)
 
+class JaulaSchemaBlogs(JaulaSchema):
+    blogs = fields.Nested(BlogSchema, many=True)
 
 class NuevaJaulaSchema(Schema):
     id_espacioFisico = fields.Int(required=True, error_messages={"required" : {"message" : "Es necesario indicar el id del espacio físico", "code": 400}})
@@ -23,7 +25,7 @@ class NuevaJaulaSchema(Schema):
     rack = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar el número de rack donde va a estar ubicada la jaula", "code": 400}})
     estante = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar el número del estante", "code": 400}})
     capacidad = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar la capacidad de la jaula", "code": 400}})
-    id_proyecto = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar id proyecto", "code": 400}})
+    id_proyecto = fields.Int()
     tipo = fields.Str()
 
     @post_load
@@ -31,10 +33,11 @@ class NuevaJaulaSchema(Schema):
         return Jaula(**data)
 
 class ActualizarProyectoJaulaSchema(JaulaSchema):
+    #class ActualizarProyectoJaulaSchema(Schema):
     id_jaula = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar el id de la jaula", "code" : 400}})
     id_proyecto = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar el id del proyecto", "code": 400}})
-    nombre_proyecto = fields.String(required=True, error_messages={"required": {"message" : "Es necesario indicar el nombre de proyecto", "code" : 400}})
-
+    #nombre_proyecto = fields.String(required=True, error_messages={"required": {"message" : "Es necesario indicar el nombre de proyecto", "code" : 400}})
+    
     @post_load
     def makeJaula(self, data, **kwargs):
         return Jaula(**data)
@@ -46,8 +49,9 @@ class NuevoBlogJaulaSchema(Schema):
     id_jaula = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar el id de la jaula", "code" : 400}})
     blogs = fields.Nested(BlogSchema,required=True, error_messages={"required": {"message" : "Es necesario indicar datos de blog de jaula", "code" : 400}})
 
-class BusquedaBlogsJaulas(Schema):
+class BusquedaBlogsJaula(Schema):
     fechaDesde = fields.String(required=True,error_messages={"required": {"message": "Debe indicarse  fecha-desde.", "code": 400}}) 
     fechaHasta = fields.String(required=True,error_messages={"required": {"message": "Debe indicarse  fecha-hasta", "code": 400}}) 
-class BusquedaBlogJaula(BusquedaBlogsJaulas):
+
+class BusquedaBlogJaula(BusquedaBlogsJaula):
     id_jaula = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse  id_jaula", "code": 400}}) 

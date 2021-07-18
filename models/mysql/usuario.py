@@ -5,7 +5,6 @@ from sqlalchemy import DateTime, Integer, String, Text, Float, Boolean
 from db import db
 from models.mysql.permiso import Permiso
 
-
 permisoXUsuario = db.Table('permisosxUsuarios', 
     db.Column('usuario_id', db.Integer, db.ForeignKey('usuarios.id')),
     db.Column('permiso_id', db.Integer, db.ForeignKey('permisos.id_permiso'))
@@ -31,11 +30,5 @@ class Usuario(db.Model):
         self.password = password
         self.direccion = direccion
         self.telefono = telefono
-
-    def setPermiso(self,permisos):
-        self.permisos = permisos
-    
-        
-
     
 

@@ -16,11 +16,15 @@ class EspacioFisicoService():
             espacioNuevo.save()
  
     @classmethod
+    def obtenerNombreEspacioFisico(cls,id):
+        return cls.find_by_id(id).nombre
+   
+    @classmethod
     def find_by_id(cls,id):
-        producto =  EspacioFisico.objects(id_espacioFisico = id).first()
-        if(not producto):
+        espacio =  EspacioFisico.objects(id_espacioFisico = id).first()
+        if(not espacio):
             raise ErrorEspacioFisicoInexistente(id)
-        return producto     
+        return espacio     
 
     @classmethod
     def modificarEspacio(cls,datos):
@@ -50,6 +54,7 @@ class EspacioFisicoService():
 
     @classmethod
     def BorrarBlogEspacioFisico(cls,_id_espacioFisico,_id_blog):
+        #TO-DO ; arreglar este codigo 
         if(EspacioFisico.objects.filter(id_espacioFisico = _id_espacioFisico).first()):
             if (EspacioFisico.objects.filter(id_espacioFisico = _id_espacioFisico, blogs__id_blog= _id_blog).first()):
                 return EspacioFisico.objects.filter(id_espacioFisico = _id_espacioFisico).first().modify(pull__blogs__id_blog =_id_blog)

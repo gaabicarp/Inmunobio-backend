@@ -31,14 +31,13 @@ class MuestraService:
     def nuevasMuestras(cls, datos):
         muestras = NuevaMuestraSchema().load(datos, many=True)
         cls.validarRelacionDeMuestras(cls, muestras)
-        for muestra in muestras:
-            muestra.save()
-        cls.actualizarMuestrasEnGrupoExperimental(cls,muestras[0].id_grupoExperimental)
+        for muestra in muestras: muestra.save()
+        cls.actualizarMuestrasEnGrupoExperimental(muestras[0].id_grupoExperimental)
     
     def validarRelacionDeMuestras(self, muestras):
         for muestra in muestras:
             if not Validacion().elProyectoExiste(muestra.id_proyecto):
-                raise Exception(f"El proyecto con id {muestra.id_proyecto} no exsite.")
+                raise Exception(f"El proyecto con id {muestra.id_proyecto} no existe.")
             if not Validacion().elExperimentoEstaFinalizado(muestra.id_experimento):
                 raise Exception(f"El experimento con id {muestra.id_experimento} está finalizado.")
             if not Validacion().elExperimentoPerteneceAlProyecto(muestra.id_experimento, muestra.id_proyecto):

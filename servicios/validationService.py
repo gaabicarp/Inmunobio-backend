@@ -4,14 +4,15 @@ from models.mongo.experimento import Experimento, MuestraExterna
 from models.mongo.muestra import Muestra
 from models.mongo.grupoExperimental import GrupoExperimental
 from models.mongo.fuenteExperimental import FuenteExperimental
+
 from models.mongo.contenedor import Contenedor
 class ValidacionesUsuario():
     @classmethod
     def desvincularDeProyectos(cls,id_usuario):
         proyectos = Proyecto.objects.update(pull__participantes=id_usuario)
 
-class Validacion():
 
+class Validacion():
     @classmethod
     def elMailEstaEnUso(cls, _email):
         return Usuario.query.filter_by(email=_email).first() != None

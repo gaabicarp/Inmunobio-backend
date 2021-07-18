@@ -1,98 +1,141 @@
 
-
 class ErrorProductoInexistente(Exception):
-    def __init__(self,id, message="No hay productos relacionados con id_producto "):
-        self.message = message + str(id)
+    def __init__(self,id):
+        self.message = f"No hay productos relacionados con id_producto: {id}" 
         super().__init__(self.message)
 
 class ErrorProductoEnStockInexistente(Exception):
-    def __init__(self,id, message="No hay productos activos con id_productos "):
-        self.message = message + str(id)
-        super().__init__(self.message)
-
-class ErrorStockVacio(Exception):
-    def __init__(self, message= "Deben indicarse unidades positivas y mayores a cero"):
-        self.message = message 
+    def __init__(self,id=0):
+        self.message = f"No hay productos activos con id_productos {id}"
         super().__init__(self.message)
 
 class ErrorStockInexistente(Exception):
-    def __init__(self, message="Stock con id_productos inexistente"):
-        self.message = message
+    def __init__(self,id):
+        self.message = f"No existe stock asociado con id_productoEnStock {id}" 
         super().__init__(self.message)
 
 class ErrorDistribuidoraInexistente(Exception):
-    def __init__(self, message="Distribuidora inexistente"):
-        self.message = message
+    def __init__(self):
+        self.message = "Distribuidora inexistente"
         super().__init__(self.message)
-
 
 class ErrorGrupoInexistente(Exception):
-    def __init__(self, message="Grupo de trabajo inexistente"):
-        self.message = message
+    def __init__(self):
+        self.message = "Grupo de trabajo inexistente"
         super().__init__(self.message)
 
-
-
 class ErrorEspacioFisicoInexistente(Exception):
-    def __init__(self,id, message="No existe espacio fisico con id "):
-        self.message = message + str(id)
+    def __init__(self,id):
+        self.message = f"No existe espacio fisico con id {id}" 
         super().__init__(self.message)
 
 
 class ErrorUnidadStock(Exception):
-    def __init__(self, message="Las unidades de Stock deben ser numeros enteros positivos "):
-        self.message = message
+    def __init__(self):
+        self.message = "Las unidades de Stock deben ser numeros enteros positivos / la consumicion de stock no debe pasar del total de unidades"
         super().__init__(self.message)
 
 class ErrorPermisoInexistente(Exception):
-    def __init__(self,id_permiso, message="No hay permisos asociados con id "):
-        self.message = message + str(id_permiso)
+    def __init__(self,id_permiso):
+        self.message = f"No hay permisos asociados con id {id_permiso}" 
         super().__init__(self.message)
 
-class ErrorPermisosInexistentes(Exception):
-    def __init__(self, message="No hay usuarios activos"):
-        self.message = message 
+class ErrorPermisoGeneral(Exception):
+    def __init__(self):
+        self.message = f"Debe asignarse al menos el permiso 5 : Usuario general." 
         super().__init__(self.message)
 
 class ErrorUsuarioInexistente(Exception):
-    def __init__(self,id_usuario, message="No hay usuario asociados con id "):
-        self.message = message + str(id_usuario)
+    def __init__(self,id_usuario):
+        self.message = f"No hay usuario/a asociado/a con id {id_usuario}" 
         super().__init__(self.message)
 
-class ErrorUsuariosInexistentes(Exception):
-    def __init__(self,id_usuario, message="No hay usuario habilitados "):
-        self.message = message + str(id_usuario)
+class ErrorUsuarioExistente(Exception):
+    def __init__(self,email):
+        self.message = f"Ya existe un/a usuario/a asociados con email {email}" 
         super().__init__(self.message)
 
 class ErrorGrupoDeTrabajoGeneral(Exception):
-    def __init__(self, message="El grupo es general y no puede darse de baja."):
-        self.message = message 
+    def __init__(self):
+        self.message = "El grupo es general y no puede darse de baja." 
         super().__init__(self.message)
 
-
-class ErrorJsonVacio(Exception):
-    def __init__(self, message="Se deben enviar datos para la modificación de la jaula.'"):
-        self.message = message 
-        super().__init__(self.message)
 
 class ErrorJaulaInexistente(Exception):
-    def __init__(self,id_jaula, message="No se encontró ninguna jaula con el id: "):
-        self.message = message + str(id_jaula)
+    def __init__(self,id_jaula):
+        self.message = f"No se encontró ninguna jaula con el id:{id_jaula}"
         super().__init__(self.message)    
 
 class ErrorBlogInexistente(Exception):
-    def __init__(self,id_blog, message="No se encontró ninguna blog con el id: "):
-        self.message = message + str(id_blog)
+    def __init__(self,id_blog):
+        self.message = f"No se encontró ningun blog con el id: {id_blog}"
         super().__init__(self.message)    
 
 
 class ErrorHerramientaInexistente(Exception):
-    def __init__(self,id_herr, message="No se encontró ninguna herramienta con el id: "):
-        self.message = message + str(id_herr)
+    def __init__(self,id_herr):
+        self.message = f"No se encontró ninguna herramienta con el id: {id_herr}"
+        super().__init__(self.message)    
+
+class ErrorProyectoInexistente(Exception):
+    def __init__(self,id_herr):
+        self.message = f"No se encontró ningun proyecto con el id: {id_herr}"
         super().__init__(self.message)    
 
 class ErrorFechasInvalidas(Exception):
-    def __init__(self, message="La fecha-desde debe ser inferior a la fecha-hasta "):
-        self.message = message 
+    def __init__(self):
+        self.message = "La fecha-desde debe ser inferior a la fecha-hasta " 
         super().__init__(self.message)    
 
+class ErrorJaulaBaja(Exception):
+    def __init__(self):
+        self.message = "La jaula debe estar vacía para poder darla de baja " 
+        super().__init__(self.message)    
+
+class ErrorJaulaDeProyecto(Exception):
+    def __init__(self,id_proyecto,id_jaula):
+        self.message = f"La jaula {id_jaula} no se encuentra asignada al proyecto con id {id_proyecto}"
+        super().__init__(self.message)   
+
+class ErrorExpDeProyecto(Exception):
+    def __init__(self,id_proyecto,id_experimento):
+        self.message = f"El experimento {id_experimento} no se encuentra asignado al proyecto con id {id_proyecto}"
+        super().__init__(self.message)    
+
+class ErrorExperimentoInexistente(Exception):
+    def __init__(self,id_experimento):
+        self.message = f"No existe experimento asociado con id {id_experimento}"
+        super().__init__(self.message)    
+class ErrorContenedorInexistente(Exception):
+    def __init__(self,id_contenedor):
+        self.message = f"No existe contenedor asociado con id {id_contenedor}"
+        super().__init__(self.message)    
+
+class ErrorEspacioDeproyecto(Exception):
+    def __init__(self,id_espFisico,id_proyecto):
+        self.message = f"El espacio fisico con id.{id_espFisico} asociado al proyecto id.{id_proyecto} ya no se encuentra disponible"
+        super().__init__(self.message)  
+
+class ErrorNombreInvalido(Exception):
+    def __init__(self):
+        self.message = ""
+        super().__init__(self.message)      
+
+class ErrorIntegranteDeOtroGrupo(Exception):
+    def __init__(self,id_usuario,id_grupo):
+        self.message = f"El usuario con id {id_usuario} ya se encuentra asignado al grupo de trabajo con id.{id_grupo}" 
+        super().__init__(self.message)      
+class ErrorJefeDeOtroGrupo(Exception):
+    def __init__(self,id_usuario,id_grupo):
+        self.message = f"El usuario con id {id_usuario} ya es jefe del grupo {id_grupo}" 
+        super().__init__(self.message)
+             
+class ErrorPermisosJefeDeGrupo(Exception):
+    def __init__(self,id_usuario):
+        self.message = f"El usuario con id {id_usuario} no posee permisos para ser jefe de grupo." 
+        super().__init__(self.message)
+
+class ErrorStockVacio(Exception):
+    def __init__(self):
+        self.message = ""
+        super().__init__(self.message)         

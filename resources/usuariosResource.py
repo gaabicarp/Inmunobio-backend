@@ -4,50 +4,72 @@ from schemas.usuarioSchema import UsuarioSchema
 from servicios.commonService import CommonService
 from warnings import catch_warnings
 from servicios.usuarioService import UsuarioService
-from servicios.permisosService import PermisosService
 from flask_restful import Resource,Api
 from flask import request
-from exceptions.exception import ErrorUsuariosInexistentes
 from werkzeug.security import check_password_hash
 from flask_jwt import jwt
 from flask import jsonify
+from servicios.validationService import ValidacionesUsuario
+from exceptions.exception import ErrorPermisoGeneral,ErrorPermisoInexistente,ErrorUsuarioInexistente,ErrorUsuarioExistente
+from marshmallow import ValidationError
+from servicios.commonService import CommonService
 
 class ObtenerUsuariosResource(Resource):
     '''devuelve todos los usuarios de la base que se encuentren habilitados 
     '''
     def get(self):
-        try:
-            return UsuarioService.findUsuariosHabilitados() 
-        except ErrorUsuariosInexistentes as err:
-            return {'Error': err.message},400
-        
+            return CommonService.jsonMany(UsuarioService.findUsuariosHabilitados() ,UsuarioSchema) 
+
 class UsuarioResource(Resource): 
     #@jwt_required()
     def put(self):
         datos = request.get_json()
         if (datos):
-                return UsuarioService.modificarUsuario(datos)
-        return {'name': 'None'},400
-
+            try:
+                UsuarioService.modificarUsuario(datos)
+                return {'Status':'Usuario modificado.'},200
+            except ValidationError as err:
+                return {'Error': err.messages}, 400
+            except (ErrorUsuarioInexistente,ErrorPermisoInexistente,ErrorPermisoGeneral) as err:
+                return {'Error': err.message},400
+        return {'Error': 'Deben suministrarse los datos para modificar el usuario.'},400
+       
     # @jwt_required()
     def post(self):
         datos = request.get_json()
-        if (datos ):
-          return UsuarioService.nuevoUsuario(datos)
-        return {'name': 'None'},400
-     
+        if (datos):
+            try:
+                UsuarioService.nuevoUsuario(datos)
+                return {'Status':'Usuario creado.'},200
+            except ValidationError as err:
+                return {'error': err.messages},400
+            except (ErrorPermisoInexistente,ErrorUsuarioExistente,ErrorPermisoGeneral) as err:
+                return {'error': err.message},400
+        return {'Error': 'Deben suministrarse los datos para el alta de usuario.'},400
 
 class UsuarioID(Resource):
  #@jwt_required()
     def get(self,id_usuario):
         ''' recibe: un idUsuario como parametro
             devuelve: el usuario,si hay match con esa id y ademas esta habilitado, 
-           en formato json.
-        '''
-        return UsuarioService.busquedaUsuario(id_usuario)
+           en formato json.'''
+        if(id_usuario):
+            try:
+                usuario = UsuarioService.find_by_id(id_usuario)
+                return CommonService.json(usuario,UsuarioSchema)
+            except ErrorUsuarioInexistente as err:
+                return {'Error': err.message},400
+        return {'name': 'None'},400
+ 
     def delete(self,id_usuario):
         '''recibe una id de usuario si este esta habilitado lo deshabilita'''
-        return UsuarioService.deshabilitarUsuario(id_usuario)  
+        try:
+            UsuarioService.deshabilitarUsuario(id_usuario)  
+            return {'Status':'ok'},200
+        except ValidationError as err:
+            return {'error': err.messages},400
+        except ErrorUsuarioInexistente as err:
+            return {'Error':err.message},400
 
 class ObtenerUsuariosParaProyecto(Resource):
     #aca el 4 representa la id del permiso director de proyecto,ya que no hay visibilidad

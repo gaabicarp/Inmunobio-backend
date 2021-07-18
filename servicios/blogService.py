@@ -1,19 +1,19 @@
 from marshmallow import ValidationError
-from servicios.commonService import CommonService
+#from servicios.commonService import CommonService
 from schemas.blogSchema import BlogSchema,NuevoBlogSchema
 from exceptions.exception import ErrorFechasInvalidas
 from datetime import datetime
 
+
 class BlogService():
     @classmethod
     def nuevoBlog(cls,datos):
+        #falta validar usuario q crea
         nuevoBlog = NuevoBlogSchema().load(datos)
         return nuevoBlog
-
+        
     @classmethod
     def convertirFecha(cls,fecha,hr,min,seg):
-        #return datetime.strptime(fecha, "%Y-%m-%dT%H:%M:%S.%f").replace(hour=0, minute=0, second=0, microsecond=0)
-        #"Sat Jun 12 2021"
         return datetime.strptime(fecha, "%a %b %d %Y").replace(hour=hr, minute=min, second=seg, microsecond=0)
 
     @classmethod
@@ -28,3 +28,14 @@ class BlogService():
 
     def validarFechas(fechaDesde,fechaHasta):
         if not fechaDesde<fechaHasta: raise ErrorFechasInvalidas()
+
+
+    @classmethod
+    def appendBlogs(cls,objetos):
+        listaBlogs = []
+        for objeto in objetos:listaBlogs.extend(objeto.blogs)
+        return listaBlogs
+    
+
+
+

@@ -14,7 +14,7 @@ class NuevoStockSchema(StockSchema):
     id_producto = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse id_producto", "code": 400}})
     id_espacioFisico = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse id_espacioFisico", "code": 400}})
     id_grupoDeTrabajo = fields.Integer(required=True, error_messages={"required": {"message" : "Debe indicarse id_grupoDeTrabajo", "code": 400}})
-    producto = fields.Nested(NuevoProductoEnStockSchema,many=True)
+    producto = fields.Nested(NuevoProductoEnStockSchema)
 
     @post_load
     def makeProductoEnStock(self, data, **kwargs):
