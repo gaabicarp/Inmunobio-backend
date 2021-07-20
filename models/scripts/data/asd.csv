@@ -1,0 +1,3 @@
+id,email,nombre,password,habilitado,direccion,telefono,permisos,id_grupoDeTrabajo,esJefeDe
+,holi@gmail.com,naye,12345,1,monte,4785,,0,0
+,holi@gmail.com,naye,12345,1,monte,4785,,0,0
