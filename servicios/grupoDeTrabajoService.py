@@ -42,7 +42,7 @@ class GrupoDeTrabajoService():
     def nuevoGrupo(cls, datos):
         grupoCreado = NuevoGrupoDeTrabajoSchema().load(datos)
         cls.validarMiembros(grupoCreado.integrantes)
-        cls.validarJefe(grupoCreado.jefeDeGrupo)
+        cls.validarJefe(grupoCreado.jefeDeGrupo,cls.idGrupoDefault)
         grupoCreado.save()
         cls.asignarIDGrupo(grupoCreado, grupoCreado.id_grupoDeTrabajo)
 
@@ -60,12 +60,11 @@ class GrupoDeTrabajoService():
         return grupoConsulta, jefeDeGrupo.nombre
 
     @classmethod
-    def asignarIDGrupo(cls, grupo):
-        # for idIntegrante in grupo.integrantes:
-        cls.asignarIdGrupoMiembros(grupo.integrantes, grupo.id_grupoDeTrabajo)
+    def asignarIDGrupo(cls, grupo, id):
+        cls.asignarIdGrupoMiembros(grupo.integrantes, id)
         # UsuarioService.cambiarIdGrupo(grupo.jefeDeGrupo,id)
         # |-> ser jefe de grupo se asume como integrante, no hacefalta sumarlo a la lista de integrantes
-        cls.nombrarJefe(grupo.jefeDeGrupo, grupo.id_grupoDeTrabajo)
+        cls.nombrarJefe(grupo.jefeDeGrupo, id)
 
     @classmethod
     def asignarIdGrupoMiembros(cls, idIntegrantes, idGrupo):
@@ -73,17 +72,6 @@ class GrupoDeTrabajoService():
 
     def obtenerTodosLosGrupos():
         return CommonService.jsonMany(GrupoDeTrabajo.objects.all(), GrupoDeTrabajoSchema)
-
-    @classmethod
-    def modificarJefeGrupo(cls, datos):
-        jefeDeGrupoSchema().load(datos)
-        # TO-DO ver si esto se mover al schema
-        grupoAModificar = cls.find_by_id(datos['id_grupoDeTrabajo'])
-        cls.validarJefe(datos['jefeDeGrupo'],grupoAModificar.id_grupoDeTrabajo)
-        cls.desnombrarJefe(grupoAModificar.jefeDeGrupo)
-        cls.nombrarJefe(grupoAModificar.jefeDeGrupo,
-                        grupoAModificar.id_grupoDeTrabajo)
-        grupoAModificar.update(jefeDeGrupo=grupoAModificar.jefeDeGrupo)
 
     @classmethod
     def desnombrarJefe(cls, idJefe):
@@ -102,3 +90,15 @@ class GrupoDeTrabajoService():
 
     @classmethod
     def validarJefe(cls, id_jefeDeGrupo,idGrupo): UsuarioService.validarJefeDeGrupo(id_jefeDeGrupo,idGrupo)
+
+    #este endpoint ya no se usa:
+    @classmethod
+    def modificarJefeGrupo(cls, datos):
+        jefeDeGrupoSchema().load(datos)
+        # TO-DO ver si esto se mover al schema
+        grupoAModificar = cls.find_by_id(datos['id_grupoDeTrabajo'])
+        cls.validarJefe(datos['jefeDeGrupo'],grupoAModificar.id_grupoDeTrabajo)
+        cls.desnombrarJefe(grupoAModificar.jefeDeGrupo)
+        cls.nombrarJefe(grupoAModificar.jefeDeGrupo,
+                        grupoAModificar.id_grupoDeTrabajo)
+        grupoAModificar.update(jefeDeGrupo=grupoAModificar.jefeDeGrupo)
