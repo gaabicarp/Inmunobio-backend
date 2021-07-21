@@ -45,6 +45,7 @@ class MuestraService:
             if not Validacion().elGrupoExperimentalPerteneceAlExperimento(muestra.id_experimento, muestra.id_grupoExperimental):
                 raise Exception(f"El grupo experimental con id {muestra.id_grupoExperimental} no pertenece al experimento con id {muestra.id_experimento}")
 
+
     def actualizarMuestrasEnGrupoExperimental(idGrupoExperimental):
         muestras = Muestra.objects.filter(id_grupoExperimental=idGrupoExperimental, habilitada = True).all()
         muestrasPropiasDict = MuestraSchema(exclude=['id_contenedor', 'id_grupoExperimental', 'id_experimento', 'id_proyecto', 'habilitada']).dump(muestras, many=True)

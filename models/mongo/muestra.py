@@ -16,7 +16,8 @@ class Muestra(dbMongo.Document):
     tipo = dbMongo.StringField()
     id_contenedor= dbMongo.IntField()
     habilitada = dbMongo.BooleanField(default=True)
-
+    #TO-DO id_fuenteExperimental agregar al modelo
+    
     def json(self):
         return MuestraSchema().dump(self)
 
