@@ -42,7 +42,7 @@ class GrupoDeTrabajoService():
     def nuevoGrupo(cls, datos):
         grupoCreado = NuevoGrupoDeTrabajoSchema().load(datos)
         cls.validarMiembros(grupoCreado.integrantes)
-        cls.validarJefe(grupoCreado.jefeDeGrupo)
+        cls.validarJefe(grupoCreado.jefeDeGrupo,cls.idGrupoDefault)
         grupoCreado.save()
         cls.asignarIDGrupo(grupoCreado, grupoCreado.id_grupoDeTrabajo)
 
