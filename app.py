@@ -7,7 +7,6 @@ from db import db, dbMongo
 from security import authenticate, identity
 from flask_cors import CORS
 from servicios.usuarioService import UsuarioService
-
 app= Flask(__name__)
 app.config.from_object(config)
 
@@ -43,10 +42,17 @@ def Prueba():
 	f = UsuarioService.findUsuariosHabilitados()
 	return f"{f}"
 
+@app.route('/llenarUsuarios', methods=["POST"])
+def llenar_usuarios():
+	from models.scripts.scriptUsers import SqlScriptUsuarios
+	return SqlScriptUsuarios.llenarTablasUsuarios()
+
+
+
 #ejecutar esta funcion una unica vez para crear las tablas y los permisos
 @app.route('/llenar_mysql')
 def llenar_msyql():
-	from models.sql_script import MysqlScript
+	from models.scripts.sql_script import MysqlScript
 	MysqlScript.ScriptLlenarTablas()
 	return {'Status':'ok'}
 
@@ -62,6 +68,7 @@ if __name__ == "__main__":
 		@app.before_first_request
 		def create_tables():
 			db.create_all()
+
 	
 	app.run(port=8080 ,debug=True)	
 
