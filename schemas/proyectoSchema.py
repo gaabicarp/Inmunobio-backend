@@ -40,17 +40,13 @@ class ProyectoModificarSchema(ProyectoSchema):
     descripcion = fields.Str(required=True, error_messages={"required": {"message": "Es necesaria una descripcion. Este campo puede estar vacío", "code": 400}})
     montoInicial = fields.Float(required=True, error_messages={"required": {"message": "Es necesario un montoInicial. Este campo no puede estar vacío.", "code": 400}})
 
-
 class ObtenerBlogsProyectoSchema(Schema):
     fechaDesde = fields.String(required=True,error_messages={"required": {"message": "Debe indicarse  fecha-desde.", "code": 400}}) 
     fechaHasta = fields.String(required=True,error_messages={"required": {"message": "Debe indicarse  fecha-hasta", "code": 400}}) 
     id_proyecto = fields.Integer(required=True, error_messages={"required": {"message": "Es necesario el id_proyecto. Este campo no puede estar vacío", "code:": 400}})
 
-
-    
 class NuevoBlogProyectoSchema(Schema):
     #id obligatoria puede ser id de jaula o de exp
     id = fields.Integer(required=True, error_messages={"required": {"message": "Es necesario el id", "code:": 400}})
     id_proyecto = fields.Integer(required=True, error_messages={"required": {"message": "Es necesario el id_proyecto. Este campo no puede estar vacío", "code:": 400}})
     blogs = fields.Nested(NuevoBlogProyecto)
-

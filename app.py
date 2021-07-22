@@ -49,6 +49,13 @@ def llenar_msyql():
 	from models.sql_script import MysqlScript
 	MysqlScript.ScriptLlenarTablas()
 	return {'Status':'ok'}
+
+@app.route('/prueba_csv')
+def prueba_csv():
+	from models.sql_script import MysqlScript
+	MysqlScript().leerArchivoCSV('proyecto.csv')
+	return {'Status':'ok'}
+
 	
 if __name__ == "__main__":
 	if app.config['DEBUG']:

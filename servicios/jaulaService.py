@@ -1,3 +1,5 @@
+from servicios.validationService import Validacion
+from models.mongo.proyecto import Proyecto
 from models.mongo.jaula import Jaula
 from exceptions.exception import ErrorEspacioFisicoInexistente,ErrorJaulaInexistente,ErrorBlogInexistente,ErrorJaulaDeProyecto,ErrorJaulaBaja,ErrorEspacioDeproyecto
 from schemas.jaulaSchema import  JaulaSchemaBlogs,BusquedaBlogsJaula,JaulaSchema,BlogSchema,BusquedaBlogJaula,NuevaJaulaSchema, ActualizarProyectoJaulaSchema, ActualizarJaulaSchema,NuevoBlogJaulaSchema
@@ -28,7 +30,16 @@ class JaulaService:
     def crearJaula(cls, datos):
         #aca nunca validar si existe el proyecto ->no porque siempre se asigna aparte
         jaula = NuevaJaulaSchema().load(datos)
+        cls.verificarProyecto(jaula.id_proyecto)
+        proyecto = Proyecto.objects(id_proyecto = jaula.id_proyecto).first()
+        jaula.nombre_proyecto = proyecto.nombre
         jaula.save()
+    
+    def verificarProyecto(idProyecto):
+        if not Validacion().elProyectoExiste(idProyecto):
+            raise Exception(f"El proyecto con id {idProyecto} no existe.")
+        if not Validacion().elProyectoEstaActivo(idProyecto):
+            raise Exception(f"El proyecto con id {idProyecto} no se encuentra activo")
 
     @classmethod
     def actualizarProyectoDeLaJaula(cls, datos):

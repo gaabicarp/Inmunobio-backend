@@ -19,6 +19,8 @@ class Jaula(Resource):
             try:
                 JaulaService.crearJaula(datos)
                 return {"status": "Jaula creada."}, 200
+            except Exception as err:
+                return {"Error": str(err)}, 400
             except ValidationError as err:
                 return {'Error': err.messages},400
         return  {'Error':'Se deben enviar datos para la creación de la jaula.'},400

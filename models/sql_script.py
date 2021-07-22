@@ -1,6 +1,7 @@
 from flask import Flask
 from app import db
 from models.mysql.usuario import *
+from models.mongo.proyecto import Proyecto
 app = Flask(__name__)
 
 class MysqlScript:
@@ -25,4 +26,26 @@ class MysqlScript:
         db.session.add(superusuarios)
         db.session.add(tecnico)
         db.session.commit()
+
+    def leerArchivoCSV(self, fileName):
+        file = open(f'./CSV/{fileName}', 'r')
+        next(file)
+        for linea in file:
+            self.cargarProyecto(linea)
+    
+    def cargarProyecto(self, datos):
+        valores = datos.split(';')
+        print(f'Se carga el proyecto: {valores[0]}')
+        proyecto = Proyecto()
+        proyecto.id_proyecto = valores[0]
+        proyecto.nombre = valores[1]
+        proyecto.descripcion = valores[2]
+        proyecto.participantes = valores[3]
+        proyecto.idDirectorProyecto = valores[4]
+        proyecto.fechaInicio = valores[5]
+        proyecto.fechaFinal = valores[6]
+        proyecto.montoInicial = valores[7]
+        proyecto.conclusion = valores[8]
+        proyecto.save()
+
 
