@@ -1,3 +1,4 @@
+from models.mongo.jaula import Jaula
 from models.mysql.usuario import Usuario
 from models.mongo.proyecto import Proyecto
 from models.mongo.experimento import Experimento, MuestraExterna
@@ -87,3 +88,7 @@ class Validacion():
     
     def elContenedorPadreEstaDisponible(contenedor):
         return Contenedor.objects(id_contenedor = contenedor.parent, disponible = True).first() != None
+    
+    def existeLaJaulas(idJaula):
+        jaula = Jaula.objects(id_jaula = idJaula, habilitado = True).first()
+        return jaula != None

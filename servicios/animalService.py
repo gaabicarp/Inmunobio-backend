@@ -1,5 +1,6 @@
 from models.mongo.fuenteExperimental import AnimalSchema, FuenteExperimental, FuenteExperimentalSchema, NuevoAnimalSchema
 from models.mongo.jaula import Jaula
+from .validationService import Validacion
 
 class AnimalService:
 
@@ -15,26 +16,21 @@ class AnimalService:
     def nuevoAnimal(cls, datos):
         animal = NuevoAnimalSchema().load(datos)
         animal.tipo = 'Animal'
-        jaula = Jaula.objects(id_jaula =animal.id_jaula).first()
-        animal.id_proyecto = jaula.id_proyecto
+        cls.validarJaula(animal.id_jaula)
         animal.save()
     
     @classmethod
     def asignarJaulaAAnimales(cls, datos):
         animales = AnimalSchema().load(datos, many=True)
         print(animales)
-        errores = []
+        cls.validarJaula(animales[0].id_jaula)
         for animal in animales:
-            if cls.existeLaJaulas(animal.id_jaula):
-                FuenteExperimental.objects(id_fuenteExperimental =  animal.id_fuenteExperimental).update(id_jaula = animal.id_jaula)
-            else:
-                errores.append({"Error" : f"No se pudo asignar el animal con el id {animal.id_fuenteExperimental} a la jaula con el id {animal.id_jaula}. El id de la jaula debe ser uno válido y debe estar habilitada."})
-        return errores
+            FuenteExperimental.objects(id_fuenteExperimental =  animal.id_fuenteExperimental).update(id_jaula = animal.id_jaula)
     
-    @classmethod
-    def existeLaJaulas(cls, idJaula):
-        jaula = Jaula.objects(id_jaula = idJaula, habilitado = True).first()
-        return jaula != None
+    def validarJaula(idJaula):
+        if not Validacion.existeLaJaulas(idJaula):
+            raise Exception(f"No existe la jaula con id {idJaula} o no se encuentra habilitada.")
+
 
     @classmethod
     def todosLosAnimales(cls):
