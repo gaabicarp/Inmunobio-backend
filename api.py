@@ -22,8 +22,11 @@ from resources.muestraResource import Muestra, MuestraGrupoExperimental, Muestra
 from resources.animalResource import  Animal, Animales, AnimalesSinJaula, AnimalesDeLaJaula
 from resources.espacioFisicoResource import EspaciosFisicos,EspacioFisico,EspacioFisicoID,CrearBlogEspacioFisico,BorrarBlogEspacioFisico,ObtenerBlogsEspFisico
 from resources.herramientaResource import HerramientaResource,HerramientaPorId,Herramientas,BorrarBlogHeramienta,BlogHerramientaXId,CrearBlogHerramientas
-
+from resources.datosResource import DatosResource
 api = Api()
+
+#datos
+api.add_resource(DatosResource, '/api/v1/llenarBase')
 
 #Espacio fisico
 api.add_resource(EspacioFisico, '/api/v1/espacioFisico')

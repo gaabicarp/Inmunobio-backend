@@ -8,7 +8,6 @@ from servicios.commonService import CommonService
 from schemas.grupoTrabajoSchema import GrupoDeTrabajoSchema
 
 
-
 class GrupoDeTrabajo(Resource):
     def post(self):
         datos = request.get_json()
