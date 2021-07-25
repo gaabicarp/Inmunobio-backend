@@ -10,7 +10,7 @@ class DatosResource(Resource):
         datos = request.get_json()
         try:
             DatosService.llenarBase(datos)
-            return  {'ok': 'Todo salio bien n.n '}, 400, 200
+            return  {'ok': 'Todo salio bien n.n '}, 200
         except ValidationError as err:
             return {'error': err.messages}, 400
         except Exception as err:

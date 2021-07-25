@@ -19,7 +19,6 @@ class Muestra(dbMongo.Document):
 
     def json(self):
         return MuestraSchema().dump(self)
-
 class MuestraSchema(Schema):
     id_muestra = fields.Int()
     id_proyecto = fields.Int()

@@ -51,8 +51,9 @@ class UsuarioService():
 
     @classmethod
     def find_by_email(cls, _email):
-        usuario = Usuario.query.filter_by(email=_email).first()
-        return usuario
+        resultado = Usuario.query.filter_by(email=_email, habilitado = True).first()
+        if not resultado: raise ErrorUsuarioInexistente(_email)
+        return resultado
 
     @classmethod
     def find_by_id(cls, _id):

@@ -154,6 +154,3 @@ api.add_resource(Herramientas, '/api/v1/herramientas/')
 api.add_resource(BorrarBlogHeramienta, '/api/v1/blogHerramienta/<id_herramienta>/<int:id_blog>')
 api.add_resource(BlogHerramientaXId, '/api/v1/blogHerramienta')
 api.add_resource(CrearBlogHerramientas, '/api/v1/crearBlogHerramienta')
-
-
-
