@@ -6,7 +6,6 @@ from marshmallow import ValidationError
 from servicios.muestraService import MuestraService
 
 class Muestra(Resource):
-
     def get(self, idMuestra):
         if idMuestra:
             muestra = MuestraService().find_by_id(idMuestra)

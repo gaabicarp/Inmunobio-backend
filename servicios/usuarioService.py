@@ -93,12 +93,12 @@ class UsuarioService():
         return usuarios
 
     @classmethod
-    def cambiarIdGrupo(cls, _id_usuario, idGrupo = 0):
+    def cambiarIdGrupo(cls, _id_usuario, idGrupo ):
         cls.find_by_id(_id_usuario).id_grupoDeTrabajo = idGrupo
         db.session.commit()
         
     @classmethod
-    def asignarGrupoAJefe(cls, _id_usuario, idGrupo = 0):
+    def asignarGrupoAJefe(cls, _id_usuario, idGrupo ):
         cls.find_by_id(_id_usuario).esJefeDe = idGrupo
         db.session.commit()
 
@@ -110,7 +110,7 @@ class UsuarioService():
                 _id_usuario, usuario.id_grupoDeTrabajo)
 
     @classmethod
-    def validarJefeDeGrupo(cls, _id_usuario,idNueva = 0):
+    def validarJefeDeGrupo(cls, _id_usuario,idNueva ):
         jefe = cls.find_by_id(_id_usuario)
         if jefe.esJefeDe and jefe.esJefeDe != idNueva : raise ErrorJefeDeOtroGrupo(_id_usuario, jefe.esJefeDe)
         if not PermisosService.tieneElPermiso(jefe, PermisosService.jefeDeGrupo):

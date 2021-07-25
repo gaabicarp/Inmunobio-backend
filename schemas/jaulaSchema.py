@@ -6,7 +6,6 @@ from schemas.blogSchema import BlogSchema
 class JaulaSchema(Schema):
     id_jaula = fields.Int()
     id_proyecto = fields.Int()
-    nombre_proyecto = fields.Str()
     id_espacioFisico = fields.Int()
     codigo = fields.Str()
     rack = fields.Int()
