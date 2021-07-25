@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timedelta
 from re import U
 from resources.token import TokenDeAcceso
 from schemas.usuarioSchema import UsuarioSchema
@@ -90,6 +90,8 @@ class Logins(Resource):
             usuarioJson = CommonService.json(usuario,UsuarioSchema)
             if usuario:
                 if check_password_hash(usuario.password, datos['password']):
+                    dt = datetime.now() + timedelta(minutes=60)
+                    usuarioJson['exp'] = dt
                     token = jwt.encode(usuarioJson, app.config['SECRET_KEY'])
                     return jsonify({'token' : token.decode('UTF-8')})
                 return {'Error': 'Las credenciales son incorrectas.'}, 400
