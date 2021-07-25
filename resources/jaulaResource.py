@@ -9,7 +9,6 @@ from schemas.jaulaSchema import  JaulaSchema
 from marshmallow import ValidationError
 from servicios.commonService import CommonService
 from exceptions.exception import ErrorJaulaInexistente,ErrorBlogInexistente,ErrorFechasInvalidas
-from schemas.blogSchema import BlogSchema
 
 class Jaula(Resource):
 

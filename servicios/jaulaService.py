@@ -1,8 +1,8 @@
 from servicios.validationService import Validacion
 from models.mongo.proyecto import Proyecto
 from models.mongo.jaula import Jaula
-from exceptions.exception import ErrorEspacioFisicoInexistente,ErrorJaulaInexistente,ErrorBlogInexistente,ErrorJaulaDeProyecto,ErrorJaulaBaja,ErrorEspacioDeproyecto
-from schemas.jaulaSchema import  JaulaSchemaBlogs,BusquedaBlogsJaula,JaulaSchema,BlogSchema,BusquedaBlogJaula,NuevaJaulaSchema, ActualizarProyectoJaulaSchema, ActualizarJaulaSchema,NuevoBlogJaulaSchema
+from exceptions.exception import ErrorJaulaInexistente,ErrorBlogInexistente,ErrorJaulaDeProyecto,ErrorJaulaBaja,ErrorEspacioDeproyecto
+from schemas.jaulaSchema import BusquedaBlogsJaula,JaulaSchema,BlogSchema,BusquedaBlogJaula,NuevaJaulaSchema, ActualizarProyectoJaulaSchema, ActualizarJaulaSchema,NuevoBlogJaulaSchema
 from servicios.animalService import AnimalService
 from servicios.commonService import CommonService
 
@@ -30,9 +30,7 @@ class JaulaService:
     def crearJaula(cls, datos):
         #aca nunca validar si existe el proyecto ->no porque siempre se asigna aparte
         jaula = NuevaJaulaSchema().load(datos)
-        cls.verificarProyecto(jaula.id_proyecto)
-        proyecto = Proyecto.objects(id_proyecto = jaula.id_proyecto).first()
-        jaula.nombre_proyecto = proyecto.nombre
+        #cls.verificarProyecto(jaula.id_proyecto)
         jaula.save()
     
     def verificarProyecto(idProyecto):
@@ -82,7 +80,7 @@ class JaulaService:
     @classmethod
     def borrarBlogJaula(cls,_id_jaula,_id_blog):
         cls.validarBlogJaula(_id_jaula,_id_blog)
-        return Jaula.objects.filter(id_jaula = _id_jaula).first().modify(pull__blogs__id_blog =_id_blog)
+        Jaula.objects.filter(id_jaula = _id_jaula).first().modify(pull__blogs__id_blog =_id_blog)
             
     @classmethod
     def validarBlogJaula(cls,_id_jaula,_id_blog):
