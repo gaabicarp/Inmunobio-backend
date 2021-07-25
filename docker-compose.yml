@@ -34,6 +34,8 @@ services:
         context: ./
       ports: 
          - 8080:8080
+      links:
+         - mysql
       networks:
          - env_prod
       depends_on:
@@ -50,24 +52,20 @@ networks:
     ipam: 
         driver: default
         config:
-        - 
-          subnet: 172.16.232.0/24
+        - subnet: 172.16.232.0/24
           gateway: 172.16.232.1
-        - 
-          subnet: "2001:3974:3979::/64"
+        - subnet: "2001:3974:3979::/64"
           gateway: "2001:3974:3979::1"
-  env_prep:   
-    driver: bridge  
-    #activate ipv6
-    driver_opts: 
-            com.docker.network.enable_ipv6: "true"
-    #IP Adress Manager
-    ipam:
-        driver: default
-        config:
-        - 
-          subnet: 172.16.235.0/24
-          gateway: 172.16.235.1
-        - 
-          subnet: "2001:3984:3989::/64"
-          gateway: "2001:3984:3989::1"
+#   env_prep:   
+#     driver: bridge  
+#     #activate ipv6
+#     driver_opts: 
+#             com.docker.network.enable_ipv6: "true"
+#     #IP Adress Manager
+#     ipam:
+#         driver: default
+#         config:
+#         - subnet: 172.16.235.0/24
+#           gateway: 172.16.235.1
+#         - subnet: "2001:3984:3989::/64"
+#           gateway: "2001:3984:3989::1"
