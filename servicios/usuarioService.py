@@ -1,6 +1,6 @@
 from models.mysql.usuario import Usuario
 from schemas.usuarioSchema import UsuarioSchema, UsuarioSchemaModificar, UsuarioNuevoSchema
-from exceptions.exception import ErrorPermisosJefeDeGrupo, ErrorJefeDeOtroGrupo, ErrorUsuarioExistente, ErrorUsuarioInexistente, ErrorIntegranteDeOtroGrupo
+from exceptions.exception import ErrorPermisosJefeDeGrupo, ErrorJefeDeOtroGrupo, ErrorUsuarioInexistente, ErrorIntegranteDeOtroGrupo
 from servicios.commonService import CommonService
 from servicios.validationService import Validacion, ValidacionesUsuario
 from werkzeug.security import generate_password_hash
@@ -36,14 +36,14 @@ class UsuarioService():
 
     @classmethod
     def agregarDatosUsuario(cls,usuario,permisos):
-        #cls.asignarPermisos(usuario,permisos)
+        cls.asignarPermisos(usuario,permisos)
         usuario.password = generate_password_hash(usuario.password, method='sha256')
 
     def validarNuevoUsuario(usuario):
         if len(usuario.password) < 8:
             raise Exception("La contraseña debe tener como mínimo 8 caracteres.")
         if Validacion.elMailEstaEnUso(usuario.email):
-            raise Exception("El email ya se encuentra en uso.")
+            raise Exception(f"Ya existe un/a usuario/a asociado/a con email {usuario.email}")
 
     @classmethod
     def find_by_email(cls, _email):

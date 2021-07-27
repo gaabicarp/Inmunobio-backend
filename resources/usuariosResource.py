@@ -57,20 +57,22 @@ class UsuarioID(Resource):
             try:
                 usuario = UsuarioService.find_by_id(id_usuario)
                 return CommonService.json(usuario,UsuarioSchema)
-            except ErrorUsuarioInexistente as err:
+            except Exception as err:
                 return {'Error': err.message},400
-        return {'name': 'None'},400
+        return {'Error': 'Debe indicarse id_usuario'},400
  
     def delete(self,id_usuario):
         '''recibe una id de usuario si este esta habilitado lo deshabilita'''
-        try:
-            UsuarioService.deshabilitarUsuario(id_usuario)  
-            return {'Status':'ok'},200
-        except ValidationError as err:
-            return {'error': err.messages},400
-        except ErrorUsuarioInexistente as err:
-            return {'Error':err.message},400
-
+        if(id_usuario):
+            try:
+                UsuarioService.deshabilitarUsuario(id_usuario)  
+                return {'Status':'ok'},200
+            except ValidationError as err:
+                return {'error': err.messages},400
+            except ErrorUsuarioInexistente as err:
+                return {'Error':err.message},400
+        return {'Error': 'Debe indicarse id_usuario'},400
+        
 class ObtenerUsuariosParaProyecto(Resource):
     #aca el 4 representa la id del permiso director de proyecto,ya que no hay visibilidad
     #entre un director de proyecto y otro con mismo permiso.

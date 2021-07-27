@@ -26,7 +26,6 @@ class Usuario(db.Model):
     
     def __init__(self, nombre, email, password,direccion,telefono,permisos):
         from servicios.permisosService import PermisosService
-        print(permisos)
         self.nombre = nombre
         self.email = email
         self.password = password

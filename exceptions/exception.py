@@ -50,10 +50,6 @@ class ErrorUsuarioInexistente(Exception):
         self.message = f"No hay usuario/a asociado/a con id {id_usuario}" 
         super().__init__(self.message)
 
-class ErrorUsuarioExistente(Exception):
-    def __init__(self,email):
-        self.message = f"Ya existe un/a usuario/a asociados con email {email}" 
-        super().__init__(self.message)
 
 class ErrorGrupoDeTrabajoGeneral(Exception):
     def __init__(self):
