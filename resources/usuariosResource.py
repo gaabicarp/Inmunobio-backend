@@ -11,7 +11,7 @@ from flask_jwt import jwt
 from flask import jsonify
 from servicios.validationService import ValidacionesUsuario
 from exceptions.exception import ErrorPermisoGeneral,ErrorPermisoInexistente,ErrorUsuarioInexistente,ErrorUsuarioExistente
-from marshmallow import ValidationError
+from marshmallow import ValidationError, exceptions
 from servicios.commonService import CommonService
 
 class ObtenerUsuariosResource(Resource):
@@ -30,7 +30,7 @@ class UsuarioResource(Resource):
                 return {'Status':'Usuario modificado.'},200
             except ValidationError as err:
                 return {'Error': err.messages}, 400
-            except (ErrorUsuarioInexistente,ErrorPermisoInexistente,ErrorPermisoGeneral) as err:
+            except Exception as err:
                 return {'Error': err.message},400
         return {'Error': 'Deben suministrarse los datos para modificar el usuario.'},400
        
@@ -43,10 +43,10 @@ class UsuarioResource(Resource):
                 return {'Status':'Usuario creado.'},200
             except ValidationError as err:
                 return {'error': err.messages},400
-            except (ErrorPermisoInexistente,ErrorUsuarioExistente,ErrorPermisoGeneral) as err:
+            except Exception as err:
                 return {'error': err.message},400
         return {'Error': 'Deben suministrarse los datos para el alta de usuario.'},400
-
+  
 class UsuarioID(Resource):
  #@jwt_required()
     def get(self,id_usuario):

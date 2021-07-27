@@ -22,11 +22,12 @@ from resources.muestraResource import Muestra, MuestraGrupoExperimental, Muestra
 from resources.animalResource import  Animal, Animales, AnimalesSinJaula, AnimalesDeLaJaula
 from resources.espacioFisicoResource import EspaciosFisicos,EspacioFisico,EspacioFisicoID,CrearBlogEspacioFisico,BorrarBlogEspacioFisico,ObtenerBlogsEspFisico
 from resources.herramientaResource import HerramientaResource,HerramientaPorId,Herramientas,BorrarBlogHeramienta,BlogHerramientaXId,CrearBlogHerramientas
-from resources.datosResource import DatosResourceMongo
+from resources.datosResource import DatosResourceMongo,DatosResourceMysql
 api = Api()
 
 #datos
 api.add_resource(DatosResourceMongo, '/api/v1/llenarBaseMongo')
+api.add_resource(DatosResourceMysql, '/api/v1/llenarBaseMysql')
 
 #Espacio fisico
 api.add_resource(EspacioFisico, '/api/v1/espacioFisico')

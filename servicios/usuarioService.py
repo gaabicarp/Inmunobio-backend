@@ -1,17 +1,15 @@
-from db import db
 from models.mysql.usuario import Usuario
 from schemas.usuarioSchema import UsuarioSchema, UsuarioSchemaModificar, UsuarioNuevoSchema
-from servicios.permisosService import PermisosService, Permiso
 from exceptions.exception import ErrorPermisosJefeDeGrupo, ErrorJefeDeOtroGrupo, ErrorUsuarioExistente, ErrorUsuarioInexistente, ErrorIntegranteDeOtroGrupo
 from servicios.commonService import CommonService
 from servicios.validationService import Validacion, ValidacionesUsuario
 from werkzeug.security import generate_password_hash
 from servicios.validationService import ValidacionesUsuario
-from marshmallow import ValidationError
 
 class UsuarioService():
     @classmethod
     def modificarUsuario(cls, datos):
+        from db import db
         UsuarioSchemaModificar().load(datos)
         usuario = UsuarioService.find_by_id(datos['id_usuario'])
         CommonService.updateAtributes(usuario, datos, 'permisos')
@@ -23,26 +21,24 @@ class UsuarioService():
         '''recibe una lista con diccionarios de permisos y un usuario de la base
         si pudo encontrar los permisos en la base actualiza al usuario, sino devuelve
         mensaje de error.'''
-        # PermisosService.validarPermisos(permisosDicts)
+        from servicios.permisosService import PermisosService
         usuario.permisos = PermisosService.permisosById(permisosDicts)
 
     @classmethod
     def nuevoUsuario(cls,datos):
+            from db import db
         #minimo un permiso  el 5, aun no esta validado , solo valida que sean permisos que existen
-        try:
             usuario = UsuarioNuevoSchema().load(datos)
-            cls.validarNuevoUsuario(usuario)
-            cls.asignarPermisos(usuario,datos['permisos'])
-            hashed_password = generate_password_hash(usuario.password, method='sha256')
-            usuario.password = hashed_password
-            db.session.add(usuario)
-            db.session.commit()
-            return {'Status':'ok'},200
-        except ValidationError as err:
-            return {'error': err.messages},400
-        except Exception as err:
-            return {'error': str(err)}, 400
-    
+            #cls.validarNuevoUsuario(usuario)
+            #cls.agregarDatosUsuario(usuario,datos['permisos'])
+            #db.session.add(usuario)
+            #db.session.commit()
+
+    @classmethod
+    def agregarDatosUsuario(cls,usuario,permisos):
+        #cls.asignarPermisos(usuario,permisos)
+        usuario.password = generate_password_hash(usuario.password, method='sha256')
+
     def validarNuevoUsuario(usuario):
         if len(usuario.password) < 8:
             raise Exception("La contraseña debe tener como mínimo 8 caracteres.")
@@ -67,6 +63,7 @@ class UsuarioService():
 
     @classmethod
     def usuariosSinElPermiso(cls, id_permiso):
+        from servicios.permisosService import  Permiso
         user = Usuario.query.filter(~Usuario.id_permisos.any(
             Permiso.id_permiso.in_([id_permiso])))
         if (user):
@@ -78,6 +75,7 @@ class UsuarioService():
         """recibe un usuario valido y modifica su estado habilitado a false"""
         # agregar schema de id usuario para verificar que se pase
         # -> oh por dios corregir esto hardcodeado  en algun momento
+        from db import db
         CommonService.updateAtributes(
             UsuarioService.find_by_id(id_usuario), {'habilitado': False})
         db.session.commit()
@@ -93,11 +91,13 @@ class UsuarioService():
 
     @classmethod
     def cambiarIdGrupo(cls, _id_usuario, idGrupo = 0):
+        from db import db
         cls.find_by_id(_id_usuario).id_grupoDeTrabajo = idGrupo
         db.session.commit()
         
     @classmethod
     def asignarGrupoAJefe(cls, _id_usuario, idGrupo = 0):
+        from db import db
         cls.find_by_id(_id_usuario).esJefeDe = idGrupo
         db.session.commit()
 
@@ -110,6 +110,7 @@ class UsuarioService():
 
     @classmethod
     def validarJefeDeGrupo(cls, _id_usuario,idNueva = 0):
+        from servicios.permisosService import PermisosService
         jefe = cls.find_by_id(_id_usuario)
         if jefe.esJefeDe and jefe.esJefeDe != idNueva : raise ErrorJefeDeOtroGrupo(_id_usuario, jefe.esJefeDe)
         if not PermisosService.tieneElPermiso(jefe, PermisosService.jefeDeGrupo):

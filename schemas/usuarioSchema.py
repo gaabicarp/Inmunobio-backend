@@ -10,7 +10,7 @@ class UsuarioSchema(Schema):
     habilitado = fields.Boolean(default=True)
     direccion = fields.Str()
     telefono = fields.Str()
-    permisos = fields.Nested(PermisoSchema, many=True)
+    permisos = fields.Nested(PermisoExistenteSchema, many=True)
     id_grupoDeTrabajo =fields.Integer()
     esJefeDe = fields.Integer()
 
@@ -32,7 +32,6 @@ class usuarioIDSchema(Schema):
     id = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse id Usuario", "code": 400}})
 
 class UsuarioSchemaModificar(usuarioIDSchema):
-
     email = fields.Str()
     password = fields.Str()    
     direccion = fields.Str()
