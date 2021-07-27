@@ -1,7 +1,6 @@
-version: "3.3"
+version: "3.7"
 services:
-
-    db:
+    mysql:
       container_name: MysqlDocker
       image: mysql
       ports:
@@ -11,23 +10,64 @@ services:
       restart: always
       environment:
           MYSQL_ROOT_PASSWORD: secret
-          MYSQL_DATABASE: db_mysql_inmunobio
-         
+          MYSQL_DATABASE: db_mysql_inmunobio         
       volumes:
-          - ~/docker/mysql-data:/Documentos/pruebas/mysql
+          - ./data/mysql:/var/lib/mysql
+      cap_add:
+          - SYS_NICE
+      networks:
+          - env_prod
+          
     mongo:
       container_name: MongoDocker
       image: mongo
       ports:
           - 27017:27017
+      volumes:
+        - ./data/mongo:/data/db
+      networks:
+          - env_prod
+
     flask:
-      container_name: backDocker
-      image: back
+      container_name: BackDocker
+      build:
+        context: ./
       ports: 
          - 8080:8080
-      environment:
-         - MONGO_URI=mongodb://mongo:27017/todos
-         - APP_PORT=5000
+      networks:
+         - env_prod
       depends_on:
          - mongo
-         - db
+         - mysql
+
+networks:
+  env_prod:
+    driver: bridge  
+    #activate ipv6
+    driver_opts: 
+            com.docker.network.enable_ipv6: "true"
+    #IP Adress Manager
+    ipam: 
+        driver: default
+        config:
+        - 
+          subnet: 172.16.232.0/24
+          gateway: 172.16.232.1
+        - 
+          subnet: "2001:3974:3979::/64"
+          gateway: "2001:3974:3979::1"
+  env_prep:   
+    driver: bridge  
+    #activate ipv6
+    driver_opts: 
+            com.docker.network.enable_ipv6: "true"
+    #IP Adress Manager
+    ipam:
+        driver: default
+        config:
+        - 
+          subnet: 172.16.235.0/24
+          gateway: 172.16.235.1
+        - 
+          subnet: "2001:3984:3989::/64"
+          gateway: "2001:3984:3989::1"

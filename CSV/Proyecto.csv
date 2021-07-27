@@ -1,0 +1,4 @@
+codigoProyecto;nombre;descripcion;participantes;idDirectorProyecto;fechaInicio;fechaFinal;montoInicial;conclusion
+PRO01;Proyecto 01;Este es el proyecto número 1;;;;;1000000;None
+PRO02;Proyecto 02;Este es el proyecto número 2;NULL;NULL;2020-06-13T02:21:33;2020-02-10T02:21:33;230500;Una conclusión.
+PRO03;Proyecto 03;Este es el proyecto número 3;NULL;NULL;2020-12-13T02:21:33;NULL;8230500;NULL

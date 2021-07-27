@@ -58,8 +58,8 @@ def llenar_msyql():
 
 @app.route('/prueba_csv')
 def prueba_csv():
-	from models.sql_script import MysqlScript
-	MysqlScript().leerArchivoCSV('proyecto.csv')
+	from models.scripts.sql_script import MongoScript
+	MongoScript().leerArchivoCSV('Proyecto.csv')
 	return {'Status':'ok'}
 
 	

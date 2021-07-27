@@ -1,5 +1,6 @@
-import datetime
+from datetime import datetime, timedelta
 from re import U
+from resources.token import TokenDeAcceso
 from schemas.usuarioSchema import UsuarioSchema
 from servicios.commonService import CommonService
 from warnings import catch_warnings
@@ -49,6 +50,8 @@ class UsuarioResource(Resource):
   
 class UsuarioID(Resource):
  #@jwt_required()
+
+    @TokenDeAcceso.token_nivel_de_acceso(TokenDeAcceso.SUPERUSUARIO)
     def get(self,id_usuario):
         ''' recibe: un idUsuario como parametro
             devuelve: el usuario,si hay match con esa id y ademas esta habilitado, 
@@ -89,6 +92,8 @@ class Logins(Resource):
             usuarioJson = CommonService.json(usuario,UsuarioSchema)
             if usuario:
                 if check_password_hash(usuario.password, datos['password']):
+                    dt = datetime.now() + timedelta(minutes=60)
+                    usuarioJson['exp'] = dt
                     token = jwt.encode(usuarioJson, app.config['SECRET_KEY'])
                     return jsonify({'token' : token.decode('UTF-8')})
                 return {'Error': 'Las credenciales son incorrectas.'}, 400
