@@ -29,27 +29,28 @@ class UsuarioService():
             from db import db
         #minimo un permiso  el 5, aun no esta validado , solo valida que sean permisos que existen
             usuario = UsuarioNuevoSchema().load(datos)
-            #cls.validarNuevoUsuario(usuario)
-            #cls.agregarDatosUsuario(usuario,datos['permisos'])
-            #db.session.add(usuario)
-            #db.session.commit()
+            cls.agregarDatosUsuario(usuario)
+            db.session.add(usuario)
+            db.session.commit()
 
     @classmethod
-    def agregarDatosUsuario(cls,usuario,permisos):
-        cls.asignarPermisos(usuario,permisos)
+    def agregarDatosUsuario(cls,usuario):
+        cls.validarNuevoUsuario(usuario)
         usuario.password = generate_password_hash(usuario.password, method='sha256')
 
-    def validarNuevoUsuario(usuario):
+    @classmethod
+    def validarNuevoUsuario(cls,usuario):
         if len(usuario.password) < 8:
             raise Exception("La contraseña debe tener como mínimo 8 caracteres.")
-        if Validacion.elMailEstaEnUso(usuario.email):
-            raise Exception(f"Ya existe un/a usuario/a asociado/a con email {usuario.email}")
+        if cls.find_by_email(usuario.email):
+            raise Exception(f"Ya existe un/a usuario/a asociado/a con email {usuario.email}") 
 
     @classmethod
     def find_by_email(cls, _email):
-        resultado = Usuario.query.filter_by(email=_email, habilitado = True).first()
-        if not resultado: raise ErrorUsuarioInexistente(_email)
-        return resultado
+        from db import db
+        return Usuario.query.filter_by(email=_email, habilitado = True).first()
+        #if not resultado: raise ErrorUsuarioInexistente(_email)
+        #return resultado , hay que sacar el error xq se usa en la aut. 
 
     @classmethod
     def find_by_id(cls, _id):
@@ -60,7 +61,7 @@ class UsuarioService():
 
     @classmethod
     def findUsuariosHabilitados(cls):
-        return Usuario.query.filter_by(habilitado=1).all()
+        return Usuario.query.filter_by(habilitado=True).all()
 
     @classmethod
     def usuariosSinElPermiso(cls, id_permiso):

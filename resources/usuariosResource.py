@@ -11,7 +11,7 @@ from werkzeug.security import check_password_hash
 from flask_jwt import jwt
 from flask import jsonify
 from servicios.validationService import ValidacionesUsuario
-from exceptions.exception import ErrorPermisoGeneral,ErrorPermisoInexistente,ErrorUsuarioInexistente,ErrorUsuarioExistente
+from exceptions.exception import ErrorPermisoGeneral,ErrorPermisoInexistente,ErrorUsuarioInexistente
 from marshmallow import ValidationError, exceptions
 from servicios.commonService import CommonService
 
@@ -45,7 +45,7 @@ class UsuarioResource(Resource):
             except ValidationError as err:
                 return {'error': err.messages},400
             except Exception as err:
-                return {'error': err.message},400
+                return {'error': err.args},400
         return {'Error': 'Deben suministrarse los datos para el alta de usuario.'},400
   
 class UsuarioID(Resource):
