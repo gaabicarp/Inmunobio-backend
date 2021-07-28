@@ -28,7 +28,7 @@ class UsuarioNuevoSchema(UsuarioSchema):
     def make_Usuario(self, data, **kwargs):
         return Usuario(**data)
 
-class UsuarioSchemaModificar(UsuarioSchema):
+class UsuarioSchemaModificar(UsuarioNuevoSchema):
     id = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse id Usuario", "code": 400}})
     
 

@@ -32,7 +32,7 @@ class UsuarioResource(Resource):
             except ValidationError as err:
                 return {'Error': err.messages}, 400
             except Exception as err:
-                return {'Error': err.message},400
+                return {'Error': str(err)},400
         return {'Error': 'Deben suministrarse los datos para modificar el usuario.'},400
        
     # @jwt_required()
@@ -51,7 +51,7 @@ class UsuarioResource(Resource):
 class UsuarioID(Resource):
  #@jwt_required()
 
-    @TokenDeAcceso.token_nivel_de_acceso(TokenDeAcceso.SUPERUSUARIO)
+    #@TokenDeAcceso.token_nivel_de_acceso(TokenDeAcceso.SUPERUSUARIO)
     def get(self,id_usuario):
         ''' recibe: un idUsuario como parametro
             devuelve: el usuario,si hay match con esa id y ademas esta habilitado, 
@@ -61,7 +61,7 @@ class UsuarioID(Resource):
                 usuario = UsuarioService.find_by_id(id_usuario)
                 return CommonService.json(usuario,UsuarioSchema)
             except Exception as err:
-                return {'Error': err.message},400
+                return {'Error': err.args},400
         return {'Error': 'Debe indicarse id_usuario'},400
  
     def delete(self,id_usuario):
@@ -80,8 +80,8 @@ class ObtenerUsuariosParaProyecto(Resource):
     #aca el 4 representa la id del permiso director de proyecto,ya que no hay visibilidad
     #entre un director de proyecto y otro con mismo permiso.
     def get(self):
-       return UsuarioService.usuariosSinElPermiso(4)
-
+        return CommonService.jsonMany(UsuarioService.usuariosSinElPermiso(4), UsuarioSchema)
+        
 class Logins(Resource):
 
     def get(self):

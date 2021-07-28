@@ -10,9 +10,11 @@ class UsuarioService():
     @classmethod
     def modificarUsuario(cls, datos):
         from db import db
-        UsuarioSchemaModificar().load(datos)
-        usuario = UsuarioService.find_by_id(datos['id_usuario'])
+        UsuarioSchemaModificar().dump(datos)
+        usuario = UsuarioService.find_by_id(datos['id'])
+        cls.validarEmail(usuario.email,datos['email'])
         CommonService.updateAtributes(usuario, datos, 'permisos')
+        cls.hashPassword(usuario)
         cls.asignarPermisos(usuario, datos['permisos'])
         db.session.commit()
 
@@ -29,22 +31,25 @@ class UsuarioService():
             from db import db
         #minimo un permiso  el 5, aun no esta validado , solo valida que sean permisos que existen
             usuario = UsuarioNuevoSchema().load(datos)
-            cls.agregarDatosUsuario(usuario)
+            cls.validarEmail(usuario.email)
+            cls.hashPassword(usuario)
             db.session.add(usuario)
             db.session.commit()
 
     @classmethod
-    def agregarDatosUsuario(cls,usuario):
-        cls.validarNuevoUsuario(usuario)
+    def hashPassword(cls,usuario):
+        cls.validarPassword(usuario.password)
         usuario.password = generate_password_hash(usuario.password, method='sha256')
 
     @classmethod
-    def validarNuevoUsuario(cls,usuario):
-        if len(usuario.password) < 8:
-            raise Exception("La contraseña debe tener como mínimo 8 caracteres.")
-        if cls.find_by_email(usuario.email):
-            raise Exception(f"Ya existe un/a usuario/a asociado/a con email {usuario.email}") 
+    def validarEmail(cls,email, emailAnt = None):
+        if cls.find_by_email(email) and (email != emailAnt):
+            raise Exception(f"Ya existe un/a usuario/a asociado/a con el email indicado.") 
 
+    @classmethod
+    def validarPassword(cls,password):
+        if len(password) < 8:
+                raise Exception("La contraseña debe tener como mínimo 8 caracteres.")
     @classmethod
     def find_by_email(cls, _email):
         from db import db
@@ -66,11 +71,8 @@ class UsuarioService():
     @classmethod
     def usuariosSinElPermiso(cls, id_permiso):
         from servicios.permisosService import  Permiso
-        user = Usuario.query.filter(~Usuario.id_permisos.any(
-            Permiso.id_permiso.in_([id_permiso])))
-        if (user):
-            return CommonService.jsonMany(user, UsuarioSchema)
-        return user
+        return Usuario.query.filter(~Usuario.permisos.any(
+            Permiso.id_permiso.in_([id_permiso])))            
 
     @classmethod
     def deshabilitarUsuario(cls, id_usuario):
