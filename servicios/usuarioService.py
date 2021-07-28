@@ -68,7 +68,7 @@ class UsuarioService():
 
     @classmethod
     def usuariosSinElPermiso(cls, id_permiso):
-        user = Usuario.query.filter(~Usuario.id_permisos.any(
+        user = Usuario.query.filter(~Usuario.permisos.any(
             Permiso.id_permiso.in_([id_permiso])))
         if (user):
             return CommonService.jsonMany(user, UsuarioSchema)
