@@ -44,7 +44,7 @@ api.add_resource(Permisos, '/api/v1/permisos')
 api.add_resource(ObtenerUsuariosResource, '/api/v1/usuarios')
 api.add_resource(UsuarioResource, '/api/v1/usuario')
 api.add_resource(UsuarioID, '/api/v1/usuario/<int:id_usuario>')
-api.add_resource(ObtenerUsuariosParaProyecto, '/api/usuariosParaProyecto')
+api.add_resource(ObtenerUsuariosParaProyecto, '/api/v1/usuariosParaProyecto')
 api.add_resource(Logins, '/api/v1/login', endpoint='login' )
 api.add_resource(Logins, '/api/v1/prueba', endpoint='login_prueba' )
 
