@@ -20,9 +20,6 @@ class UsuarioService():
 
     @classmethod
     def asignarPermisos(cls, usuario, permisosDicts):
-        '''recibe una lista con diccionarios de permisos y un usuario de la base
-        si pudo encontrar los permisos en la base actualiza al usuario, sino devuelve
-        mensaje de error.'''
         from servicios.permisosService import PermisosService
         usuario.permisos = PermisosService.permisosById(permisosDicts)
 

@@ -2,7 +2,7 @@ from db import db
 import json
 from models.mysql.permiso import Permiso
 from flask import jsonify
-from schemas.permisosSchema import PermisoSchema
+from schemas.permisosSchema import PermisoSchema,PermisoExistenteSchema
 from servicios.commonService import CommonService
 from exceptions.exception import ErrorPermisoInexistente,ErrorPermisoGeneral
 
@@ -23,7 +23,7 @@ class PermisosService():
     @classmethod
     def all_permisos(cls):
         permisos = Permiso.query.all()
-        return CommonService.jsonMany(permisos,PermisoSchema)
+        return CommonService.jsonMany(permisos,PermisoExistenteSchema)
 
     @classmethod
     def validarPermisos(cls,permisosDicts):

@@ -28,6 +28,13 @@ class UsuarioNuevoSchema(UsuarioSchema):
     def make_Usuario(self, data, **kwargs):
         return Usuario(**data)
 
+class UsuariosBase(UsuarioNuevoSchema):
+    @post_load
+    def make_Usuario(self, data, **kwargs):
+        from db import db
+        db.session.add(Usuario(**data))
+        db.session.commit()
+
 class UsuarioSchemaModificar(UsuarioNuevoSchema):
     id = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse id Usuario", "code": 400}})
     

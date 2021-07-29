@@ -1,4 +1,5 @@
-from schemas.datosSchema import DatosSchema,DatosUsuarioMysql,DatosPermisoMysql
+from schemas.datosSchema import DatosSchema,DatosMysql
+
 from marshmallow import EXCLUDE
 
 class DatosService:
@@ -10,13 +11,7 @@ class DatosService:
 
     @classmethod
     def llenarBaseMysql(cls,datos):
-        datosPermisos = DatosPermisoMysql().load(datos,unknown=EXCLUDE )
-        [ cls.commitDatos(unObj) for unObj in datosPermisos['permiso']]
-        datosUser = DatosUsuarioMysql().load(datos,unknown=EXCLUDE)
-        [ cls.commitDatos(unObj) for unObj in datosUser['usuario']]
+        DatosMysql().load(datos,unknown=EXCLUDE)
 
-    @classmethod
-    def commitDatos(cls,datos):
-        from db import db
-        db.session.add(datos)
-        db.session.commit()
+
+   

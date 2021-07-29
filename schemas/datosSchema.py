@@ -1,14 +1,17 @@
 from marshmallow import Schema, fields
-from .usuarioSchema import UsuarioNuevoSchema
+from .usuarioSchema import UsuariosBase
 from .proyectoSchema import ProyectoSchema
-from.permisosSchema import PermisoSchema
+from.permisosSchema import PermisoBase
 
 class DatosSchema(Schema):
     proyecto = fields.Nested(ProyectoSchema,many=True)
 
-class DatosUsuarioMysql(Schema):
-    usuario = fields.Nested(UsuarioNuevoSchema,many=True)
 
-class DatosPermisoMysql(Schema):
-    permiso = fields.Nested(PermisoSchema,many=True)
-    
+class DatosMysql(Schema):
+    class Meta:
+        ordered = True
+    #Necesario para que al deserializar respete el orden en el que va el json
+
+    permiso = fields.Nested(PermisoBase,many=True) 
+    usuario = fields.Nested(UsuariosBase,many=True)
+
