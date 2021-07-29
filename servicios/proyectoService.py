@@ -2,7 +2,6 @@ from dateutil import parser
 import datetime
 from models.mongo.proyecto import Proyecto
 from schemas.proyectoSchema import NuevoBlogProyectoSchema,ObtenerBlogsProyectoSchema, ProyectoCerradoSchema, ProyectoModificarSchema,ProyectoNuevoSchema
-from servicios.usuarioService import UsuarioService
 from exceptions.exception import ErrorProyectoInexistente
 from servicios.blogService import BlogService
 
@@ -20,7 +19,10 @@ class ProyectoService:
     @classmethod
     def nuevoProyecto(cls, datos):
         proyecto = ProyectoNuevoSchema().load(datos)
-        UsuarioService.busquedaUsuariosID(datos['participantes']) #validamos que se pasen usuarios validos 
+        from servicios.usuarioService import UsuarioService
+        UsuarioService.busquedaUsuariosID(datos['participantes'])
+        from servicios.permisosService import PermisosService
+        PermisosService.esJefeDeProyecto(UsuarioService.find_by_id(datos['idDirectorProyecto'])) 
         proyecto.save()
 
     @classmethod

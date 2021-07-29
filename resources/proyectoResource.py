@@ -2,7 +2,7 @@ from flask_restful import Resource
 from flask_jwt import jwt_required
 from flask import  request
 from marshmallow import ValidationError
-from exceptions.exception import ErrorExpDeProyecto,ErrorExperimentoInexistente,ErrorUsuarioInexistente,ErrorProyectoInexistente,ErrorJaulaInexistente,ErrorJaulaDeProyecto
+from exceptions.exception import ErrorExpDeProyecto,ErrorExperimentoInexistente,ErrorProyectoInexistente,ErrorJaulaInexistente,ErrorJaulaDeProyecto
 from schemas.proyectoSchema import ProyectoSchema
 from servicios.proyectoService import ProyectoService
 from servicios.commonService import CommonService
@@ -24,9 +24,9 @@ class NuevoProyecto(Resource):
                 return {'Status':'ok'},200
             except ValidationError as err:
                 return {'error': err.messages},400
-            except ErrorUsuarioInexistente as err:
-                return {'Error':err.message},400
-        return {'name': datos},404
+            except Exception as err:
+                return {'Error': str(err)},400
+        return {'Error': 'Deben suministrarse datos para el alta del proyecto.'},404
 
 class CerrarProyecto(Resource):
     #@jwt_required()

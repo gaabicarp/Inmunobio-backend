@@ -7,7 +7,8 @@ from servicios.commonService import CommonService
 from exceptions.exception import ErrorPermisoInexistente,ErrorPermisoGeneral
 
 class PermisosService():
-    jefeDeGrupo = 4
+    jefeDeGrupo = 3
+    jefeProyecto = 4
     
     @classmethod
     def json(cls,datos):
@@ -44,6 +45,10 @@ class PermisosService():
     @classmethod
     def tieneElPermiso(cls,usuario,idPermiso):
         return any( permiso.id_permiso == idPermiso for permiso in usuario.permisos)
+    
+    @classmethod
+    def esJefeDeProyecto(cls,usuario):
+        if not cls.tieneElPermiso(usuario,cls.jefeProyecto): raise Exception(f"El usuario {usuario.nombre} no tiene permisos como Jefe De Proyecto id.{cls.jefeProyecto}")
 
 
 
