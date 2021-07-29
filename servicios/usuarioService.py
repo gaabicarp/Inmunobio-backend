@@ -67,6 +67,7 @@ class UsuarioService():
 
     @classmethod
     def usuariosSinElPermiso(cls, id_permiso):
+        from models.mysql.permiso import Permiso
         return Usuario.query.filter(~Usuario.permisos.any(
             Permiso.id_permiso.in_([id_permiso])))            
 
