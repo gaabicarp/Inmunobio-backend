@@ -67,9 +67,9 @@ class UsuarioService():
 
     @classmethod
     def usuariosSinElPermiso(cls, id_permiso):
-        from servicios.permisosService import  Permiso
         return Usuario.query.filter(~Usuario.permisos.any(
             Permiso.id_permiso.in_([id_permiso])))            
+
 
     @classmethod
     def deshabilitarUsuario(cls, id_usuario):
