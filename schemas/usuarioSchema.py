@@ -1,6 +1,6 @@
 from models.mysql.usuario import Usuario
 from marshmallow import Schema, fields, post_load,ValidationError
-from schemas.permisosSchema import PermisoSchema,PermisoExistenteSchema
+from schemas.permisosSchema import PermisoExistenteSchema
 
 class UsuarioSchema(Schema):
     id = fields.Integer(dump_only=True)
@@ -10,7 +10,7 @@ class UsuarioSchema(Schema):
     habilitado = fields.Boolean(default=True)
     direccion = fields.Str()
     telefono = fields.Str()
-    permisos = fields.Nested(PermisoSchema, many=True)
+    permisos = fields.Nested(PermisoExistenteSchema, many=True)
     id_grupoDeTrabajo =fields.Integer()
     esJefeDe = fields.Integer()
 
@@ -28,20 +28,14 @@ class UsuarioNuevoSchema(UsuarioSchema):
     def make_Usuario(self, data, **kwargs):
         return Usuario(**data)
 
-class usuarioIDSchema(Schema):
+class UsuariosBase(UsuarioNuevoSchema):
+    @post_load
+    def make_Usuario(self, data, **kwargs):
+        from db import db
+        db.session.add(Usuario(**data))
+        db.session.commit()
+
+class UsuarioSchemaModificar(UsuarioNuevoSchema):
     id = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse id Usuario", "code": 400}})
-
-class UsuarioSchemaModificar(usuarioIDSchema):
-
-    email = fields.Str()
-    password = fields.Str()    
-    direccion = fields.Str()
-    telefono = fields.Str()
-    nombre = fields.Str()
-    permisos = fields.Nested(PermisoExistenteSchema, many=True)
-    habilitado = fields.Boolean(default=True)
-    direccion = fields.Str()
-    id_grupoDeTrabajo =fields.Integer()
-    esJefeDe = fields.Integer()
     
 

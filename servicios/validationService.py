@@ -10,13 +10,13 @@ from models.mongo.contenedor import Contenedor
 class ValidacionesUsuario():
     @classmethod
     def desvincularDeProyectos(cls,id_usuario):
-        proyectos = Proyecto.objects.update(pull__participantes=id_usuario)
-
+        Proyecto.objects.update(pull__participantes=id_usuario)
 
 class Validacion():
-    @classmethod
+    """@classmethod
     def elMailEstaEnUso(cls, _email):
-        return Usuario.query.filter_by(email=_email).first() != None
+        return Usuario.query.filter_by(email=_email).first() != None 
+        Perdón emma, me llevo tu función a otro lugar para probar algo"""
 
     @classmethod
     def elProyectoExiste(cls, idProyecto):

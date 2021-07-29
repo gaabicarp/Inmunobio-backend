@@ -2,7 +2,7 @@ from db import db
 import json
 from models.mysql.permiso import Permiso
 from flask import jsonify
-from schemas.permisosSchema import PermisoSchema
+from schemas.permisosSchema import PermisoSchema,PermisoExistenteSchema
 from servicios.commonService import CommonService
 from exceptions.exception import ErrorPermisoInexistente,ErrorPermisoGeneral
 
@@ -23,7 +23,7 @@ class PermisosService():
     @classmethod
     def all_permisos(cls):
         permisos = Permiso.query.all()
-        return CommonService.jsonMany(permisos,PermisoSchema)
+        return CommonService.jsonMany(permisos,PermisoExistenteSchema)
 
     @classmethod
     def validarPermisos(cls,permisosDicts):
@@ -31,17 +31,8 @@ class PermisosService():
 
     @classmethod
     def permisosById(cls,permisosDict):
-        cls.validarPermisos(permisosDict)
-        '''recibe una lista de este estilo [{'id':1, 'descripcion':"asd},{'id':3, 'descripcion':"asd}]
-        devuelve none si no encuentra todos los objetos de la lista en la base o una lista con los objetos 
-        permisos de la base correspondients a esa id, este servicio lo usa nuevoUsuario()
-        '''
-        """         permisos = []
-        for dictonary in permisosDict:
-            permiso = cls.find_by_id(dictonary['id_permiso'])
-            permisos.append(permiso)
-        return permisos """
-        return list(map(lambda x : cls.find_by_id(x['id_permiso']), permisosDict))
+        #cls.validarPermisos(permisosDict) -> ya no lo validamos, sino que se agrega.
+        return list(set(map(lambda x : cls.find_by_id(x['id_permiso']), permisosDict)))
 
     @classmethod
     def obtenerPermisoPorId(cls,id_permiso):

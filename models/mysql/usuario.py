@@ -25,10 +25,13 @@ class Usuario(db.Model):
     esJefeDe = db.Column(db.Integer)
     
     def __init__(self, nombre, email, password,direccion,telefono,permisos):
+        from servicios.permisosService import PermisosService
         self.nombre = nombre
         self.email = email
         self.password = password
         self.direccion = direccion
         self.telefono = telefono
+        self.permisos = PermisosService.permisosById(permisos)
+
     
 

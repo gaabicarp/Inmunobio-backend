@@ -1,59 +1,58 @@
-from db import db
 from models.mysql.usuario import Usuario
 from schemas.usuarioSchema import UsuarioSchema, UsuarioSchemaModificar, UsuarioNuevoSchema
-from servicios.permisosService import PermisosService, Permiso
-from exceptions.exception import ErrorPermisosJefeDeGrupo, ErrorJefeDeOtroGrupo, ErrorUsuarioExistente, ErrorUsuarioInexistente, ErrorIntegranteDeOtroGrupo
+from exceptions.exception import ErrorPermisosJefeDeGrupo, ErrorJefeDeOtroGrupo, ErrorUsuarioInexistente, ErrorIntegranteDeOtroGrupo
 from servicios.commonService import CommonService
 from servicios.validationService import Validacion, ValidacionesUsuario
 from werkzeug.security import generate_password_hash
 from servicios.validationService import ValidacionesUsuario
-from marshmallow import ValidationError
 
 class UsuarioService():
     @classmethod
     def modificarUsuario(cls, datos):
-        UsuarioSchemaModificar().load(datos)
-        usuario = UsuarioService.find_by_id(datos['id_usuario'])
+        from db import db
+        UsuarioSchemaModificar().dump(datos)
+        usuario = UsuarioService.find_by_id(datos['id'])
+        cls.validarEmail(usuario.email,datos['email'])
         CommonService.updateAtributes(usuario, datos, 'permisos')
+        cls.hashPassword(usuario)
         cls.asignarPermisos(usuario, datos['permisos'])
         db.session.commit()
 
     @classmethod
     def asignarPermisos(cls, usuario, permisosDicts):
-        '''recibe una lista con diccionarios de permisos y un usuario de la base
-        si pudo encontrar los permisos en la base actualiza al usuario, sino devuelve
-        mensaje de error.'''
-        # PermisosService.validarPermisos(permisosDicts)
+        from servicios.permisosService import PermisosService
         usuario.permisos = PermisosService.permisosById(permisosDicts)
 
     @classmethod
     def nuevoUsuario(cls,datos):
+            from db import db
         #minimo un permiso  el 5, aun no esta validado , solo valida que sean permisos que existen
-        try:
             usuario = UsuarioNuevoSchema().load(datos)
-            cls.validarNuevoUsuario(usuario)
-            cls.asignarPermisos(usuario,datos['permisos'])
-            hashed_password = generate_password_hash(usuario.password, method='sha256')
-            usuario.password = hashed_password
+            cls.validarEmail(usuario.email)
+            cls.hashPassword(usuario)
             db.session.add(usuario)
             db.session.commit()
-            return {'Status':'ok'},200
-        except ValidationError as err:
-            return {'error': err.messages},400
-        except Exception as err:
-            return {'error': str(err)}, 400
-    
-    def validarNuevoUsuario(usuario):
-        if len(usuario.password) < 8:
-            raise Exception("La contraseña debe tener como mínimo 8 caracteres.")
-        if Validacion.elMailEstaEnUso(usuario.email):
-            raise Exception("El email ya se encuentra en uso.")
 
     @classmethod
+    def hashPassword(cls,usuario):
+        cls.validarPassword(usuario.password)
+        usuario.password = generate_password_hash(usuario.password, method='sha256')
+
+    @classmethod
+    def validarEmail(cls,email, emailAnt = None):
+        if cls.find_by_email(email) and (email != emailAnt):
+            raise Exception(f"Ya existe un/a usuario/a asociado/a con el email indicado.") 
+
+    @classmethod
+    def validarPassword(cls,password):
+        if len(password) < 8:
+                raise Exception("La contraseña debe tener como mínimo 8 caracteres.")
+    @classmethod
     def find_by_email(cls, _email):
-        resultado = Usuario.query.filter_by(email=_email, habilitado = True).first()
-        if not resultado: raise ErrorUsuarioInexistente(_email)
-        return resultado
+        from db import db
+        return Usuario.query.filter_by(email=_email, habilitado = True).first()
+        #if not resultado: raise ErrorUsuarioInexistente(_email)
+        #return resultado , hay que sacar el error xq se usa en la aut. 
 
     @classmethod
     def find_by_id(cls, _id):
@@ -64,21 +63,20 @@ class UsuarioService():
 
     @classmethod
     def findUsuariosHabilitados(cls):
-        return Usuario.query.filter_by(habilitado=1).all()
+        return Usuario.query.filter_by(habilitado=True).all()
 
     @classmethod
     def usuariosSinElPermiso(cls, id_permiso):
-        user = Usuario.query.filter(~Usuario.permisos.any(
-            Permiso.id_permiso.in_([id_permiso])))
-        if (user):
-            return CommonService.jsonMany(user, UsuarioSchema)
-        return user
+        return Usuario.query.filter(~Usuario.permisos.any(
+            Permiso.id_permiso.in_([id_permiso])))            
+
 
     @classmethod
     def deshabilitarUsuario(cls, id_usuario):
         """recibe un usuario valido y modifica su estado habilitado a false"""
         # agregar schema de id usuario para verificar que se pase
         # -> oh por dios corregir esto hardcodeado  en algun momento
+        from db import db
         CommonService.updateAtributes(
             UsuarioService.find_by_id(id_usuario), {'habilitado': False})
         db.session.commit()
@@ -94,11 +92,13 @@ class UsuarioService():
 
     @classmethod
     def cambiarIdGrupo(cls, _id_usuario, idGrupo ):
+        from db import db
         cls.find_by_id(_id_usuario).id_grupoDeTrabajo = idGrupo
         db.session.commit()
         
     @classmethod
     def asignarGrupoAJefe(cls, _id_usuario, idGrupo ):
+        from db import db
         cls.find_by_id(_id_usuario).esJefeDe = idGrupo
         db.session.commit()
 
@@ -111,6 +111,7 @@ class UsuarioService():
 
     @classmethod
     def validarJefeDeGrupo(cls, _id_usuario,idNueva ):
+        from servicios.permisosService import PermisosService
         jefe = cls.find_by_id(_id_usuario)
         if jefe.esJefeDe and jefe.esJefeDe != idNueva : raise ErrorJefeDeOtroGrupo(_id_usuario, jefe.esJefeDe)
         if not PermisosService.tieneElPermiso(jefe, PermisosService.jefeDeGrupo):

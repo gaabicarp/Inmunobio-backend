@@ -14,6 +14,8 @@ app.config.from_object(config)
 ############################db configuracion
 db.init_app(app)
 
+#app.config ['JSON_SORT_KEYS'] = True #prueba para respetar orden de json como viene
+
 with app.app_context():
     db.create_all()
 	#pass
@@ -26,6 +28,7 @@ nojwt = JWT(app, authenticate, identity)
 
 CORS(app)
 cors = CORS(app,resources={r"/api/*":{"origins":"*"}})
+
 
 ############################ Api configuracion
 from api import api
