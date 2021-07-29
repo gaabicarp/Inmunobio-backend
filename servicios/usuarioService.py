@@ -12,8 +12,8 @@ class UsuarioService():
         from db import db
         UsuarioSchemaModificar().dump(datos)
         usuario = UsuarioService.find_by_id(datos['id'])
-        cls.validarEmail(usuario.email,datos['email'])
-        CommonService.updateAtributes(usuario, datos, 'permisos')
+        cls.modificacionEmail(usuario,datos['email'])
+        CommonService.updateAtributes(usuario, datos, ['permisos','email','password'])
         cls.hashPassword(usuario)
         cls.asignarPermisos(usuario, datos['permisos'])
         db.session.commit()
@@ -39,17 +39,23 @@ class UsuarioService():
         usuario.password = generate_password_hash(usuario.password, method='sha256')
 
     @classmethod
-    def validarEmail(cls,email, emailAnt = None):
-        if cls.find_by_email(email) and (email != emailAnt):
+    def modificacionEmail(cls,usuario,email):
+        if usuario.email != email : 
+            cls.validarEmail(email)
+            usuario.email = email 
+
+    @classmethod
+    def validarEmail(cls,email ):
+        if cls.find_by_email(email):
             raise Exception(f"Ya existe un/a usuario/a asociado/a con el email indicado.") 
 
     @classmethod
     def validarPassword(cls,password):
         if len(password) < 8:
                 raise Exception("La contraseña debe tener como mínimo 8 caracteres.")
+
     @classmethod
     def find_by_email(cls, _email):
-        from db import db
         return Usuario.query.filter_by(email=_email, habilitado = True).first()
         #if not resultado: raise ErrorUsuarioInexistente(_email)
         #return resultado , hay que sacar el error xq se usa en la aut. 
