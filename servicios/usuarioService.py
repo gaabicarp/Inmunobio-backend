@@ -34,7 +34,7 @@ class UsuarioService():
         #minimo un permiso  el 5, aun no esta validado , solo valida que sean permisos que existen
             usuario = UsuarioNuevoSchema().load(datos)
             cls.validarEmail(usuario.email)
-            cls.hashPassword(usuario)
+            cls.hashPassword(usuario,usuario.password)
             db.session.add(usuario)
             db.session.commit()
 
@@ -77,11 +77,10 @@ class UsuarioService():
 
     @classmethod
     def deshabilitarUsuario(cls, id_usuario):
-        """recibe un usuario valido y modifica su estado habilitado a false"""
-        # agregar schema de id usuario para verificar que se pase
-        # -> oh por dios corregir esto hardcodeado  en algun momento
         from db import db
-        CommonService.updateAtributes(UsuarioService.find_by_id(id_usuario), {'habilitado': False})
+        usuario = UsuarioService.find_by_id(id_usuario)
+        ValidacionesUsuario.jefeDeProyecto(usuario)  
+        usuario.habilitado =False 
         db.session.commit()
         ValidacionesUsuario.desvincularDeProyectos(id_usuario)
 

@@ -20,9 +20,7 @@ class ProyectoService:
     def nuevoProyecto(cls, datos):
         proyecto = ProyectoNuevoSchema().load(datos)
         from servicios.usuarioService import UsuarioService
-        UsuarioService.busquedaUsuariosID(datos['participantes'])
-        from servicios.permisosService import PermisosService
-        PermisosService.esJefeDeProyecto(UsuarioService.find_by_id(datos['idDirectorProyecto'])) 
+        UsuarioService.asignarIdProyecto(proyecto)
         proyecto.save()
 
     @classmethod
