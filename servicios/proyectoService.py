@@ -2,9 +2,7 @@ from dateutil import parser
 import datetime
 from models.mongo.proyecto import Proyecto
 from schemas.proyectoSchema import NuevoBlogProyectoSchema,ObtenerBlogsProyectoSchema, ProyectoCerradoSchema, ProyectoModificarSchema,ProyectoNuevoSchema
-from servicios.usuarioService import UsuarioService
 from exceptions.exception import ErrorProyectoInexistente
-from servicios.blogService import BlogService
 
 class ProyectoService:
     @classmethod
@@ -20,8 +18,15 @@ class ProyectoService:
     @classmethod
     def nuevoProyecto(cls, datos):
         proyecto = ProyectoNuevoSchema().load(datos)
-        UsuarioService.busquedaUsuariosID(datos['participantes']) #validamos que se pasen usuarios validos 
+        cls.validarProyecto(proyecto)
         proyecto.save()
+
+    @classmethod
+    def validarProyecto(cls,proyecto):
+        from servicios.usuarioService import UsuarioService
+        UsuarioService.busquedaUsuariosID(proyecto.participantes)
+        from servicios.permisosService import PermisosService
+        PermisosService.esJefeDeProyecto(UsuarioService.find_by_id(proyecto.idDirectorProyecto))
 
     @classmethod
     def find_by_nombre(cls, _nombre):
@@ -40,17 +45,20 @@ class ProyectoService:
     @classmethod
     def modificarProyecto(cls, datos):
         proyecto = ProyectoModificarSchema().load(datos)
+        cls.validarProyecto(proyecto)
         if proyecto.descripcion.strip() != "":
             Proyecto.objects(id_proyecto = proyecto.id_proyecto).update(set__descripcion = proyecto.descripcion)
-        Proyecto.objects(id_proyecto = proyecto.id_proyecto).update(set__montoInicial = proyecto.montoInicial)
+        Proyecto.objects(id_proyecto = proyecto.id_proyecto).update(set__montoInicial = proyecto.montoInicial,set__participantes = proyecto.participantes)
     
-    @classmethod
+    """     @classmethod
     def agregarMiembros(cls):
+        from servicios.usuarioService import UsuarioService
         usuariosIdPermitidas = UsuarioService.UsuarioService()
         return usuariosIdPermitidas
-
+    """
     @classmethod
-    def obtenerMiembrosProyecto(cls, id_proyecto):    
+    def obtenerMiembrosProyecto(cls, id_proyecto):  
+        from servicios.usuarioService import UsuarioService
         proyecto = cls.find_by_id(id_proyecto)
         return UsuarioService.busquedaUsuariosID(proyecto.participantes)
 

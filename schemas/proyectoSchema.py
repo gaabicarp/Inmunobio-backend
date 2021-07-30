@@ -6,15 +6,14 @@ class ProyectoSchema(Schema):
     id_proyecto = fields.Integer()
     codigoProyecto = fields.Str()
     nombre = fields.Str()
-    descripcion = fields.Str()
+    descripcion = fields.Str(default="")
     participantes = fields.List(fields.Int())
     idDirectorProyecto = fields.Int()
     fechaInicio = fields.DateTime()
     fechaFinal = fields.DateTime()
     finalizado = fields.Boolean()
     montoInicial = fields.Float()
-    conclusion = fields.Str()
-
+    conclusion = fields.Str(default="")
     #En Participantes
     #ID, Nombre y ROL
 
@@ -37,11 +36,10 @@ class ProyectoCerradoSchema(ProyectoSchema):
     
 class ProyectoModificarSchema(ProyectoSchema):
     id_proyecto = fields.Integer(required=True, error_messages={"required": {"message": "Es necesario el id_proyecto. Este campo no puede estar vacío", "code:": 400}})
-    descripcion = fields.Str(required=True, error_messages={"required": {"message": "Es necesaria una descripcion. Este campo no puede estar vacío", "code": 400}})
+    #descripcion = fields.Str(required=True, error_messages={"required": {"message": "Es necesaria una descripcion. Este campo no puede estar vacío", "code": 400}})
     montoInicial = fields.Float(required=True, error_messages={"required": {"message": "Es necesario un montoInicial. Este campo no puede estar vacío.", "code": 400}})
     fechaFinal = fields.DateTime(allow_none=True)
     conclusion = fields.Str(allow_none=True)
-
 
 class ObtenerBlogsProyectoSchema(Schema):
     fechaDesde = fields.String(required=True,error_messages={"required": {"message": "Debe indicarse  fecha-desde.", "code": 400}}) 

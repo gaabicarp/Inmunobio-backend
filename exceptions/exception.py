@@ -45,12 +45,6 @@ class ErrorPermisoGeneral(Exception):
         self.message = f"Debe asignarse al menos el permiso 5 : Usuario general." 
         super().__init__(self.message)
 
-class ErrorUsuarioInexistente(Exception):
-    def __init__(self,id_usuario):
-        self.message = f"No hay usuario/a asociado/a con id {id_usuario}" 
-        super().__init__(self.message)
-
-
 class ErrorGrupoDeTrabajoGeneral(Exception):
     def __init__(self):
         self.message = "El grupo es general y no puede darse de baja." 
@@ -117,19 +111,6 @@ class ErrorNombreInvalido(Exception):
         self.message = ""
         super().__init__(self.message)      
 
-class ErrorIntegranteDeOtroGrupo(Exception):
-    def __init__(self,id_usuario,id_grupo):
-        self.message = f"El usuario con id {id_usuario} ya se encuentra asignado al grupo de trabajo con id.{id_grupo}" 
-        super().__init__(self.message)      
-class ErrorJefeDeOtroGrupo(Exception):
-    def __init__(self,id_usuario,id_grupo):
-        self.message = f"El usuario con id {id_usuario} ya es jefe del grupo {id_grupo}" 
-        super().__init__(self.message)
-             
-class ErrorPermisosJefeDeGrupo(Exception):
-    def __init__(self,id_usuario):
-        self.message = f"El usuario con id {id_usuario} no posee permisos para ser jefe de grupo." 
-        super().__init__(self.message)
 
 class ErrorStockVacio(Exception):
     def __init__(self):

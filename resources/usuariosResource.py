@@ -5,14 +5,12 @@ from schemas.usuarioSchema import UsuarioSchema
 from servicios.commonService import CommonService
 from warnings import catch_warnings
 from servicios.usuarioService import UsuarioService
-from flask_restful import Resource,Api
+from flask_restful import Resource
 from flask import request
 from werkzeug.security import check_password_hash
 from flask_jwt import jwt
 from flask import jsonify
-from servicios.validationService import ValidacionesUsuario
-from exceptions.exception import ErrorPermisoGeneral,ErrorPermisoInexistente,ErrorUsuarioInexistente
-from marshmallow import ValidationError, exceptions
+from marshmallow import ValidationError
 from servicios.commonService import CommonService
 
 class ObtenerUsuariosResource(Resource):
@@ -45,7 +43,7 @@ class UsuarioResource(Resource):
             except ValidationError as err:
                 return {'error': err.messages},400
             except Exception as err:
-                return {'error': err.args},400
+                return {'error': str(err)},400
         return {'Error': 'Deben suministrarse los datos para el alta de usuario.'},400
   
 class UsuarioID(Resource):
@@ -61,7 +59,7 @@ class UsuarioID(Resource):
                 usuario = UsuarioService.find_by_id(id_usuario)
                 return CommonService.json(usuario,UsuarioSchema)
             except Exception as err:
-                return {'Error': err.args},400
+                return {'Error': str(err)},400
         return {'Error': 'Debe indicarse id_usuario'},400
  
     def delete(self,id_usuario):
@@ -72,8 +70,8 @@ class UsuarioID(Resource):
                 return {'Status':'ok'},200
             except ValidationError as err:
                 return {'error': err.messages},400
-            except ErrorUsuarioInexistente as err:
-                return {'Error':err.message},400
+            except Exception as err:
+                return {'Error':str(err)},400
         return {'Error': 'Debe indicarse id_usuario'},400
         
 class ObtenerUsuariosParaProyecto(Resource):
@@ -106,6 +104,5 @@ class Logins(Resource):
         if not any(permiso['id_permiso'] <= 3 for permiso in data['permisos']):
             raise Exception(f"El usuario {data['email']}")
         return data, 200
-
 
 

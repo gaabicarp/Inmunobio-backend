@@ -2,7 +2,7 @@ from db import dbMongo
 from flask_restful import Resource
 from flask import request
 from servicios.grupoDeTrabajoService import GrupoDeTrabajoService
-from exceptions.exception import ErrorPermisosJefeDeGrupo,ErrorJefeDeOtroGrupo,ErrorIntegranteDeOtroGrupo,ErrorGrupoInexistente,ErrorUsuarioInexistente,ErrorGrupoDeTrabajoGeneral
+from exceptions.exception import ErrorGrupoInexistente,ErrorGrupoDeTrabajoGeneral
 from marshmallow import  ValidationError
 from servicios.commonService import CommonService
 from schemas.grupoTrabajoSchema import GrupoDeTrabajoSchema
@@ -17,10 +17,8 @@ class GrupoDeTrabajo(Resource):
                 return {'Status':'ok'},200  
             except ValidationError as err:
                 return {'error': err.messages},400
-            #TO-DO ver exceptions .- una mejor forma de resolverlo
-            #except (ErrorPermisosJefeDeGrupo,ErrorUsuarioInexistente,ErrorIntegranteDeOtroGrupo,ErrorJefeDeOtroGrupo) as err:
             except Exception as err:
-                return {'Error': err.message},400
+                return {'Error': str(err)},400
         return {'Error': 'Debe suministrar datos para el alta del grupo de trabajo.'},400
 
     def put(self):
@@ -41,9 +39,9 @@ class GrupoDeTrabajoID(Resource):
             try:
                 grupo,jefeNombre = GrupoDeTrabajoService.obtenerGrupoPorId(id_grupoDeTrabajo)
                 return CommonService.json(grupo,GrupoDeTrabajoSchema),jefeNombre
-            except (ErrorGrupoInexistente,ErrorUsuarioInexistente) as err:
-                return {'Error':err.message},400
-        return {'name': 'None'},400
+            except Exception as err:
+                return {'Error': str(err)},400
+        return {'Error': 'Debe indicarse la id del grupo de trabajo.'},400
 
     def delete(self,id_grupoDeTrabajo):
         if(id_grupoDeTrabajo):
@@ -54,7 +52,7 @@ class GrupoDeTrabajoID(Resource):
                 return {'error': err.messages},400
             except (ErrorGrupoInexistente,ErrorGrupoDeTrabajoGeneral) as err:
                 return {'Error':err.message},400
-        return {'name': 'None'},400
+        return {'Error': 'Debe indicarse la id del grupo de trabajo.'},400
 
 class GruposDeTrabajo(Resource):
     def get(self):

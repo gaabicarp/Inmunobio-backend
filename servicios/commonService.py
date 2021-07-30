@@ -2,9 +2,9 @@ from flask import jsonify
 from exceptions.exception import ErrorNombreInvalido
 class CommonService():
     
-    def updateAtributes(object,atribute,keyExclude = ""):
+    def updateAtributes(object,atribute,keyExclude = []):
         for key,value in atribute.items():
-            if keyExclude != key and hasattr(object, key) :
+            if key not in keyExclude and hasattr(object, key) :
                 setattr(object, key, value)
   
     def comparar(objeto,otroObjeto,atributos):
