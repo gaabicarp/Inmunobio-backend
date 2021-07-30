@@ -114,5 +114,5 @@ class UsuarioService():
         if jefe.esJefeDe and jefe.esJefeDe != idNueva : raise Exception(f"El usuario con id {_id_usuario} ya es jefe del grupo {jefe.esJefeDe}")
         if not PermisosService.tieneElPermiso(jefe, PermisosService.jefeDeGrupo):
             raise Exception(f"El usuario con id {_id_usuario} no posee permisos para ser jefe de grupo.")
-
     
+        

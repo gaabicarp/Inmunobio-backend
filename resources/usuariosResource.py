@@ -106,4 +106,3 @@ class Logins(Resource):
         return data, 200
 
 
-

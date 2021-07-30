@@ -42,12 +42,14 @@ class CerrarProyecto(Resource):
 
 class ProyectoID(Resource):
     #@jwt_required()
-    def get(self, id_proyecto):
-        try:
-            proyecto = ProyectoService.find_by_id(id_proyecto)
-            return CommonService.json(proyecto,ProyectoSchema),200
-        except ErrorProyectoInexistente as err:
-            return {'error': err.message}, 400
+    def get(self, id_proyecto):    
+        if(id_proyecto):
+            try:
+                proyecto = ProyectoService.find_by_id(id_proyecto)
+                return CommonService.json(proyecto,ProyectoSchema),200
+            except Exception as err:
+                return {'Error':str(err)},400
+        return {'Error': 'Deben indicarse id del proyecto'}, 400
 
 class ModificarProyecto(Resource):
     #@jwt_required()
@@ -59,18 +61,22 @@ class ModificarProyecto(Resource):
                 return {'Status':'ok'}, 200
             except ValidationError as err:
                 return {'error': err.messages}, 400
-        return {'name': datos}, 400
+            except Exception as err:
+                return {'Error':str(err)},400
+        return {'Error': 'Deben indicarse datos para la modificacion del proyecto'}, 400
 
 class ObtenerUsuariosProyecto(Resource):
     #@jwt_required()
     def get(self,id_proyecto):
-        try:
-            usuarios=  ProyectoService.obtenerMiembrosProyecto(id_proyecto)
-            return  CommonService.jsonMany(usuarios,UsuarioSchema)
-        except ValidationError as err:
-            return {'error': err.messages}, 400
-        except ErrorProyectoInexistente as err:
-            return {'error': err.message}, 400
+        if(id_proyecto):
+            try:
+                usuarios=  ProyectoService.obtenerMiembrosProyecto(id_proyecto)
+                return  CommonService.jsonMany(usuarios,UsuarioSchema)
+            except ValidationError as err:
+                return {'error': err.messages}, 400
+            except Exception as err:
+                return {'Error':str(err)},400
+        return {'Error': 'Deben indicarse id del proyecto'}, 400
 
 class ObtenerBlogsProyecto(Resource):
     #@jwt_required()
@@ -82,9 +88,9 @@ class ObtenerBlogsProyecto(Resource):
                 return CommonService.jsonMany(blogs,BlogSchema)
             except ValidationError as err:
                 return {'error': err.messages}, 400
-            except ErrorProyectoInexistente as err:
-                return {'Error':err.message},400
-        return {"Status" : "Deben indicarse datos para el blog"}, 400
+            except Exception as err:
+                return {'Error':str(err)},400
+        return {"Error" : "Deben indicarse datos para el blog"}, 400
 
 class NuevoBlogProyecto(Resource):
     #@jwt_required()
@@ -99,4 +105,4 @@ class NuevoBlogProyecto(Resource):
             except (ErrorProyectoInexistente,ErrorJaulaInexistente,
             ErrorJaulaDeProyecto,ErrorExperimentoInexistente,ErrorExpDeProyecto) as err:
                 return {'Error':err.message},400 
-        return {"Status" : "Deben indicarse datos para el blog"}, 400
+        return {"Error" : "Deben indicarse datos para el blog"}, 400
