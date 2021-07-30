@@ -48,7 +48,7 @@ class ProyectoService:
         cls.validarProyecto(proyecto)
         if proyecto.descripcion.strip() != "":
             Proyecto.objects(id_proyecto = proyecto.id_proyecto).update(set__descripcion = proyecto.descripcion)
-        Proyecto.objects(id_proyecto = proyecto.id_proyecto).update(set__montoInicial = proyecto.montoInicial)
+        Proyecto.objects(id_proyecto = proyecto.id_proyecto).update(set__montoInicial = proyecto.montoInicial,set__participantes = proyecto.participantes)
     
     """     @classmethod
     def agregarMiembros(cls):
