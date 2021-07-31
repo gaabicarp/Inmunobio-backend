@@ -23,7 +23,6 @@ class UsuarioSchema(Schema):
     id_grupoDeTrabajo =fields.Integer(allow=None)
     esJefeDe = fields.Integer(allow=None)
 
-
 class UsuarioNuevoSchema(UsuarioSchema):
     email = fields.Str( required=True,error_messages={"required": {"message": "Se necesita ingresar el mail", "code": 400}})
     nombre = fields.Str( required=True,error_messages={"required": {"message": "Se necesita ingresar el nombre del usuario", "code": 400}})
@@ -38,10 +37,16 @@ class UsuariosBase(UsuarioNuevoSchema):
     @post_load
     def make_Usuario(self, data, **kwargs):
         from db import db
-        db.session.add(Usuario(**data))
+        usuario = Usuario(**data)
+        from servicios.usuarioService import UsuarioService
+        UsuarioService.hashPassword(usuario,usuario.password)
+        db.session.add(usuario)
         db.session.commit()
 
 class UsuarioSchemaModificar(UsuarioNuevoSchema):
     id = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse id Usuario", "code": 400}})
+    password = fields.Str(validate=validarPassword)
     
-
+    @post_load
+    def make_Usuario(self, data, **kwargs):
+        pass

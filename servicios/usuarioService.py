@@ -2,7 +2,7 @@ from models.mysql.usuario import Usuario
 from schemas.usuarioSchema import UsuarioSchemaModificar, UsuarioNuevoSchema
 from servicios.commonService import CommonService
 from servicios.validationService import  ValidacionesUsuario
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash,check_password_hash
 
 class UsuarioService():
 
@@ -10,7 +10,7 @@ class UsuarioService():
     def modificarUsuario(cls, datos):
         usuario = cls.validarModificacion(datos)
         CommonService.updateAtributes(usuario , datos, ['permisos','password'])
-        cls.hashPassword(usuario,datos['password'])
+        cls.modificacionPassword(usuario,datos['password'])
         cls.asignarPermisos(usuario, datos['permisos'])
 
         from db import db
@@ -18,7 +18,7 @@ class UsuarioService():
 
     @classmethod
     def validarModificacion(cls, datos):
-        UsuarioSchemaModificar().dump(datos)
+        UsuarioSchemaModificar().load(datos)
         usuarioAnt = UsuarioService.find_by_id(datos['id'])
         cls.validaModificacionEmail(usuarioAnt,datos['email'])
         return usuarioAnt
@@ -41,11 +41,15 @@ class UsuarioService():
     @classmethod
     def hashPassword(cls,usuario,password):
         #cls.validarPassword(password) se movio a a schema
-        usuario.password =generate_password_hash(password, method='sha256')
+        usuario.password = generate_password_hash(password, method='sha256')
          
     @classmethod
     def validaModificacionEmail(cls,usuario,email):
         if usuario.email != email : cls.validarEmail(email)
+
+    @classmethod
+    def modificacionPassword(cls,usuario,password):
+        if not check_password_hash(usuario.password, password): cls.hashPassword(usuario,password)
 
     @classmethod
     def validarEmail(cls,email ):
