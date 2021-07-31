@@ -1,6 +1,7 @@
-from marshmallow import Schema, fields, post_load, ValidationError
+from marshmallow import Schema, fields, post_load
 from models.mongo.proyecto import Proyecto
 from schemas.blogSchema import NuevoBlogProyecto
+from schemas.usuarioSchema import UsuarioSchema
 
 class ProyectoSchema(Schema):
     id_proyecto = fields.Integer()
@@ -20,7 +21,12 @@ class ProyectoSchema(Schema):
     @post_load
     def make_Proyecto(self, data, **kwargs):
         return Proyecto(**data)
-    
+        
+class ProyectoExtendido(ProyectoSchema):
+    participantes = fields.Nested(UsuarioSchema, many=True)
+    idDirectorProyecto = fields.Nested(UsuarioSchema)
+
+   
 class ProyectoNuevoSchema(ProyectoSchema):
     codigoProyecto = fields.Str(required=True, error_messages={"required": {"message": "Se necesita el código del proyecto", "code": 400}})
     nombre = fields.Str(required=True, error_messages={"required": {"message": "Se necesita ingresar el nombre del proyecto", "code": 400}})

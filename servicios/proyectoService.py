@@ -1,13 +1,15 @@
 from dateutil import parser
 import datetime
 from models.mongo.proyecto import Proyecto
-from schemas.proyectoSchema import NuevoBlogProyectoSchema,ObtenerBlogsProyectoSchema, ProyectoCerradoSchema, ProyectoModificarSchema,ProyectoNuevoSchema
+from schemas.proyectoSchema import ProyectoExtendido,NuevoBlogProyectoSchema,ObtenerBlogsProyectoSchema, ProyectoCerradoSchema, ProyectoModificarSchema,ProyectoNuevoSchema
 from exceptions.exception import ErrorProyectoInexistente
 
 class ProyectoService:
     @classmethod
     def find_all(cls):
-        return Proyecto.objects.filter().all()
+        proyectos =  Proyecto.objects.filter().all()
+        [cls.agregarDatosProyecto(proyecto) for proyecto in proyectos]
+        return proyectos
         
     @classmethod
     def find_by_id(cls, id):
@@ -109,4 +111,21 @@ class ProyectoService:
 
     @classmethod
     def obtenerProyectosUsuario(cls,id_usuario):
-        return Proyecto.objects.filter(idDirectorProyecto=id_usuario,participantes=id_usuario)
+        proyectos =  Proyecto.objects.filter(idDirectorProyecto=id_usuario,participantes=id_usuario)
+        [cls.agregarDatosProyecto(proyecto) for proyecto in proyectos]
+        return proyectos
+
+    @classmethod
+    def obtenerProyecto(cls,id_proyecto):
+        proyecto = cls.find_by_id(id_proyecto)
+        proyecto.participantes = cls.obtenerMiembrosProyecto(id_proyecto)
+        from servicios.usuarioService import UsuarioService
+        proyecto.idDirectorProyecto = UsuarioService.find_by_id(proyecto.idDirectorProyecto)
+        return proyecto
+    
+    @classmethod
+    def agregarDatosProyecto(cls,proyecto):
+        proyecto.participantes = cls.obtenerMiembrosProyecto(proyecto.id_proyecto)
+        from servicios.usuarioService import UsuarioService
+        proyecto.idDirectorProyecto = UsuarioService.find_by_id(proyecto.idDirectorProyecto)
+        return proyecto
