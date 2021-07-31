@@ -58,6 +58,8 @@ api.add_resource(ModificarProyecto, '/api/v1/modificarProyecto')
 api.add_resource(ObtenerUsuariosProyecto, '/api/v1/obtenerUsuariosProyecto/<int:id_proyecto>')
 api.add_resource(ObtenerBlogsProyecto, '/api/v1/blogsProyecto')
 api.add_resource(NuevoBlogProyecto, '/api/v1/crearblogProyecto')
+api.add_resource(ObtenerProyectoDeUsuario, '/api/v1/proyectosDeUsuario/<int:id_usuario>')
+
 
 #Grupo de trabajo
 api.add_resource(GrupoDeTrabajo,'/api/v1/grupoDeTrabajo')
