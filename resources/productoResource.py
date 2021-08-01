@@ -3,6 +3,8 @@ from flask_restful import Resource
 from flask_jwt import jwt_required
 from flask import request,jsonify
 from marshmallow import ValidationError
+from schemas.grupoTrabajoSchema import GrupoDeTrabajoSchema
+from servicios.commonService import CommonService
 
 class ProductoResource(Resource):
     def post(self):
@@ -69,7 +71,7 @@ class ProductoEnStockDeGrupos(Resource):
     def get(self,id_producto):
         if(id_producto):
             try:
-                return ProductoService().getGruposByProducto(id_producto)
+                return CommonService.jsonMany(ProductoService().getGruposByProducto(id_producto),GrupoDeTrabajoSchema)
             except ValidationError as err:
                 return {'Error': err.messages},400
             except Exception as err:

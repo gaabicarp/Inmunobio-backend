@@ -87,5 +87,9 @@ class ProductoService():
     @classmethod
     def getGruposByProducto(cls,id_producto):
             from servicios.stockService import StockService
-            print(StockService.stockContieneProducto(id_producto))
+            return(list(map(cls.obtenerIdGrupo,StockService.stockContieneProducto(id_producto))))
+
+    def obtenerIdGrupo(stock):
+        from servicios.grupoDeTrabajoService import GrupoDeTrabajoService
+        return GrupoDeTrabajoService.find_by_id(stock['id_grupoDeTrabajo'])
 
