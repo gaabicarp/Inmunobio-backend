@@ -3,6 +3,7 @@ import datetime
 from models.mongo.proyecto import Proyecto
 from schemas.proyectoSchema import ProyectoExtendido,NuevoBlogProyectoSchema,ObtenerBlogsProyectoSchema, ProyectoCerradoSchema, ProyectoModificarSchema,ProyectoNuevoSchema
 from exceptions.exception import ErrorProyectoInexistente
+from servicios.commonService import CommonService
 
 class ProyectoService:
     @classmethod
@@ -10,7 +11,6 @@ class ProyectoService:
         proyectos =  Proyecto.objects.filter().all()
         [cls.agregarDatosProyecto(proyecto) for proyecto in proyectos]
         return proyectos
-        
     @classmethod
     def find_by_id(cls, id):
         proyecto =  Proyecto.objects.filter(id_proyecto=id).first()
@@ -128,4 +128,3 @@ class ProyectoService:
         proyecto.participantes = cls.obtenerMiembrosProyecto(proyecto.id_proyecto)
         from servicios.usuarioService import UsuarioService
         proyecto.idDirectorProyecto = UsuarioService.find_by_id(proyecto.idDirectorProyecto)
-        return proyecto

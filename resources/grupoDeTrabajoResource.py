@@ -2,7 +2,6 @@ from db import dbMongo
 from flask_restful import Resource
 from flask import request
 from servicios.grupoDeTrabajoService import GrupoDeTrabajoService
-from exceptions.exception import ErrorGrupoInexistente,ErrorGrupoDeTrabajoGeneral
 from marshmallow import  ValidationError
 from servicios.commonService import CommonService
 from schemas.grupoTrabajoSchema import GrupoDeTrabajoSchema
@@ -50,8 +49,8 @@ class GrupoDeTrabajoID(Resource):
                 return {'Status':'ok'},200
             except ValidationError as err:
                 return {'error': err.messages},400
-            except (ErrorGrupoInexistente,ErrorGrupoDeTrabajoGeneral) as err:
-                return {'Error':err.message},400
+            except Exception as err:
+                return {'Error': str(err)},400
         return {'Error': 'Debe indicarse la id del grupo de trabajo.'},400
 
 class GruposDeTrabajo(Resource):
@@ -68,6 +67,6 @@ class RenombrarJefeGrupo(Resource):
                 return {'Status':'ok'},200  
             except ValidationError as err:
                 return {'error': err.messages},400
-            except (ErrorGrupoInexistente,ErrorUsuarioInexistente) as err:
-                return {'Error':err.message},400
-        return {'name': 'None'},400
+            except Exception as err:
+                return {'Error': str(err)},400
+        return {'Error': 'Deben suministrarse datos para renombrar Jefe.'},400

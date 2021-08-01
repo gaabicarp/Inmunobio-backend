@@ -26,7 +26,6 @@ class ProyectoExtendido(ProyectoSchema):
     participantes = fields.Nested(UsuarioSchema, many=True)
     idDirectorProyecto = fields.Nested(UsuarioSchema)
 
-   
 class ProyectoNuevoSchema(ProyectoSchema):
     codigoProyecto = fields.Str(required=True, error_messages={"required": {"message": "Se necesita el código del proyecto", "code": 400}})
     nombre = fields.Str(required=True, error_messages={"required": {"message": "Se necesita ingresar el nombre del proyecto", "code": 400}})

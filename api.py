@@ -4,14 +4,12 @@ from resources.usuariosResource import  ObtenerUsuariosResource,UsuarioResource,
 from resources.proyectoResource import *
 from resources.permisosResource import Permisos,ObtenerPermisoPorId
 from resources.grupoDeTrabajoResource import GrupoDeTrabajoID,GrupoDeTrabajo,GruposDeTrabajo,RenombrarJefeGrupo
-from resources.experimentoResource import ExperimentoResource, Experimentos, ExperimentoMuestra
-from resources.proyectoResource import *
-from resources.experimentoResource import ObtenerBlogsExp,ExperimentoResource, Experimentos, CerrarExperimento,BlogExperimento
+from resources.experimentoResource import ExperimentoResource, ExperimentoMuestra,ObtenerBlogsExp,Experimentos, CerrarExperimento
 from resources.contenedorResource import Contenedor, ContenedorProyecto, ContenedorParent,ContenedorProyectoId
 
 from resources.grupoExperimentalResource import GrupoExperimental, GruposExperimentales, DevidirGrupoExperimental
 from resources.stockResource import ObtenerProductosStock,ProductoEnStock,BorrarTodoStock,ConsumirStockResource,ProductoEnStockID
-from resources.productoResource import ProductoResource,ObtenerProductosResource,ProductoID,ArchivoProducto
+from resources.productoResource import ProductoEnStockDeGrupos,ProductoResource,ObtenerProductosResource,ProductoID,ArchivoProducto
 from resources.distribuidoraResource import DistribuidoraResource,ObtenerDistribuidorasResource,DistribuidoraID
 
 from resources.grupoExperimentalResource import GrupoExperimental, GruposExperimentales
@@ -79,6 +77,7 @@ api.add_resource(ProductoResource, '/api/v1/producto')
 api.add_resource(ObtenerProductosResource, '/api/v1/getProductos')
 api.add_resource(ProductoID, '/api/v1/producto/<int:id_producto>')
 api.add_resource(ArchivoProducto, '/api/v1/producto/subirArchivo/<int:id_producto>')
+api.add_resource(ProductoEnStockDeGrupos, '/api/v1/gruposConStock/<int:id_producto>')
 
 #distribuidora
 api.add_resource(DistribuidoraResource, '/api/v1/distribuidora')

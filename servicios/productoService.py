@@ -1,6 +1,5 @@
 from models.mongo.producto import Producto
 from schemas.productoSchema import ProductoSchema,NuevoProductoSchema,ModificarProductoSchema
-from exceptions.exception import ErrorProductoInexistente
 from servicios.commonService import CommonService
 from servicios.distribuidoraService import DistribuidoraService
 from servicios.fileService import FileService
@@ -27,21 +26,14 @@ class ProductoService():
             producto.reload() 
  
     def validacionAltaProducto(id_distribuidora):
-        #valida que exista la distribuidora y qué mas??
         DistribuidoraService().find_by_id(id_distribuidora)
 
     @classmethod
     def find_by_id(cls,id):
         producto =  Producto.objects(id_producto = id).first()
         if(not producto):
-            raise ErrorProductoInexistente(id)
+            raise Exception( f"No hay productos relacionados con id_producto: {id}")
         return producto     
-    @classmethod
-    def find_by_id(cls,id):
-        producto =  Producto.objects(id_producto = id).first()
-        if(not producto):
-            raise ErrorProductoInexistente(id)
-        return producto 
 
     @classmethod
     def find_by_idDistribuidora(cls,_id_distribuidora):
@@ -91,3 +83,9 @@ class ProductoService():
     def bajaProductoStockExterno(cls,idProductos):
         from servicios.stockService import StockService
         StockService.bajaExterna(idProductos)
+    
+    @classmethod
+    def getGruposByProducto(cls,id_producto):
+            from servicios.stockService import StockService
+            print(StockService.stockContieneProducto(id_producto))
+

@@ -1,6 +1,5 @@
 from schemas.grupoTrabajoSchema import jefeDeGrupoSchema, ModificarGrupoDeTrabajoSchema, GrupoDeTrabajoSchema, GrupoDeTrabajo, NuevoGrupoDeTrabajoSchema
 from servicios.usuarioService import UsuarioService
-from exceptions.exception import ErrorGrupoInexistente, ErrorGrupoDeTrabajoGeneral
 from servicios.commonService import CommonService
 
 
@@ -10,7 +9,7 @@ class GrupoDeTrabajoService():
     def find_by_id(id):
         grupo = GrupoDeTrabajo.objects.filter(id_grupoDeTrabajo=id).first()
         if(not grupo):
-            raise ErrorGrupoInexistente()
+            raise Exception("Grupo de trabajo inexistente")
         return grupo
 
     def find_by_nombre(_nombre):
@@ -82,7 +81,7 @@ class GrupoDeTrabajoService():
         UsuarioService.asignarGrupoAJefe(idJefe, idGrupo)
 
     def validarDelete(grupo):
-        if grupo.grupoGral: raise ErrorGrupoDeTrabajoGeneral()
+        if grupo.grupoGral: raise Exception("El grupo es general y no puede darse de baja." )
 
     @classmethod
     def validarMiembros(cls, integrantes):
@@ -91,7 +90,9 @@ class GrupoDeTrabajoService():
     @classmethod
     def validarJefe(cls, id_jefeDeGrupo,idGrupo): UsuarioService.validarJefeDeGrupo(id_jefeDeGrupo,idGrupo)
 
-    #este endpoint ya no se usa:
+    
+    
+    #-------------------este endpoint ya no se usa:
     @classmethod
     def modificarJefeGrupo(cls, datos):
         jefeDeGrupoSchema().load(datos)

@@ -1,7 +1,6 @@
 from marshmallow import EXCLUDE
 from models.mongo.stock import Stock
 from schemas.stockSchema import NuevoStockSchema,ModificarProducto,ConsumirStockSchema,StockSchema
-from schemas.productosEnStockSchema import ProductoEnStockSchema
 from servicios.grupoDeTrabajoService import GrupoDeTrabajoService
 from servicios.productoService import ProductoService
 from exceptions.exception import ErrorStockVacio,ErrorProductoEnStockInexistente,ErrorStockInexistente,ErrorUnidadStock
@@ -151,3 +150,10 @@ class StockService():
     @classmethod 
     def bajaProductoExterno(cls,idProducto):
         return Stock.objects(id_producto = idProducto).delete()
+    
+    @classmethod
+    def stockContieneProducto(cls,idProducto):
+        stocks = Stock.objects(id_producto = idProducto)
+        return StockSchema().dump(stocks,many=True)       
+
+

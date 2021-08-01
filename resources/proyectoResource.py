@@ -11,9 +11,9 @@ class Proyectos(Resource):
     #@jwt_required()
     def get(self):
         try:
-                return  CommonService.jsonMany(ProyectoService.find_all(),ProyectoExtendido),200
+            return CommonService.jsonMany(ProyectoService.find_all(),ProyectoExtendido)
         except Exception as err:
-                return {'Error': str(err)},400
+            return {'Error': str(err)},400
 
 class NuevoProyecto(Resource):
     # @jwt_required()

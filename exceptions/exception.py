@@ -1,8 +1,8 @@
 
-class ErrorProductoInexistente(Exception):
+""" class ErrorProductoInexistente(Exception):
     def __init__(self,id):
         self.message = f"No hay productos relacionados con id_producto: {id}" 
-        super().__init__(self.message)
+        super().__init__(self.message) """
 
 class ErrorProductoEnStockInexistente(Exception):
     def __init__(self,id=0):
@@ -19,10 +19,10 @@ class ErrorDistribuidoraInexistente(Exception):
         self.message = "Distribuidora inexistente"
         super().__init__(self.message)
 
-class ErrorGrupoInexistente(Exception):
+""" class ErrorGrupoInexistente(Exception):
     def __init__(self):
         self.message = "Grupo de trabajo inexistente"
-        super().__init__(self.message)
+        super().__init__(self.message) """
 
 class ErrorEspacioFisicoInexistente(Exception):
     def __init__(self,id):
@@ -45,11 +45,11 @@ class ErrorPermisoGeneral(Exception):
         self.message = f"Debe asignarse al menos el permiso 5 : Usuario general." 
         super().__init__(self.message)
 
-class ErrorGrupoDeTrabajoGeneral(Exception):
+""" class ErrorGrupoDeTrabajoGeneral(Exception):
     def __init__(self):
         self.message = "El grupo es general y no puede darse de baja." 
         super().__init__(self.message)
-
+ """
 
 class ErrorJaulaInexistente(Exception):
     def __init__(self,id_jaula):
