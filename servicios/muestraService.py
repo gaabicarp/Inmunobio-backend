@@ -44,7 +44,8 @@ class MuestraService:
                 raise Exception(f"El experimento con id {muestra.id_experimento} no pertenece al proyecto con id {muestra.id_proyecto}")
             if not Validacion().elGrupoExperimentalPerteneceAlExperimento(muestra.id_experimento, muestra.id_grupoExperimental):
                 raise Exception(f"El grupo experimental con id {muestra.id_grupoExperimental} no pertenece al experimento con id {muestra.id_experimento}")
-
+            if not Validacion().laFuenteExperimentalPerteneceAlExperimento(muestra.id_fuenteExperimental, muestra.id_experimento):
+                raise Exception(f"La fuente experimental con id {muestra.id_fuenteExperimental} no pertenece al experimento con id {muestra.id_experimento}")
 
     def actualizarMuestrasEnGrupoExperimental(idGrupoExperimental):
         muestras = Muestra.objects.filter(id_grupoExperimental=idGrupoExperimental, habilitada = True).all()

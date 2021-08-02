@@ -24,6 +24,12 @@ class Validacion():
         Perdón emma, me llevo tu función a otro lugar para probar algo"""
 
     @classmethod
+    def laFuenteExperimentalPerteneceAlExperimento(cls,id_fuenteExperimental,idExperimento):
+        return Experimento.objects(id_experimento=idExperimento).first() != None
+
+
+
+    @classmethod
     def elProyectoExiste(cls, idProyecto):
         return Proyecto.objects(id_proyecto=idProyecto).first() != None
     
