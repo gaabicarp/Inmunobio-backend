@@ -29,7 +29,7 @@ class MuestraSchema(Schema):
     tipo = fields.Str()
     id_contenedor = fields.Int()
     habilitada = fields.Boolean()
-    id_fuenteExperimental = dbMongo.IntField()
+    id_fuenteExperimental = fields.Int()
 
     @post_load
     def make_Proyecto(self, data, **kwargs):
@@ -42,7 +42,7 @@ class NuevaMuestraSchema(MuestraSchema):
     codigo = fields.Str(required=True, validate=Validacion.not_empty_string, error_messages={"required": {"message" : "Es necesario indicar el id código de la muestra", "code": 400}})
     descripcion = fields.Str(required=True, validate=Validacion.not_empty_string, error_messages={"required": {"message" : "Es necesario indicar una descripcion", "code": 400}})
     id_contenedor = fields.Int(required=True, validate=Validacion.not_empty_int, error_messages={"required": {"message" : "Es necesario indicar el id del contenedor", "code": 400}})
-    id_fuenteExperimental = dbMongo.IntField(required=True, validate=Validacion.not_empty_int, error_messages={"required": {"message" : "Es necesario indicar el id de la fuente experimental", "code": 400}})
+    id_fuenteExperimental = fields.Int(required=True, validate=Validacion.not_empty_int, error_messages={"required": {"message" : "Es necesario indicar el id de la fuente experimental", "code": 400}})
 
 class ModificarMuestraSchema(MuestraSchema):
     id_muestra = fields.Int(required=True, validate=Validacion.not_empty_int, error_messages={"required": {"message" : "Es necesario indicar el id del muestra", "code":400}})

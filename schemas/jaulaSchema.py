@@ -32,10 +32,8 @@ class NuevaJaulaSchema(Schema):
         return Jaula(**data)
 
 class ActualizarProyectoJaulaSchema(JaulaSchema):
-    #class ActualizarProyectoJaulaSchema(Schema):
     id_jaula = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar el id de la jaula", "code" : 400}})
     id_proyecto = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar el id del proyecto", "code": 400}})
-    #nombre_proyecto = fields.String(required=True, error_messages={"required": {"message" : "Es necesario indicar el nombre de proyecto", "code" : 400}})
     
     @post_load
     def makeJaula(self, data, **kwargs):

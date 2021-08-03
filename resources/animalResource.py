@@ -1,14 +1,14 @@
 from copy import error
 from re import I
+from servicios.commonService import CommonService
 from flask_restful import Resource
 from flask_jwt import jwt_required
 from flask import request
 from marshmallow import ValidationError
-
+from schemas.animalSchema import AnimalSchema
 from servicios.animalService import AnimalService
 
 class Animal(Resource):
-
     def get(self, idAnimal):
         if idAnimal:
             animal = AnimalService.find_by_id(idAnimal)
@@ -39,12 +39,9 @@ class Animal(Resource):
 
 class Animales(Resource):
 
-    @jwt_required()
+    #@jwt_required()
     def get(self):
-        animales =AnimalService.todosLosAnimales()
-        if animales:
-            return animales, 200
-        return {'Status': 'No se encontraron animales.'}, 200
+        return CommonService.jsonMany(AnimalService.todosLosAnimales(),AnimalSchema)
 
 class AnimalesSinJaula(Resource):
 
@@ -81,8 +78,5 @@ class AnimalesProyecto(Resource):
 
     def get(self, idProyecto):
         if idProyecto:
-            animales = AnimalService.animalesDelProyecto(idProyecto)
-            if animales:
-                return animales, 200
-            return {'Status': f'No se encontraron animales para el id {idProyecto} del proyecto.'}, 200
+            return CommonService.jsonMany(AnimalService.animalesDelProyecto(idProyecto),AnimalSchema)
         return {'Error' : "Se debe indicar un id del proyecto"}, 400

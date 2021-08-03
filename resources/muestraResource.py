@@ -22,8 +22,8 @@ class Muestra(Resource):
                 return {'Status': 'Muestra creada'}, 200
             except ValidationError as err:
                 return {'Error': err.messages}, 400
-            except Exception as err:
-                return {'Error': str(err)}, 400
+            """        except Exception as err:
+                return {'Error': str(err)}, 400 """
         return {'Error': "Se deben enviar datos para crear la muestra"}, 400
 
     def put(self):
