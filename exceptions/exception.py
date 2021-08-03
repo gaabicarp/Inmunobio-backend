@@ -51,10 +51,7 @@ class ErrorPermisoGeneral(Exception):
         super().__init__(self.message)
  """
 
-class ErrorJaulaInexistente(Exception):
-    def __init__(self,id_jaula):
-        self.message = f"No se encontró ninguna jaula con el id:{id_jaula}"
-        super().__init__(self.message)    
+
 
 class ErrorBlogInexistente(Exception):
     def __init__(self,id_blog):

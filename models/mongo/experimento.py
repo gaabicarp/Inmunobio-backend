@@ -1,7 +1,6 @@
 from db import dbMongo
 import datetime
 from dateutil import parser
-from models.mongo import blog
 
 from marshmallow import Schema, fields, post_load, validate
 from models.mongo.validacion import Validacion
@@ -49,8 +48,5 @@ class Experimento(dbMongo.Document):
     muestrasExternas = dbMongo.ListField(dbMongo.EmbeddedDocumentField('MuestraExterna'))
     blogs = dbMongo.ListField(dbMongo.EmbeddedDocumentField('Blog'))
 
-
-    """     def json(self):
-        return ().dump(self) """
     
 

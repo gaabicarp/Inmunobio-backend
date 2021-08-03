@@ -1,7 +1,6 @@
 from models.mongo.jaula import Jaula
-from models.mysql.usuario import Usuario
 from models.mongo.proyecto import Proyecto
-from models.mongo.experimento import Experimento, MuestraExterna
+from models.mongo.experimento import Experimento
 from models.mongo.muestra import Muestra
 from models.mongo.grupoExperimental import GrupoExperimental
 from models.mongo.fuenteExperimental import FuenteExperimental
@@ -18,11 +17,10 @@ class ValidacionesUsuario():
         Proyecto.objects.update(pull__participantes=id_usuario)
 
 class Validacion():
-    """@classmethod
-    def elMailEstaEnUso(cls, _email):
-        return Usuario.query.filter_by(email=_email).first() != None 
-        Perdón emma, me llevo tu función a otro lugar para probar algo"""
 
+    @classmethod
+    def laFuenteExperimentalPerteneceAlGrupo(cls,idFuenteExperimental,idGrupo):
+        return GrupoExperimental.objects(id_grupoExperimental=idGrupo,fuentesExperimentales__id_fuenteExperimental = idFuenteExperimental ).first()
     @classmethod
     def elProyectoExiste(cls, idProyecto):
         return Proyecto.objects(id_proyecto=idProyecto).first() != None

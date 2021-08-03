@@ -1,7 +1,7 @@
-from models.mongo.grupoExperimental import GrupoExperimental, GrupoExperimentalSchema, AltaGrupoExperimentalSchema, DividirGrupoExperimentalSchema
-from models.mongo.fuenteExperimental import FuenteExperimental, FuenteExperimentalAnimalSchema, FuenteExperimentalOtroSchema
-from dateutil import parser
-import datetime
+from models.mongo.grupoExperimental import GrupoExperimental
+from schemas.grupoExperimentalSchema import GrupoExperimentalSchema, AltaGrupoExperimentalSchema, DividirGrupoExperimentalSchema,AgregarFuentesAlGrupoExperimentalSchema
+from models.mongo.fuenteExperimental import FuenteExperimental
+from schemas.fuenteExperimentalSchema import  FuenteExperimentalAnimalSchema, FuenteExperimentalOtroSchema
 
 class GrupoExperimentalService:
 
@@ -65,3 +65,7 @@ class GrupoExperimentalService:
     def reasignarCodigoGrupoExperimentalAFuentesExperimentales(grupo):
         for fuente in grupo.fuentesExperimentales:
             FuenteExperimental.objects(id_fuenteExperimental = fuente.id_fuenteExperimental).update(codigoGrupoExperimental = grupo.codigo)
+
+
+    def borrarGrupoExperimental(cls,idGrupoPadre):
+        GrupoExperimental.objects(id_grupoExperimental = idGrupoPadre,parent=idGrupoPadre).delete()

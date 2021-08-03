@@ -1,6 +1,6 @@
 from models.mongo.grupoExperimental import GrupoExperimental
 from models.mongo.muestra import Muestra, MuestraSchema, NuevaMuestraSchema, ModificarMuestraSchema
-from models.mongo.grupoExperimental import MuestraPropia, MuestraPropiaSchema, GrupoExperimental
+from schemas.muestrPropiaSchema import MuestraPropia, MuestraPropiaSchema
 from models.mongo.experimento import Experimento
 from .validationService import Validacion
 from dateutil import parser
@@ -44,7 +44,8 @@ class MuestraService:
                 raise Exception(f"El experimento con id {muestra.id_experimento} no pertenece al proyecto con id {muestra.id_proyecto}")
             if not Validacion().elGrupoExperimentalPerteneceAlExperimento(muestra.id_experimento, muestra.id_grupoExperimental):
                 raise Exception(f"El grupo experimental con id {muestra.id_grupoExperimental} no pertenece al experimento con id {muestra.id_experimento}")
-
+            if not Validacion().laFuenteExperimentalPerteneceAlGrupo(muestra.id_fuenteExperimental, muestra.id_grupoExperimental):
+                raise Exception(f"La fuente experimental con id {muestra.id_fuenteExperimental} no pertenece al grupo experimental con id {muestra.id_grupoExperimental}")
 
     def actualizarMuestrasEnGrupoExperimental(idGrupoExperimental):
         muestras = Muestra.objects.filter(id_grupoExperimental=idGrupoExperimental, habilitada = True).all()
