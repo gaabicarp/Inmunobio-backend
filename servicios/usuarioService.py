@@ -30,11 +30,10 @@ class UsuarioService():
 
     @classmethod
     def nuevoUsuario(cls,datos):
-            from db import db
-        #minimo un permiso  el 5, aun no esta validado , solo valida que sean permisos que existen
             usuario = UsuarioNuevoSchema().load(datos)
             cls.validarEmail(usuario.email)
             cls.hashPassword(usuario,usuario.password)
+            from db import db
             db.session.add(usuario)
             db.session.commit()
 
