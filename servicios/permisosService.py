@@ -31,7 +31,7 @@ class PermisosService():
 
     @classmethod
     def permisosById(cls,permisosDict):
-        cls.validarPermisos(permisosDict)
+        #cls.validarPermisos(permisosDict)
         '''recibe una lista de este estilo [{'id':1, 'descripcion':"asd},{'id':3, 'descripcion':"asd}]
         devuelve none si no encuentra todos los objetos de la lista en la base o una lista con los objetos 
         permisos de la base correspondients a esa id, este servicio lo usa nuevoUsuario()
