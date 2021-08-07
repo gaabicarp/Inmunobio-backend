@@ -25,8 +25,9 @@ Migrate(app, db, compare_type=True)
 
 nojwt = JWT(app, authenticate, identity) 
 
-CORS(app)
-cors = CORS(app,resource={r"/api/v1/*":{"origins":"*"}})
+app.config['CORS_HEADERS'] = 'Content-Type'
+
+cors = CORS(app)
 
 
 
