@@ -20,7 +20,8 @@ services:
           
     mongo:
       container_name: MongoDocker
-      image: mongo
+      restart: always
+      image: mongo:4.4.6
       ports:
           - 27017:27017
       volumes:
@@ -30,12 +31,14 @@ services:
 
     flask:
       container_name: BackDocker
+      restart: always
       build:
         context: ./
       ports: 
          - 8080:8080
       links:
          - mysql
+         - mongo
       networks:
          - env_prod
       depends_on:
@@ -49,13 +52,13 @@ networks:
     driver_opts: 
             com.docker.network.enable_ipv6: "true"
     #IP Adress Manager
-    ipam: 
-        driver: default
-        config:
-        - subnet: 172.16.232.0/24
-          gateway: 172.16.232.1
-        - subnet: "2001:3974:3979::/64"
-          gateway: "2001:3974:3979::1"
+    # ipam: 
+    #     driver: default
+    #     config:
+    #     - subnet: 172.16.232.0/24
+    #       gateway: 172.16.232.1
+    #     - subnet: "2001:3974:3979::/64"
+    #       gateway: "2001:3974:3979::1"
 #   env_prep:   
 #     driver: bridge  
 #     #activate ipv6
