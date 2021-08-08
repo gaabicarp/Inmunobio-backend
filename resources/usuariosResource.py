@@ -16,7 +16,6 @@ class ObtenerUsuariosResource(Resource):
     def get(self):
         return CommonService.jsonMany(UsuarioService.findUsuariosHabilitados(), UsuarioSchema)
 
-
 class UsuarioResource(Resource):
     # @jwt_required()
     def put(self):

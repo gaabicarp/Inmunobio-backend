@@ -5,7 +5,6 @@ from servicios.validationService import  ValidacionesUsuario
 from werkzeug.security import generate_password_hash,check_password_hash
 
 class UsuarioService():
-
     @classmethod
     def modificarUsuario(cls, datos):
         usuario = cls.validarModificacion(datos)
@@ -30,16 +29,15 @@ class UsuarioService():
 
     @classmethod
     def nuevoUsuario(cls,datos):
-            usuario = UsuarioNuevoSchema().load(datos)
-            cls.validarEmail(usuario.email)
-            cls.hashPassword(usuario,usuario.password)
-            from db import db
-            db.session.add(usuario)
-            db.session.commit()
+        usuario = UsuarioNuevoSchema().load(datos)
+        cls.validarEmail(usuario.email)
+        cls.hashPassword(usuario,usuario.password)
+        from db import db
+        db.session.add(usuario)
+        db.session.commit()
 
     @classmethod
     def hashPassword(cls,usuario,password):
-        #cls.validarPassword(password) se movio a a schema
         usuario.password = generate_password_hash(password, method='sha256')
          
     @classmethod
@@ -58,8 +56,6 @@ class UsuarioService():
     @classmethod
     def find_by_email(cls, _email):
         return Usuario.query.filter_by(email=_email, habilitado = True).first()
-        #if not resultado: raise ErrorUsuarioInexistente(_email)
-        #return resultado , hay que sacar el error xq se usa en la aut. 
 
     @classmethod
     def find_by_id(cls, _id):

@@ -30,34 +30,16 @@ class ErrorEspacioFisicoInexistente(Exception):
         super().__init__(self.message)
 
 
-class ErrorUnidadStock(Exception):
-    def __init__(self):
-        self.message = "Las unidades de Stock deben ser numeros enteros positivos / la consumicion de stock no debe pasar del total de unidades"
-        super().__init__(self.message)
-
 class ErrorPermisoInexistente(Exception):
     def __init__(self,id_permiso):
         self.message = f"No hay permisos asociados con id {id_permiso}" 
         super().__init__(self.message)
-
-class ErrorPermisoGeneral(Exception):
-    def __init__(self):
-        self.message = f"Debe asignarse al menos el permiso 5 : Usuario general." 
-        super().__init__(self.message)
-
-""" class ErrorGrupoDeTrabajoGeneral(Exception):
-    def __init__(self):
-        self.message = "El grupo es general y no puede darse de baja." 
-        super().__init__(self.message)
- """
-
 
 
 class ErrorBlogInexistente(Exception):
     def __init__(self,id_blog):
         self.message = f"No se encontró ningun blog con el id: {id_blog}"
         super().__init__(self.message)    
-
 
 class ErrorHerramientaInexistente(Exception):
     def __init__(self,id_herr):
@@ -103,13 +85,3 @@ class ErrorEspacioDeproyecto(Exception):
         self.message = f"El espacio fisico con id.{id_espFisico} asociado al proyecto id.{id_proyecto} ya no se encuentra disponible"
         super().__init__(self.message)  
 
-class ErrorNombreInvalido(Exception):
-    def __init__(self):
-        self.message = ""
-        super().__init__(self.message)      
-
-
-class ErrorStockVacio(Exception):
-    def __init__(self):
-        self.message = ""
-        super().__init__(self.message)         

@@ -1,5 +1,4 @@
 from flask import jsonify
-from exceptions.exception import ErrorNombreInvalido
 class CommonService():
     
     def updateAtributes(object,atribute,keyExclude = []):
@@ -45,16 +44,10 @@ class CommonService():
 
     @classmethod
     def asignarNombreAObjeto(cls,objeto,functionGetNameOf, id,etiqueta):
-        try:
-            cls.validarId(id)
-            cls.asignaNombre(functionGetNameOf(id), etiqueta,objeto)
-        except ErrorNombreInvalido as err:
-            cls.asignaNombre(id, etiqueta,objeto)
-        finally: return objeto
+        if id: cls.asignaNombre(functionGetNameOf(id), etiqueta,objeto)
+        else:cls.asignaNombre(id, etiqueta,objeto)
+        return objeto
 
-    @classmethod
-    def validarId(cls,id):
-        if not id : raise ErrorNombreInvalido
 
     @classmethod
     def asignaNombre(cls,valor,clave,objeto):
