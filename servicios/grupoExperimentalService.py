@@ -7,11 +7,11 @@ class GrupoExperimentalService:
 
     @classmethod
     def find_by_id(cls, id):
-        return GrupoExperimental.objects(id_grupoExperimental = id).first().json()
+        return GrupoExperimental.objects(id_grupoExperimental = id).first()
     
     @classmethod
     def gruposExperimentalesDelExperimento(cls, _id_experimento):
-        return GrupoExperimentalSchema().dump(GrupoExperimental.objects(id_experimento = _id_experimento).all(), many=True)
+        return GrupoExperimental.objects(id_experimento = _id_experimento).all()
 
     @classmethod
     def CrearGrupoExperimental(cls, datos):

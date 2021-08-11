@@ -2,15 +2,15 @@ from flask_restful import Resource
 from flask_jwt import jwt_required
 from flask import request
 from marshmallow import ValidationError
-
+from servicios.commonService import CommonService
 from servicios.grupoExperimentalService import GrupoExperimentalService
+from schemas.grupoExperimentalSchema import GrupoExperimentalSchema, AltaGrupoExperimentalSchema, DividirGrupoExperimentalSchema,AgregarFuentesAlGrupoExperimentalSchema
 
 class GrupoExperimental(Resource):
 
     def get(self, idGrupoExperimental):
         if idGrupoExperimental:
-            grupoExperimental = GrupoExperimentalService().find_by_id(idGrupoExperimental)
-            return grupoExperimental, 200
+            return  CommonService.json(GrupoExperimentalService().find_by_id(idGrupoExperimental),GrupoExperimentalSchema) 
         return {"Error" : "Se debe indicar el id del grupo experimental"}
 
     def delete(self, idGrupoExperimental):
@@ -30,14 +30,9 @@ class GrupoExperimental(Resource):
         return {"Error" : "Se deben enviar datos para la creación de un grupo experimental"}, 400
 
 class GruposExperimentales(Resource):
-
     def get(self, idExperimento):
         if idExperimento:
-            gruposExperimentales = GrupoExperimentalService().gruposExperimentalesDelExperimento(idExperimento)
-            if gruposExperimentales:
-                return gruposExperimentales, 200
-            else:
-                return {f"Status" : "No se encontraron grupos experimentales para el experimento {idExperimento}"}, 204
+            return CommonService.jsonMany(GrupoExperimentalService().gruposExperimentalesDelExperimento(idExperimento), GrupoExperimentalSchema) 
         return {"Error" : "Se debe enviar un id del experimento"}, 400
 
 class DividirGrupoExperimental(Resource):
