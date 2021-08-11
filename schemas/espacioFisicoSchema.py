@@ -7,7 +7,6 @@ class EspacioFisicoSchema(Schema):
     piso = fields.String()
     sala = fields.String()
     descripcion = fields.String()
-    #blogs = fields.Nested(BlogSchema,many=True)
     id_espacioFisico = fields.Integer()
     #tipo = dbMongo.StringField() #Revisar y preguntar /Taller, Bioterio, etc
 
@@ -16,14 +15,17 @@ class ModificarEspacioFisico(EspacioFisicoSchema):
     blogs = fields.Nested(BlogSchema,many=True)
 
 class NuevoEspacioFisicoSchema(Schema):
-    nombre = fields.String(required=True, error_messages={"required": {"message" : "Deben indicarse el nombre del espacio", "code": 400}})
-    piso = fields.String()
-    sala = fields.String()
+    nombre = fields.String(required=True, error_messages={"required": {"message" : "Deben indicarse el nombre del espacio fisico", "code": 400}})
+    piso = fields.String(required=True, error_messages={"required": {"message" : "Deben indicarse el piso del espacio fisico", "code": 400}})
+    sala = fields.String(required=True, error_messages={"required": {"message" : "Deben indicarse la sala del espacio fisico", "code": 400}})
     descripcion = fields.String()
 
     @post_load
     def makeEspacio(self, data, **kwargs):
         return EspacioFisico(**data)
+
+class EspacioFisicoBaseSchema(NuevoEspacioFisicoSchema):
+    blogs = fields.Nested(BlogSchema,many=True)
 
 class NuevoBlogEspacioFisicoSchema(Schema):
     id_espacioFisico = fields.Integer(required=True, error_messages={"required": {"message" : "Deben indicarse el id del espacio", "code": 400}})

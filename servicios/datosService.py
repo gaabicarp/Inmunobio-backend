@@ -7,7 +7,7 @@ class DatosService:
     @classmethod
     def llenarBase(cls,datos):
         datosObject = DatosSchema().load(datos)
-        [ unObj.save() for unObj in datosObject['proyecto'] ]
+        [ unObj.save() for unObj in datosObject ]
 
     @classmethod
     def llenarBaseMysql(cls,datos):

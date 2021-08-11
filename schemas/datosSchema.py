@@ -1,11 +1,20 @@
 from marshmallow import Schema, fields
+
 from .usuarioSchema import UsuariosBase
 from .proyectoSchema import ProyectoSchema
 from.permisosSchema import PermisoBase
+from .espacioFisicoSchema import EspacioFisicoBaseSchema
+from .distribuidoraSchema import NuevaDistribuidoraSchema
+from .contenedorSchema import ContenedorNuevoSchema
 
 class DatosSchema(Schema):
-    proyecto = fields.Nested(ProyectoSchema,many=True)
+    class Meta:
+        ordered = True
 
+    proyecto = fields.Nested(ProyectoSchema,many=True)
+    espacioFisico= fields.Nested(EspacioFisicoBaseSchema,many=True)
+    distribuidora = fields.Nested(NuevaDistribuidoraSchema,many=True)
+    contenedor = fields.Nested(ContenedorNuevoSchema,many=True)
 
 class DatosMysql(Schema):
     class Meta:
