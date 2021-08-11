@@ -23,7 +23,7 @@ class EspacioFisicoService():
     def find_by_id(cls,id):
         espacio =  EspacioFisico.objects(id_espacioFisico = id).first()
         if(not espacio):
-            raise ErrorEspacioFisicoInexistente(id)
+            raise Exception(f"No existe espacio fisico con id {id}")
         return espacio     
 
     @classmethod
@@ -50,6 +50,7 @@ class EspacioFisicoService():
     def obtenerBlogs(cls,datos):
         BusquedaBlogEspacio().load(datos)
         espacio = cls.find_by_id(datos['id_espacioFisico'])
+        print(espacio.blogs)
         return BlogService.busquedaPorFecha(espacio.blogs,datos['fechaDesde'],datos['fechaHasta'])
 
     @classmethod

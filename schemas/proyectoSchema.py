@@ -21,6 +21,7 @@ class ProyectoSchema(Schema):
     @post_load
     def make_Proyecto(self, data, **kwargs):
         return Proyecto(**data)
+
         
 class ProyectoExtendido(ProyectoSchema):
     participantes = fields.Nested(UsuarioSchema, many=True)

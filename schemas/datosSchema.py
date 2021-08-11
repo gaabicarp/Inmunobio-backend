@@ -6,6 +6,8 @@ from.permisosSchema import PermisoBase
 from .espacioFisicoSchema import EspacioFisicoBaseSchema
 from .distribuidoraSchema import NuevaDistribuidoraSchema
 from .contenedorSchema import ContenedorNuevoSchema
+from .herramientaSchema import HerramientaBaseSchema
+from .jaulaSchema import JaulaBaseSchema
 
 class DatosSchema(Schema):
     class Meta:
@@ -15,6 +17,9 @@ class DatosSchema(Schema):
     espacioFisico= fields.Nested(EspacioFisicoBaseSchema,many=True)
     distribuidora = fields.Nested(NuevaDistribuidoraSchema,many=True)
     contenedor = fields.Nested(ContenedorNuevoSchema,many=True)
+    herramienta = fields.Nested(HerramientaBaseSchema,many=True) 
+    jaula = fields.Nested(JaulaBaseSchema,many=True)  
+    
 
 class DatosMysql(Schema):
     class Meta:

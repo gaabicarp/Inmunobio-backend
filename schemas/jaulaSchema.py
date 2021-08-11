@@ -52,3 +52,7 @@ class BusquedaBlogsJaula(Schema):
 
 class BusquedaBlogJaula(BusquedaBlogsJaula):
     id_jaula = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse  id_jaula", "code": 400}}) 
+
+class JaulaBaseSchema(NuevaJaulaSchema):
+    blogs = fields.Nested(BlogSchema,required=True, error_messages={"required": {"message" : "Es necesario indicar datos de blog de jaula", "code" : 400}},many=True)
+

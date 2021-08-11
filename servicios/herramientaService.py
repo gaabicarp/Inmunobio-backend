@@ -14,12 +14,18 @@ class HerramientaService:
     @classmethod
     def nuevaHerramienta(cls,datos):
         herramienta = NuevaHerramientaSchema().load(datos)
+        cls.espacioFisValidacion(herramienta.id_espacioFisico)
         herramienta.save()
-
+    @classmethod
+    def espacioFisValidacion(cls,id_espacio):
+        from servicios.espacioFisicoService import EspacioFisicoService
+        EspacioFisicoService.find_by_id(id_espacio)
+    
     @classmethod
     def modificarHerramienta(cls,datos):
         HerramientaSchema().load(datos)
         herramienta =  cls.find_by_id(datos['id_herramienta'])
+        cls.espacioFisValidacion(herramienta.id_espacioFisico)
         herramienta.update(
             nombre = datos['nombre'],
             detalle = datos['detalle'],

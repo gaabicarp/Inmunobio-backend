@@ -27,6 +27,7 @@ class NuevoEspacioFisicoSchema(Schema):
 class EspacioFisicoBaseSchema(NuevoEspacioFisicoSchema):
     blogs = fields.Nested(BlogSchema,many=True)
 
+
 class NuevoBlogEspacioFisicoSchema(Schema):
     id_espacioFisico = fields.Integer(required=True, error_messages={"required": {"message" : "Deben indicarse el id del espacio", "code": 400}})
     blogs = fields.Nested(NuevoBlogSchema)

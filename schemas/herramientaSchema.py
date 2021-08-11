@@ -5,13 +5,6 @@ from schemas.blogSchema import BlogSchema,NuevoBlogSchema
 from servicios.espacioFisicoService import EspacioFisicoService
 from exceptions.exception import ErrorEspacioFisicoInexistente
 
-def espacioFisValidacion(data):
-    try:
-        EspacioFisicoService.find_by_id(data)
-    except ErrorEspacioFisicoInexistente as err:
-        raise ValidationError(err.message)
-
-
 
 class HerramientaSchema(Schema):
     nombre = fields.String()
@@ -23,13 +16,15 @@ class HerramientaSchema(Schema):
 class NuevaHerramientaSchema(Schema):
     nombre = fields.String(required=True,error_messages={"required": {"message": "Debe indicarse el nombre de la herramienta", "code": 400}})
     detalle = fields.String()
-    id_espacioFisico = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse espacio fisico", "code": 400}},validate =espacioFisValidacion) 
+    id_espacioFisico = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse espacio fisico", "code": 400}}) 
 
     @post_load
     def makeHerramienta(self, data, **kwargs):
         return Herramienta(**data)
 
-
+class HerramientaBaseSchema(NuevaHerramientaSchema):
+    blogs = fields.Nested(NuevoBlogSchema,required=True, error_messages={"required": {"message" : "Es necesario indicar datos de blog ", "code" : 400}},many=True)
+  
 class NuevoBlogHerramientaSchema(Schema):
     blogs = fields.Nested(NuevoBlogSchema,required=True, error_messages={"required": {"message" : "Es necesario indicar datos de blog ", "code" : 400}})
     id_herramienta = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse  id_herramienta", "code": 400}}) 
