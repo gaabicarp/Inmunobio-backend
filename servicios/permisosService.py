@@ -4,12 +4,12 @@ from models.mysql.permiso import Permiso
 from flask import jsonify
 from schemas.permisosSchema import PermisoSchema,PermisoExistenteSchema
 from servicios.commonService import CommonService
-from exceptions.exception import ErrorPermisoInexistente,ErrorPermisoGeneral
+from exceptions.exception import ErrorPermisoInexistente
 
 class PermisosService():
     jefeDeGrupo = 3
     jefeProyecto = 4
-    
+    tecnico = 5
     @classmethod
     def json(cls,datos):
         return jsonify( PermisoSchema().dump(datos))
@@ -27,13 +27,13 @@ class PermisosService():
         return CommonService.jsonMany(permisos,PermisoExistenteSchema)
 
     @classmethod
-    def validarPermisos(cls,permisosDicts):
-        if not any(permiso['id_permiso'] == 5 for permiso in permisosDicts): raise ErrorPermisoGeneral()
+    def permisosDefault(cls,permisosDicts):
+        if not cls.tieneElPermiso(permisosDicts,cls.tecnico): permisosDicts.append(cls.find_by_id(cls.tecnico))
+        return permisosDicts
 
     @classmethod
     def permisosById(cls,permisosDict):
-        #cls.validarPermisos(permisosDict) -> ya no lo validamos, sino que se agrega.
-        return list(set(map(lambda x : cls.find_by_id(x['id_permiso']), permisosDict)))
+        return cls.permisosDefault(list(set(map(lambda x : cls.find_by_id(x['id_permiso']), permisosDict))))
 
     @classmethod
     def obtenerPermisoPorId(cls,id_permiso):
@@ -43,12 +43,12 @@ class PermisosService():
             return {'error': err.message},400
 
     @classmethod
-    def tieneElPermiso(cls,usuario,idPermiso):
-        return any( permiso.id_permiso == idPermiso for permiso in usuario.permisos)
+    def tieneElPermiso(cls, permisos, idPermiso):
+        return any( permiso.id_permiso == idPermiso for permiso in permisos)
     
     @classmethod
     def esJefeDeProyecto(cls,usuario):
-        if not cls.tieneElPermiso(usuario,cls.jefeProyecto): raise Exception(f"El usuario {usuario.nombre} no tiene permisos como Jefe De Proyecto id.{cls.jefeProyecto}")
+        if not cls.tieneElPermiso(usuario.permisos,cls.jefeProyecto): raise Exception(f"El usuario {usuario.nombre} no tiene permisos como Jefe De Proyecto id.{cls.jefeProyecto}")
 
 
 

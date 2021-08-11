@@ -10,10 +10,8 @@ class DatosResourceMongo(Resource):
         try:
             DatosService.llenarBase(datos)
             return  {'ok': 'Todo salio bien n.n '}, 200
-        except ValidationError as err:
-            return {'error': err.messages}, 400
         except Exception as err:
-            return {'Error': str(err)}, 400
+            return {'Error': err.args}, 400
 
 class DatosResourceMysql(Resource):
     #@jwt_required()
@@ -22,7 +20,5 @@ class DatosResourceMysql(Resource):
         try:
             DatosService.llenarBaseMysql(datos)
             return  {'ok': 'Todo salio bien n.n '}, 200
-        except ValidationError as err:
-            return {'error': err.messages}, 400
         except Exception as err:
-            return {'Error': str(err)}, 400
+            return {'Error': err.args}, 400
