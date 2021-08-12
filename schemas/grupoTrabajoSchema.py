@@ -13,19 +13,21 @@ class GrupoDeTrabajoSchema(Schema):
     nombre = fields.Str()
     jefeDeGrupo = fields.Integer()
     integrantes = fields.List(fields.Int())
-    grupoGral = fields.Boolean()
-  
-class NuevoGrupoDeTrabajoSchema(Schema):
-    nombre = fields.Str(required=True,error_messages={"required": {"message": "Debe indicarse nombre de grupo", "code": 400}}) 
-    jefeDeGrupo = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse Jefe de Grupo", "code": 400}}) 
     grupoGral = fields.Boolean(default=False)
-    integrantes = fields.List(fields.Int())
 
     @post_load
     def make_Grupo(self, data, **kwargs):
         return GrupoDeTrabajo(**data)
 
-
+class NuevoGrupoDeTrabajoSchema(GrupoDeTrabajoSchema):
+    nombre = fields.Str(required=True,error_messages={"required": {"message": "Debe indicarse nombre de grupo", "code": 400}}) 
+    jefeDeGrupo = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse Jefe de Grupo", "code": 400}}) 
+    
+class GrupoDeTrabajoDatosExtra(GrupoDeTrabajoSchema):
+    from .usuarioSchema import UsuarioSchema
+    jefeDeGrupo = fields.Nested(UsuarioSchema)
+    integrantes = fields.Nested(UsuarioSchema, many=True)
+    
 class ModificarGrupoDeTrabajoSchema(NuevoGrupoDeTrabajoSchema):
     id_grupoDeTrabajo = fields.Integer(required=True,
     error_messages={"required": {"message": "Debe indicarse id de grupo", "code": 400}}

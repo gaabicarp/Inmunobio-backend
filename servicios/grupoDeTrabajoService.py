@@ -1,15 +1,15 @@
 from schemas.grupoTrabajoSchema import jefeDeGrupoSchema, ModificarGrupoDeTrabajoSchema, GrupoDeTrabajoSchema, GrupoDeTrabajo, NuevoGrupoDeTrabajoSchema
-from servicios.usuarioService import UsuarioService
 from servicios.commonService import CommonService
 
 
 class GrupoDeTrabajoService():
+
     idGrupoDefault = 0
 
     def find_by_id(id):
         grupo = GrupoDeTrabajo.objects.filter(id_grupoDeTrabajo=id).first()
         if(not grupo):
-            raise Exception("Grupo de trabajo inexistente")
+            raise Exception("Grupo de trabajo inexistente.")
         return grupo
 
     def find_by_nombre(_nombre):
@@ -30,7 +30,7 @@ class GrupoDeTrabajoService():
         cls.asignarIdGrupoMiembros(cls.diferenciaConjuntos(grupoViejo.integrantes, grupoNuevo.integrantes), cls.idGrupoDefault)
         if(grupoNuevo.jefeDeGrupo != grupoViejo.jefeDeGrupo):
             cls.nombrarJefe(grupoNuevo.jefeDeGrupo, grupoNuevo.id_grupoDeTrabajo)
-            cls.desnombrarJefe(grupoViejo.jefeDeGrupo)
+            cls.nombrarJefe(grupoViejo.jefeDeGrupo, cls.idGrupoDefault)
 
     @classmethod
     def diferenciaConjuntos(cls, primerConjunto, segundoConjunto):
@@ -55,8 +55,14 @@ class GrupoDeTrabajoService():
     @classmethod
     def obtenerGrupoPorId(cls, idGrupoDeTrabajo):
         grupoConsulta = cls.find_by_id(idGrupoDeTrabajo)
-        jefeDeGrupo = UsuarioService.find_by_id(grupoConsulta.jefeDeGrupo)
-        return grupoConsulta, jefeDeGrupo.nombre
+        cls.agregarDatosGrupo(grupoConsulta)
+        return grupoConsulta
+
+    @classmethod
+    def agregarDatosGrupo(cls,grupo):
+        from servicios.usuarioService import UsuarioService
+        grupo.jefeDeGrupo = UsuarioService.find_by_id(grupo.jefeDeGrupo)
+        grupo.integrantes = UsuarioService.busquedaUsuariosID(grupo.integrantes)
 
     @classmethod
     def asignarIDGrupo(cls, grupo, id):
@@ -67,17 +73,15 @@ class GrupoDeTrabajoService():
 
     @classmethod
     def asignarIdGrupoMiembros(cls, idIntegrantes, idGrupo):
+        from servicios.usuarioService import UsuarioService
         [UsuarioService.cambiarIdGrupo(id, idGrupo) for id in idIntegrantes]
 
     def obtenerTodosLosGrupos():
         return CommonService.jsonMany(GrupoDeTrabajo.objects.all(), GrupoDeTrabajoSchema)
 
     @classmethod
-    def desnombrarJefe(cls, idJefe):
-        UsuarioService.asignarGrupoAJefe(idJefe, cls.idGrupoDefault)
-
-    @classmethod
     def nombrarJefe(cls, idJefe, idGrupo):
+        from servicios.usuarioService import UsuarioService
         UsuarioService.asignarGrupoAJefe(idJefe, idGrupo)
 
     def validarDelete(grupo):
@@ -85,13 +89,17 @@ class GrupoDeTrabajoService():
 
     @classmethod
     def validarMiembros(cls, integrantes):
+        from servicios.usuarioService import UsuarioService
         [UsuarioService.validaAsignacionGrupo(idIntegrante) for idIntegrante in integrantes]
 
     @classmethod
-    def validarJefe(cls, id_jefeDeGrupo,idGrupo): UsuarioService.validarJefeDeGrupo(id_jefeDeGrupo,idGrupo)
+    def validarJefe(cls, id_jefeDeGrupo,idGrupo): 
+        from servicios.usuarioService import UsuarioService
+        UsuarioService.validarJefeDeGrupo(id_jefeDeGrupo,idGrupo)
 
     
-    
+
+
     #-------------------este endpoint ya no se usa:
     @classmethod
     def modificarJefeGrupo(cls, datos):

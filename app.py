@@ -46,26 +46,6 @@ def Prueba():
 	f = UsuarioService.findUsuariosHabilitados()
 	return f"{f}"
 
-@app.route('/llenarUsuarios', methods=["POST"])
-def llenar_usuarios():
-	from models.scripts.scriptUsers import SqlScriptUsuarios
-	return SqlScriptUsuarios.llenarTablasUsuarios()
-
-
-
-#ejecutar esta funcion una unica vez para crear las tablas y los permisos
-@app.route('/llenar_mysql')
-def llenar_msyql():
-	from models.scripts.sql_script import MysqlScript
-	MysqlScript.ScriptLlenarTablas()
-	return {'Status':'ok'}
-
-@app.route('/prueba_csv')
-def prueba_csv():
-	from models.scripts.sql_script import MongoScript
-	MongoScript().leerArchivoCSV('Proyecto.csv')
-	return {'Status':'ok'}
-
 	
 if __name__ == "__main__":
 	if app.config['DEBUG']:

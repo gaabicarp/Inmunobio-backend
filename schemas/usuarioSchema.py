@@ -20,8 +20,9 @@ class UsuarioSchema(Schema):
     direccion = fields.Str()
     telefono = fields.Str()
     permisos = fields.Nested(PermisoExistenteSchema, many=True)
-    id_grupoDeTrabajo =fields.Integer(allow=None)
-    esJefeDe = fields.Integer(allow=None)
+    id_grupoDeTrabajo =fields.Integer(default=0,missing = 0)
+    esJefeDe = fields.Integer(default=0,missing = 0) #missing para serializacion , default para  deserializacion
+
 
 class UsuarioNuevoSchema(UsuarioSchema):
     email = fields.Str( required=True,error_messages={"required": {"message": "Se necesita ingresar el mail", "code": 400}})
@@ -31,9 +32,11 @@ class UsuarioNuevoSchema(UsuarioSchema):
     
     @post_load
     def make_Usuario(self, data, **kwargs):
+        print(data)
         return Usuario(**data)
 
 class UsuariosBase(UsuarioNuevoSchema):
+
     @post_load
     def make_Usuario(self, data, **kwargs):
         from db import db

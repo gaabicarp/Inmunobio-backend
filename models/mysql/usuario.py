@@ -21,10 +21,10 @@ class Usuario(db.Model):
     direccion = db.Column(String(50))
     telefono = db.Column(String(120))
     permisos = db.relationship('Permiso',secondary =permisoXUsuario, backref = db.backref('permisos'),lazy = 'dynamic')
-    id_grupoDeTrabajo =  db.Column(db.Integer)
-    esJefeDe = db.Column(db.Integer)
+    id_grupoDeTrabajo =  db.Column(db.Integer,default = 0)
+    esJefeDe = db.Column(db.Integer,default = 0)
     
-    def __init__(self, nombre, email, password,direccion,telefono,permisos):
+    def __init__(self, nombre, email, password,direccion,telefono,permisos,id_grupoDeTrabajo,esJefeDe):
         from servicios.permisosService import PermisosService
         self.nombre = nombre
         self.email = email
@@ -32,6 +32,9 @@ class Usuario(db.Model):
         self.direccion = direccion
         self.telefono = telefono
         self.permisos = PermisosService.permisosById(permisos)
+        self.id_grupoDeTrabajo =id_grupoDeTrabajo
+        self.esJefeDe = esJefeDe
+
 
     
 
