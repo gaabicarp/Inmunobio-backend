@@ -8,6 +8,7 @@ from .distribuidoraSchema import NuevaDistribuidoraSchema
 from .contenedorSchema import ContenedorNuevoSchema
 from .herramientaSchema import HerramientaBaseSchema
 from .jaulaSchema import JaulaBaseSchema
+from .grupoTrabajoSchema import NuevoGrupoDeTrabajoSchema
 
 class DatosSchema(Schema):
     class Meta:
@@ -19,8 +20,8 @@ class DatosSchema(Schema):
     contenedor = fields.Nested(ContenedorNuevoSchema,many=True)
     herramienta = fields.Nested(HerramientaBaseSchema,many=True) 
     jaula = fields.Nested(JaulaBaseSchema,many=True)  
+    grupoDeTrabajo = fields.Nested(NuevoGrupoDeTrabajoSchema,many=True)  
     
-
 class DatosMysql(Schema):
     class Meta:
         ordered = True
