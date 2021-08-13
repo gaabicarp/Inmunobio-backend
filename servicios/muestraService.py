@@ -90,7 +90,7 @@ class MuestraService:
     
     @classmethod
     def obtenerMuestrasDeFuente(cls,_id_fuente):
-        return Muestra.objects(id_fuente=_id_fuente).all()
+        return Muestra.objects(id_fuenteExperimental=_id_fuente).all()
 
     def agregarMuestrasExternasAlExperimento(cls, datos):
         experimento = AgregarMuestrasAlExperimentoSchema().load(datos)
