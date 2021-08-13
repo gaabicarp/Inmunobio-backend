@@ -1,6 +1,6 @@
 from marshmallow import Schema, fields, post_load, validate
 from models.mongo.validacion import Validacion
-from models.mongo.muestra import MuestraSchema
+from schemas.muestraSchema import MuestraSchema
 from models.mongo.experimento import Experimento
 from schemas.blogSchema import BlogSchema
 
@@ -51,3 +51,9 @@ class BusquedaBlogExp(Schema):
     fechaDesde = fields.String(required=True,error_messages={"required": {"message": "Debe indicarse  fecha-desde.", "code": 400}}) 
     fechaHasta = fields.String(required=True,error_messages={"required": {"message": "Debe indicarse  fecha-hasta", "code": 400}}) 
     id_experimento = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse  id_experimento", "code": 400}}) 
+
+
+class AgregarMuestrasAlExperimentoSchema(ExperimentoSchema):
+    id_proyecto = fields.Int(required=True, validate=Validacion.not_empty_int, error_messages={"required": {"message" : "Es necesario indicar el id del proyecto", "code": 400}})
+    id_experimento = fields.Int(required=True, validate=Validacion.not_empty_int, error_messages={"required": {"message": "El campo id_experimento es necesario, no puede estar vacío", "code": 400}})
+    muestrasExternas = fields.Nested( MuestraExternaSchema, many=True, required=True, validate=Validacion.not_empty_list, error_messages={"required": {"message": "El campo muestras externas no puede estar vacío", "code": 400}})

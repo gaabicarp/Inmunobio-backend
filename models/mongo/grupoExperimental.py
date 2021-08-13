@@ -13,7 +13,4 @@ class GrupoExperimental(dbMongo.Document):
     parent = dbMongo.IntField(default = 0)
     habilitado = dbMongo.BooleanField(default = True)
 
-
-
-
-        
+    

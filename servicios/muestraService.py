@@ -1,7 +1,9 @@
 from models.mongo.grupoExperimental import GrupoExperimental
-from models.mongo.muestra import Muestra, MuestraSchema, NuevaMuestraSchema, ModificarMuestraSchema
-from schemas.muestrPropiaSchema import MuestraPropia, MuestraPropiaSchema
+from models.mongo.muestra import Muestra
+from schemas.muestraSchema import  MuestraSchema, NuevaMuestraSchema, ModificarMuestraSchema
+from schemas.muestrPropiaSchema import  MuestraPropiaSchema
 from models.mongo.experimento import Experimento
+from schemas.experimentoSchema import AgregarMuestrasAlExperimentoSchema
 from .validationService import Validacion
 from dateutil import parser
 import datetime
@@ -19,8 +21,7 @@ class MuestraService:
     
     @classmethod
     def find_all_by_grupoExperimental(cls, idGrupoExperimental):
-        muestras = Muestra.objects(id_grupoExperimental=idGrupoExperimental, habilitada = True).all()
-        return MuestraSchema().dump(muestras, many=True)
+        return Muestra.objects(id_grupoExperimental=idGrupoExperimental, habilitada = True).all()
 
     @classmethod
     def find_all_by_proyecto(cls, idProyecto):
@@ -86,3 +87,12 @@ class MuestraService:
         Muestra.objects(id_muestra = idMuestra).update(habilitada = False)
         cls.actualizarMuestrasEnGrupoExperimental(muestra.id_grupoExperimental)
         cls.removerMuestraExternaDelExperimento(muestra)
+    
+    @classmethod
+    def obtenerMuestrasDeFuente(cls,_id_fuente):
+        return Muestra.objects(id_fuente=_id_fuente).all()
+
+    def agregarMuestrasExternasAlExperimento(cls, datos):
+        experimento = AgregarMuestrasAlExperimentoSchema().load(datos)
+        cls.validarMuestrasExternas(cls, experimento)
+        Experimento.objects(id_experimento = experimento.id_experimento).update(muestrasExternas=experimento.muestrasExternas)
