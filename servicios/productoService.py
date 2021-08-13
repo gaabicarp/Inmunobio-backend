@@ -60,7 +60,7 @@ class ProductoService():
 
     def obtenerProducto(cls,id_producto):
         producto = cls.find_by_id(id_producto)
-        return CommonService.asignacionNombresDistribuidora(ProductoSchema().dump(producto),producto.id_distribuidora)
+        return CommonService.asignacionNombresDistribuidora(ProductoSchema().dump(producto))
 
     @classmethod
     def bajaStockExterno(cls,_id_distribuidora):
