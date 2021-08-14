@@ -92,6 +92,6 @@ class Validacion():
     def elContenedorPadreEstaDisponible(contenedor):
         return Contenedor.objects(id_contenedor = contenedor.parent, disponible = True).first() != None
     
-    def existeLaJaulas(idJaula):
+"""     def existeLaJaulas(idJaula):
         jaula = Jaula.objects(id_jaula = idJaula, habilitado = True).first()
-        return jaula != None
+        return jaula != None """
