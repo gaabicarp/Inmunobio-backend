@@ -27,14 +27,14 @@ class AnimalService:
     @classmethod
     def asignarJaulaAAnimales(cls, datos):
         animales = AsignarAnimalAJaula().load(datos, many=True)
-        #cls.validarJaula(animales[0].id_jaula)
+        cls.validarJaula(animales[0].id_jaula)
         for animal in animales:
-            cls.validarJaula(animal.id_jaula)
-            FuenteExperimental.objects(id_fuenteExperimental =  animal.id_fuenteExperimental).update(id_jaula = animal.id_jaula)
+            _id_proyecto = cls.validarJaula(animal.id_jaula)
+            FuenteExperimental.objects(id_fuenteExperimental =  animal.id_fuenteExperimental).update(id_jaula = animal.id_jaula, id_proyecto = _id_proyecto )
     
     def validarJaula(idJaula):
-        if not Validacion.existeLaJaulas(idJaula):
-            raise Exception(f"No existe la jaula con id {idJaula} o no se encuentra habilitada.")
+        from .jaulaService import JaulaService
+        return JaulaService.find_by_id(idJaula).id_proyecto
 
     @classmethod
     def todosLosAnimales(cls):

@@ -1,11 +1,8 @@
 from flask_restful import Resource
 from flask_jwt import jwt_required
 from flask import request, jsonify
-
-from marshmallow import ValidationError
 from servicios.jaulaService import JaulaService
 from schemas.jaulaSchema import  JaulaSchema
-from marshmallow import ValidationError
 from servicios.commonService import CommonService
 
 class Jaula(Resource):
@@ -17,9 +14,7 @@ class Jaula(Resource):
                 JaulaService.crearJaula(datos)
                 return {"status": "Jaula creada."}, 200
             except Exception as err:
-                return {"Error": str(err)}, 400
-            except ValidationError as err:
-                return {'Error': err.messages},400
+                return {"Error": err.args}, 400
         return  {'Error':'Se deben enviar datos para la creación de la jaula.'},400
 
     def put(self):
@@ -28,10 +23,8 @@ class Jaula(Resource):
             try:
                 JaulaService.actualizarJaula(datos)
                 return {"status": "Jaula modificada"}, 200
-            except ValidationError as err:
-                return {'Error': err.messages},400
             except Exception as err:
-                return {"Error": str(err)}, 400 
+                return {"Error": err.args}, 400
         return  {'Error':'Se deben enviar datos para la modificion de la jaula.'},400
 
     def delete(self, id_jaula):
@@ -40,7 +33,7 @@ class Jaula(Resource):
                 JaulaService.bajarJaula(id_jaula)
                 return {"Status" : "Se dió de baja la jaula."}, 200
             except Exception as err:
-                return {"Error": str(err)}, 400
+                return {"Error": err.args}, 400
         return {'Error': 'Se debe indicar un id para la jaula.'}, 400
 
 class JaulasSinProyecto(Resource):
@@ -60,10 +53,8 @@ class JaulasDelProyecto(Resource):
             try:
                 JaulaService.actualizarProyectoDeLaJaula(datos)
                 return {"status" : "Se asignó la jaula al proyecto."}, 200
-            except ValidationError as err:
-                return {"Error" : err.messages}, 400
             except Exception as err:
-                return {'Error':str(err)},400 
+                return {"Error": err.args}, 400
         return  {'Error':'Se deben enviar datos para la modificación de la jaula.'},400
 
 class BlogJaula(Resource):
@@ -73,10 +64,8 @@ class BlogJaula(Resource):
             try:
                 JaulaService.nuevoBlogJaula(datos) 
                 return {'Status':'Se creó el blog de jaula.'}, 200      
-            except ValidationError as err:
-                return {"Error" : err.messages}, 400
             except Exception as err:
-                return {"Error": str(err)}, 400
+                return {"Error": err.args}, 400
         return {"Status" : "Deben indicarse datos para el blog"}, 400
 
 class ObtenerBlogsJaula(Resource):
@@ -85,10 +74,8 @@ class ObtenerBlogsJaula(Resource):
         if datos:
             try:
                 return JaulaService.obtenerBlogs(datos)       
-            except ValidationError as err:
-                return {"Error" : err.messages}, 400
             except Exception as err:
-                return {"Error": str(err)}, 400
+                return {"Error": err.args}, 400
         return {"Status" : "Deben indicarse datos para el blog"}, 400
 
 class JaulasBlogs(Resource):
@@ -98,7 +85,7 @@ class JaulasBlogs(Resource):
             try:
                 return JaulaService.blogsDeTodasLasJaulas(datos)  
             except Exception as err:
-                return {"Error": str(err)}, 400 
+                return {"Error": err.args}, 400
         return {"Status" : "Deben indicarse datos para el blog"}, 400
 
 class Jaulas(Resource):
@@ -106,7 +93,7 @@ class Jaulas(Resource):
         try:
             return jsonify(JaulaService.obtenerTodasLasJaulas())
         except Exception as err:
-                return {"Error": str(err)}, 400
+            return {"Error": err.args}, 400
 
 class JaulaXId(Resource):
     def get(self, id_jaula):
@@ -116,7 +103,7 @@ class JaulaXId(Resource):
                 jaula = JaulaService.obtenerJaula(id_jaula)
                 return  CommonService.json(jaula,JaulaSchema)
             except Exception as err:
-                return {"Error": str(err)}, 400
+                return {"Error": err.args}, 400
         return {"Error" : "Se debe indicar el id de una jaula."}, 400
 
 class BorrarBlogJaula(Resource):
@@ -125,4 +112,4 @@ class BorrarBlogJaula(Resource):
             JaulaService.borrarBlogJaula(id_jaula,id_blog)      
             return {"Status" : "Se dio de baja el blog de jaula"}, 200
         except Exception as err:
-                return {"Error": str(err)}, 400
+            return {"Error": err.args}, 400
