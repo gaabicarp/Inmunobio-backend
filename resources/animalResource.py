@@ -12,9 +12,7 @@ class Animal(Resource):
     def get(self, idAnimal):
         if idAnimal:
             animal = AnimalService().find_by_id(idAnimal)
-            if animal:
-                return animal, 200
-            return {'Status' : f'No se encontró ningún animal con el id {idAnimal}'}, 200
+            return  CommonService.json(animal,AnimalSchema)
         return {'Error' : f"El id {idAnimal} no es válido."}, 400
 
     def post(self):
