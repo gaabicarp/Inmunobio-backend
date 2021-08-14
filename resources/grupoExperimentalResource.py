@@ -5,6 +5,7 @@ from servicios.commonService import CommonService
 from servicios.grupoExperimentalService import GrupoExperimentalService
 from schemas.grupoExperimentalSchema import GrupoExperimentalSchema
 
+
 class GrupoExperimental(Resource):
 
     def get(self, idGrupoExperimental):
@@ -14,6 +15,7 @@ class GrupoExperimental(Resource):
                 return  CommonService.json(grupoExperimental,GrupoExperimentalSchema)
             except Exception as err:
                 return {"Error" : err.args}, 400
+
         return {"Error" : "Se debe indicar el id del grupo experimental"}
 
     def delete(self, idGrupoExperimental):
@@ -33,11 +35,11 @@ class GrupoExperimental(Resource):
         return {"Error" : "Se deben enviar datos para la creación de un grupo experimental"}, 400
 
 class GruposExperimentales(Resource):
-
     def get(self, idExperimento):
         if idExperimento:
             gruposExperimentales = GrupoExperimentalService().gruposExperimentalesDelExperimento(idExperimento)
             return  CommonService.jsonMany(gruposExperimentales,GrupoExperimentalSchema)
+
         return {"Error" : "Se debe enviar un id del experimento"}, 400
 
 class DividirGrupoExperimental(Resource):
