@@ -11,3 +11,4 @@ class MuestraExterna(dbMongo.EmbeddedDocument):
     descripcion = dbMongo.StringField()
     id_contenedor= dbMongo.IntField()
     habilitada = dbMongo.BooleanField(default=True)
+    id_fuenteExperimental =  dbMongo.IntField()

@@ -8,6 +8,7 @@ class MuestraPropiaSchema(Schema):
     nombre = fields.Str()
     fecha = fields.DateTime()
     tipo = fields.Str()
+    id_fuenteExperimental = fields.Int()
 
     @post_load
     def makeMuestraPropia(self, data, **kwargs):

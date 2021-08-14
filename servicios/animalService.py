@@ -3,7 +3,7 @@ from models.mongo.fuenteExperimental import FuenteExperimental
 from schemas.fuenteExperimentalSchema import FuenteExperimentalSchema
                                              
 from models.mongo.jaula import Jaula
-from schemas.animalSchema import AnimalSchema,NuevoAnimalSchema
+from schemas.animalSchema import AnimalSchema,NuevoAnimalSchema,AsignarAnimalAJaula
 from .validationService import Validacion
 
 

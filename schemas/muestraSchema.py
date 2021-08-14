@@ -17,7 +17,7 @@ class MuestraSchema(Schema):
     id_fuenteExperimental = fields.Int()
 
     @post_load
-    def make_Proyecto(self, data, **kwargs):
+    def make_muestra(self, data, **kwargs):
         return Muestra(**data)
 
 class NuevaMuestraSchema(MuestraSchema):
@@ -34,3 +34,6 @@ class ModificarMuestraSchema(MuestraSchema):
     codigo = fields.Str(required=True, validate=Validacion.not_empty_string, error_messages={"required": {"message" : "Es necesario indicar el id código de la muestra", "code": 400}})
     descripcion = fields.Str(required=True, validate=Validacion.not_empty_string, error_messages={"required": {"message" : "Es necesario indicar una descripcion", "code": 400}})
     id_contenedor = fields.Int(required=True, validate=Validacion.not_empty_int, error_messages={"required": {"message" : "Es necesario indicar el id del contenedor", "code": 400}})
+    
+    
+
