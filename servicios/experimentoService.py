@@ -50,18 +50,19 @@ class ExperimentoService:
 
     def lasMuestrasSonDelMismoProyectoDelExperimento(self, experimento):
         return all(experimento.id_proyecto == muestraExterna.id_proyecto for muestraExterna in experimento.muestrasExternas)
-    
+        
     def lasMuestrasEstanHabilitadas(self, experimento):
         return all(MuestraService.validarMuestra(muestra.id_muestra) for muestra in experimento.muestrasExternas)
 
     def validarMuestrasExternas(self, experimento):
-        if self.lasMuestrasSonDelMismoProyectoDelExperimento(self, experimento):
+        if not self.lasMuestrasSonDelMismoProyectoDelExperimento(self, experimento):
             raise ValueError("Todas las muestras tienen que ser del mismo proyecto.")
         if self.lasMuestrasEstanHabilitadas(self, experimento):
             raise ValueError("Todas las muestras tienen que estar habilitadas.")
 
     @classmethod
     def agregarMuestrasExternasAlExperimento(cls, datos):
+        AgregarMuestrasAlExperimentoSchema().load(datos)
         experimento = AgregarMuestrasAlExperimentoSchema().load(datos)
         cls.validarMuestrasExternas(cls, experimento)
         Experimento.objects(id_experimento = experimento.id_experimento).update(muestrasExternas=experimento.muestrasExternas)

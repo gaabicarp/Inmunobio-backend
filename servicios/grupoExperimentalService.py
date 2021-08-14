@@ -7,8 +7,10 @@ class GrupoExperimentalService:
 
     @classmethod
     def find_by_id(cls, id):
-        return GrupoExperimental.objects(id_grupoExperimental = id).first()
-    
+        grupo =  GrupoExperimental.objects(id_grupoExperimental = id).first()
+        if not grupo : raise Exception(f"No se encontraron grupos experimenales con id. {id}")
+        return grupo
+
     @classmethod
     def gruposExperimentalesDelExperimento(cls, _id_experimento):
         return GrupoExperimental.objects(id_experimento = _id_experimento).all()
@@ -16,6 +18,7 @@ class GrupoExperimentalService:
     @classmethod
     def CrearGrupoExperimental(cls, datos):
         grupoExperimental = AltaGrupoExperimentalSchema().load(datos)
+        #id_experimento no hay que validarlo?
         grupoExperimental.save()
     
     @classmethod
