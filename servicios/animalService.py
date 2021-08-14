@@ -18,7 +18,7 @@ class AnimalService:
     def nuevoAnimal(cls, datos):
         animal = NuevoAnimalSchema().load(datos)
         animal.tipo = 'Animal'
-        cls.validarJaula(animal.id_jaula)
+        animal.id_proyecto = cls.validarJaula(animal.id_jaula)
         animal.save()
     
     @classmethod
@@ -27,6 +27,7 @@ class AnimalService:
         cls.validarJaula(animales[0].id_jaula)
         for animal in animales:
             _id_proyecto = cls.validarJaula(animal.id_jaula)
+            print("ASIGNO ID DE PROYECTO",_id_proyecto, "A LA JAULA ", animal.id_jaula)
             FuenteExperimental.objects(id_fuenteExperimental =  animal.id_fuenteExperimental).update(id_jaula = animal.id_jaula, id_proyecto = _id_proyecto )
     
     def validarJaula(idJaula):
