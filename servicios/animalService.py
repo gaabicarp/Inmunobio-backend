@@ -11,7 +11,7 @@ class AnimalService:
 
     @classmethod
     def find_by_id(cls, idAnimal):
-        animal = FuenteExperimental.objects(id_jaula = idAnimal).first()
+        animal = FuenteExperimental.objects(id_fuenteExperimental = idAnimal).first()
         if animal:
             return animal.json()
         return None
