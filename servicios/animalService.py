@@ -1,14 +1,9 @@
 from models.mongo.fuenteExperimental import FuenteExperimental
-
-from schemas.fuenteExperimentalSchema import FuenteExperimentalSchema
-                                             
+from schemas.fuenteExperimentalSchema import FuenteExperimentalSchema                                         
 from models.mongo.jaula import Jaula
-from schemas.animalSchema import AnimalSchema,NuevoAnimalSchema,AsignarAnimalAJaula
-from .validationService import Validacion
-
+from schemas.animalSchema import NuevoAnimalSchema,AsignarAnimalAJaula
 
 class AnimalService:
-
     @classmethod
     def find_by_id(cls, idAnimal):
         return FuenteExperimental.objects(id_fuenteExperimental = idAnimal).first()
@@ -27,7 +22,6 @@ class AnimalService:
         cls.validarJaula(animales[0].id_jaula)
         for animal in animales:
             _id_proyecto = cls.validarJaula(animal.id_jaula)
-            print("ASIGNO ID DE PROYECTO",_id_proyecto, "A LA JAULA ", animal.id_jaula)
             FuenteExperimental.objects(id_fuenteExperimental =  animal.id_fuenteExperimental).update(id_jaula = animal.id_jaula, id_proyecto = _id_proyecto )
     
     def validarJaula(idJaula):
@@ -38,17 +32,14 @@ class AnimalService:
     def todosLosAnimales(cls):
         return FuenteExperimental.objects().all()
         #TO-DO PREGUNTAR: codigoGrupoExperimental__ne="", tipo ="Animal", baja=False)
+
     @classmethod
     def animalesSinJaula(cls):
-        return AnimalSchema().dump(FuenteExperimental.objects(id_jaula = 0, tipo="Animal", codigoGrupoExperimental__ne="", baja=False).all(), many=True)
+        return FuenteExperimental.objects(id_jaula = 0, tipo="Animal", codigoGrupoExperimental__ne="", baja=False).all()
 
     @classmethod
     def animalesDeLaJaula(cls, idJaula):
         return  FuenteExperimental.objects(id_jaula = idJaula).all()
-
-    @classmethod
-    def animalesDeLaJaulaSchema(cls, idJaula):
-        return AnimalSchema().dump(cls.animalesDeLaJaula(idJaula), many=True)
 
     @classmethod
     def bajarAnimal(cls, idAnimal):

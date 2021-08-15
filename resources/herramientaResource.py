@@ -76,10 +76,10 @@ class BorrarBlogHeramienta(Resource):
         if(id_herramienta and id_blog):
             try:
                 blogs = HerramientaService.borrarlogHerramienta(id_herramienta,id_blog)
-                return {'Status':'ok'},200              
+                return {'Status':'Se borró blog de herramienta.'},200              
             except Exception as err:
                 return {'Error': err.args},400    
-        return {'name': 'None'},400 
+        return {'Error': 'Debe enviarse el id de herramienta y blog.'},400 
                      
 
 

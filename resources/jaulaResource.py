@@ -12,7 +12,7 @@ class Jaula(Resource):
         if datos:
             try:
                 JaulaService.crearJaula(datos)
-                return {"status": "Jaula creada."}, 200
+                return {"Status": "Jaula creada."}, 200
             except Exception as err:
                 return {"Error": err.args}, 400
         return  {'Error':'Se deben enviar datos para la creación de la jaula.'},400
@@ -66,7 +66,7 @@ class BlogJaula(Resource):
                 return {'Status':'Se creó el blog de jaula.'}, 200      
             except Exception as err:
                 return {"Error": err.args}, 400
-        return {"Status" : "Deben indicarse datos para el blog"}, 400
+        return {"Error" : "Deben indicarse datos para el blog"}, 400
 
 class ObtenerBlogsJaula(Resource):
     def post(self):
@@ -76,7 +76,7 @@ class ObtenerBlogsJaula(Resource):
                 return JaulaService.obtenerBlogs(datos)       
             except Exception as err:
                 return {"Error": err.args}, 400
-        return {"Status" : "Deben indicarse datos para el blog"}, 400
+        return {"Error" : "Deben indicarse datos para el blog"}, 400
 
 class JaulasBlogs(Resource):
     def post(self):
@@ -86,7 +86,7 @@ class JaulasBlogs(Resource):
                 return JaulaService.blogsDeTodasLasJaulas(datos)  
             except Exception as err:
                 return {"Error": err.args}, 400
-        return {"Status" : "Deben indicarse datos para el blog"}, 400
+        return {"Error" : "Deben indicarse datos para el blog"}, 400
 
 class Jaulas(Resource):
     def get(self):

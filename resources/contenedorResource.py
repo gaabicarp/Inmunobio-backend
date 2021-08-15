@@ -27,7 +27,7 @@ class Contenedor(Resource):
         if datos:
             try:
                 ContenedorService.modificarContenedor(datos)
-                return {"Status": "Ok"}, 200
+                return {"Status": "Se modifico el contenedor."}, 200
             except Exception as err:
                 return {'Error': err.args}, 400
         return {'Error': "Se deben enviar datos para la modificación del contenedor."},400
@@ -36,7 +36,7 @@ class Contenedor(Resource):
         if idContenedor:
             try:
                 ContenedorService.eliminarContenedor(idContenedor)
-                return {"Status" : "Ok"}, 200
+                return {"Status" : "Se eliminó el contenedor."}, 200
             except Exception as err:
                 return {'Error': err.args}, 400
         return {'Error': "Se debe enviar el id del contenedor."},400
@@ -47,8 +47,8 @@ class ContenedorProyecto(Resource):
         datos = request.get_json()
         if datos:
             try:
-                contenedores = ContenedorService.asignarProyectoAlContenedor(datos)
-                return {'Status': 'Ok'}, 200
+                ContenedorService.asignarProyectoAlContenedor(datos)
+                return {'Status': 'Se asignó el contenedor al proyecto.'}, 200
             except Exception as err:
                 return {'Error': err.args}, 400
         return {'Error': 'Se debe enviar un atributo id_proyecto válido'}, 400
@@ -58,8 +58,7 @@ class ContenedorProyectoId(Resource):
     def get(self,id_proyecto):
         if id_proyecto:
             try:
-                contenedores = ContenedorService.find_all_by_id_proyecto(id_proyecto)
-                return contenedores, 200
+                return ContenedorService.find_all_by_id_proyecto(id_proyecto)
             except Exception as err:
                return {'Error': err.args}, 400
         return {'Error': 'Se debe enviar un atributo id_proyecto válido'}, 400
@@ -92,7 +91,7 @@ class ContenedorParent(Resource):
         if datos:
             try:
                 ContenedorService.asignarParents(datos)
-                return {'Status':'Ok'}
+                return {'Status':'Se asginó parent al contenedor.'}
             except Exception as err:
                 return {'Error': err.args}, 400
         return {'Error': 'Se debe enviar el id del contenedor y el parent'}

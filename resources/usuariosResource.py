@@ -12,6 +12,7 @@ from flask_jwt import jwt
 from flask import jsonify
 from servicios.commonService import CommonService
 
+
 class ObtenerUsuariosResource(Resource):
     def get(self):
         return CommonService.jsonMany(UsuarioService.findUsuariosHabilitados(), UsuarioSchema)
@@ -57,11 +58,10 @@ class UsuarioID(Resource):
         if(id_usuario):
             try:
                 UsuarioService.deshabilitarUsuario(id_usuario)
-                return {'Status': 'ok'}, 200
+                return {'Status': 'Se deshabilitó el usuario.'}, 200
             except Exception as err:
                 return {'Error': err.args}, 400
         return {'Error': 'Debe indicarse id_usuario'}, 400
-
 
 class ObtenerUsuariosParaProyecto(Resource):
     # aca el 4 representa la id del permiso director de proyecto,ya que no hay visibilidad

@@ -7,7 +7,6 @@ import datetime
 from schemas.grupoExperimentalSchema import AgregarFuentesAlGrupoExperimentalSchema
 
 class FuenteExperimentalService:
-
     @classmethod
     def find_by_id(cls, idFuenteExperimental):
         return FuenteExperimentalSchema().dump(FuenteExperimental.objects(id_fuenteExperimental = idFuenteExperimental, codigo__ne="").first())
