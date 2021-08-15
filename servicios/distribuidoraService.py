@@ -1,7 +1,6 @@
 from models.mongo.distribuidora import Distribuidora
 from schemas.distribuidoraSchema import DistribuidoraSchema,ModificarDistribuidora,NuevaDistribuidoraSchema,IdDistribuidoraSchema
 from servicios.commonService import CommonService
-from exceptions.exception import ErrorDistribuidoraInexistente
 
 class DistribuidoraService():
     @classmethod
@@ -18,7 +17,7 @@ class DistribuidoraService():
     def find_by_id(cls,id):
         distribuidora =  Distribuidora.objects(id_distribuidora = id).first()
         if(not distribuidora):
-            raise ErrorDistribuidoraInexistente()
+            raise Exception("Distribuidora inexistente")
         return distribuidora  
            
     @classmethod

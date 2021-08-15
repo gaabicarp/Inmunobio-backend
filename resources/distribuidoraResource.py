@@ -2,8 +2,6 @@ from servicios.distribuidoraService import DistribuidoraService
 from flask_restful import Resource,Api
 from flask_jwt import jwt_required
 from flask import request
-from marshmallow import ValidationError
-from exceptions.exception import ErrorDistribuidoraInexistente
 from servicios.commonService import CommonService
 from schemas.distribuidoraSchema import DistribuidoraSchema
 
@@ -37,7 +35,7 @@ class DistribuidoraID(Resource):
         try:
             distribuidora = DistribuidoraService().find_by_id(id_distribuidora)
             return CommonService.json(distribuidora,DistribuidoraSchema)
-        except ErrorDistribuidoraInexistente as err:
+        except Exception as err:
             return {'Error': err.message},400
     
     def delete(self,id_distribuidora):

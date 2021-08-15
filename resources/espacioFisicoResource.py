@@ -2,7 +2,6 @@ from flask_restful import Resource
 from flask_jwt import jwt_required
 from flask import request
 from servicios.espacioFisicoService import EspacioFisicoService
-from exceptions.exception import ErrorEspacioFisicoInexistente
 from servicios.commonService import CommonService
 from schemas.espacioFisicoSchema import EspacioFisicoSchema
 from schemas.blogSchema import BlogSchema

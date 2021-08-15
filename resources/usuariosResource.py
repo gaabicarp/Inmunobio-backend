@@ -69,7 +69,6 @@ class ObtenerUsuariosParaProyecto(Resource):
     def get(self):
         return CommonService.jsonMany(UsuarioService.usuariosSinElPermiso(4), UsuarioSchema)
 
-
 class Logins(Resource):
     def get(self):
         from app import app

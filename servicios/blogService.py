@@ -1,7 +1,6 @@
 from marshmallow import ValidationError
 #from servicios.commonService import CommonService
 from schemas.blogSchema import BlogSchema,NuevoBlogSchema
-from exceptions.exception import ErrorFechasInvalidas
 from datetime import datetime
 
 
@@ -31,8 +30,7 @@ class BlogService():
         return blogsMatch
 
     def validarFechas(fechaDesde,fechaHasta):
-        if not fechaDesde<fechaHasta: raise ErrorFechasInvalidas()
-
+        if not fechaDesde<fechaHasta: raise Exception("La fecha-desde debe ser inferior a la fecha-hasta")
 
     @classmethod
     def appendBlogs(cls,objetos):

@@ -2,7 +2,6 @@ from dateutil import parser
 import datetime
 from models.mongo.proyecto import Proyecto
 from schemas.proyectoSchema import ProyectoExtendido,NuevoBlogProyectoSchema,ObtenerBlogsProyectoSchema, ProyectoCerradoSchema, ProyectoModificarSchema,ProyectoNuevoSchema
-from exceptions.exception import ErrorProyectoInexistente
 from servicios.commonService import CommonService
 
 class ProyectoService:
@@ -14,7 +13,7 @@ class ProyectoService:
     @classmethod
     def find_by_id(cls, id):
         proyecto =  Proyecto.objects.filter(id_proyecto=id).first()
-        if not proyecto: raise ErrorProyectoInexistente(id)
+        if not proyecto: raise Exception(f"No se encontró ningun proyecto con el id: {id}")
         return proyecto
 
     @classmethod

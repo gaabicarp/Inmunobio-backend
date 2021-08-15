@@ -1,7 +1,6 @@
 from servicios.validationService import Validacion
 from models.mongo.proyecto import Proyecto
 from models.mongo.jaula import Jaula
-from exceptions.exception import ErrorBlogInexistente,ErrorJaulaDeProyecto,ErrorJaulaBaja,ErrorEspacioDeproyecto
 from schemas.jaulaSchema import BusquedaBlogsJaula,JaulaSchema,BlogSchema,BusquedaBlogJaula,NuevaJaulaSchema, ActualizarProyectoJaulaSchema, ActualizarJaulaSchema,NuevoBlogJaulaSchema
 from servicios.animalService import AnimalService
 from servicios.commonService import CommonService
@@ -24,7 +23,7 @@ class JaulaService:
     @classmethod
     def jaulaPerteneceAlProyecto(cls,_id_proyecto,_id_jaula):
         cls.find_by_id(_id_jaula)
-        if not cls.jaulasDelProyecto(_id_proyecto).filter(id_jaula = _id_jaula).first(): raise ErrorJaulaDeProyecto(_id_proyecto,_id_jaula)
+        if not cls.jaulasDelProyecto(_id_proyecto).filter(id_jaula = _id_jaula).first(): raise Exception( f"La jaula {_id_jaula} no se encuentra asignada al proyecto con id {_id_proyecto}")
 
     @classmethod
     def crearJaula(cls, datos):
@@ -95,7 +94,7 @@ class JaulaService:
 
     @classmethod
     def validarExistenciaBlog(_id_jaula,_id_blog):
-        if not Jaula.objects.filter(id_jaula = _id_jaula, blogs__id_blog= _id_blog).first() : raise ErrorBlogInexistente(_id_blog) 
+        if not Jaula.objects.filter(id_jaula = _id_jaula, blogs__id_blog= _id_blog).first() : raise Exception(f"No se encontró ningun blog con el id: {_id_blog}") 
 
     @classmethod
     def obtenerBlogs(cls,datos):
