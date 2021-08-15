@@ -14,8 +14,7 @@ app.config.from_object(config)
 ############################db configuracion
 db.init_app(app)
 
-with app.app_context():
-    db.create_all()
+#db.create_all()
 	#pass
 	
 dbMongo.init_app(app)
@@ -69,7 +68,6 @@ if __name__ == "__main__":
 		def create_tables():
 			db.create_all()
 
-	
 	app.run(port=8080 ,debug=True)	
 
 """ if __name__ == "__main__":
