@@ -1,14 +1,12 @@
 from models.mongo.herramienta import Herramienta
-from servicios.fuenteExperimentalService import FuenteExperimentalService
 from servicios.blogService import BlogService
-from exceptions.exception import ErrorHerramientaInexistente,ErrorBlogInexistente
 from schemas.herramientaSchema import BusquedaBlogHerramienta,NuevaHerramientaSchema,HerramientaSchema,NuevoBlogHerramientaSchema
 
 class HerramientaService:
     @classmethod
     def find_by_id(cls, _id_herramienta):
         herramienta =  Herramienta.objects(id_herramienta = _id_herramienta).first()
-        if not herramienta : raise ErrorHerramientaInexistente(_id_herramienta)
+        if not herramienta : raise Exception(f"No se encontró ninguna herramienta con el id: {_id_herramienta}")
         return herramienta
 
     @classmethod

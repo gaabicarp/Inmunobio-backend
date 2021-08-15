@@ -4,12 +4,12 @@ from models.mysql.permiso import Permiso
 from flask import jsonify
 from schemas.permisosSchema import PermisoSchema,PermisoExistenteSchema
 from servicios.commonService import CommonService
-from exceptions.exception import ErrorPermisoInexistente
 
 class PermisosService():
     jefeDeGrupo = 3
     jefeProyecto = 4
     tecnico = 5
+    
     @classmethod
     def json(cls,datos):
         return jsonify( PermisoSchema().dump(datos))
@@ -18,7 +18,7 @@ class PermisosService():
     def find_by_id(cls, _id_permiso):
         permiso= Permiso.query.filter_by(id_permiso=_id_permiso).first()
         if not permiso: 
-            raise ErrorPermisoInexistente(_id_permiso)
+            raise Exception(f"No hay permisos asociados con id {_id_permiso}")
         return permiso
         
     @classmethod
@@ -39,7 +39,7 @@ class PermisosService():
     def obtenerPermisoPorId(cls,id_permiso):
         try:
             return CommonService.json(PermisosService.find_by_id(id_permiso),PermisoSchema)
-        except ErrorPermisoInexistente as err:
+        except Exception as err:
             return {'Error': err.message},400
 
     @classmethod

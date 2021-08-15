@@ -4,7 +4,7 @@
         self.message = f"No hay productos relacionados con id_producto: {id}" 
         super().__init__(self.message) """
 
-class ErrorProductoEnStockInexistente(Exception):
+""" class ErrorProductoEnStockInexistente(Exception):
     def __init__(self,id=0):
         self.message = f"No hay productos activos con id_productos {id}"
         super().__init__(self.message)
@@ -19,16 +19,15 @@ class ErrorDistribuidoraInexistente(Exception):
         self.message = "Distribuidora inexistente"
         super().__init__(self.message)
 
-""" class ErrorGrupoInexistente(Exception):
+class ErrorGrupoInexistente(Exception):
     def __init__(self):
         self.message = "Grupo de trabajo inexistente"
-        super().__init__(self.message) """
+        super().__init__(self.message) 
 
 class ErrorEspacioFisicoInexistente(Exception):
     def __init__(self,id):
         self.message = f"No existe espacio fisico con id {id}" 
         super().__init__(self.message)
-
 
 class ErrorPermisoInexistente(Exception):
     def __init__(self,id_permiso):
@@ -84,4 +83,4 @@ class ErrorEspacioDeproyecto(Exception):
     def __init__(self,id_espFisico,id_proyecto):
         self.message = f"El espacio fisico con id.{id_espFisico} asociado al proyecto id.{id_proyecto} ya no se encuentra disponible"
         super().__init__(self.message)  
-
+"""

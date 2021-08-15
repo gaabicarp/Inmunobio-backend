@@ -6,13 +6,12 @@ from servicios.muestraService import MuestraService
 from servicios.blogService import BlogService
 from dateutil import parser
 import datetime
-from exceptions.exception import ErrorExperimentoInexistente,ErrorExpDeProyecto
 
 class ExperimentoService:    
     @classmethod
     def find_by_id(cls, idExperimento):
         exp =  Experimento.objects.filter(id_experimento=idExperimento).first()
-        if not exp : raise ErrorExperimentoInexistente(idExperimento)
+        if not exp : raise Exception(f"No existe experimento asociado con id {idExperimento}")
         return exp
 
     @classmethod

@@ -1,16 +1,12 @@
 from db import dbMongo
-from marshmallow import Schema, fields, post_load,ValidationError
+from marshmallow import Schema, fields, post_load
 from models.mongo.herramienta import Herramienta
-from schemas.blogSchema import BlogSchema,NuevoBlogSchema
-from servicios.espacioFisicoService import EspacioFisicoService
-from exceptions.exception import ErrorEspacioFisicoInexistente
-
+from schemas.blogSchema import NuevoBlogSchema
 
 class HerramientaSchema(Schema):
     nombre = fields.String()
     detalle = fields.String()
     id_herramienta = fields.Integer()
-    #blogs = fields.Nested(BlogSchema,required=True, error_messages={"required": {"message" : "Es necesario indicar datos de blog de jaula", "code" : 400}})
     id_espacioFisico = fields.Integer()
 
 class NuevaHerramientaSchema(Schema):
