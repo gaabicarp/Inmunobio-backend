@@ -5,8 +5,7 @@ from marshmallow import ValidationError
 from exceptions.exception import ErrorExperimentoInexistente,ErrorFechasInvalidas
 from servicios.experimentoService import ExperimentoService
 from servicios.commonService import CommonService
-from schemas.experimentoSchema import NuevoBlogExpSchema, ExperimentoSchema, ModificarExperimentoSchema, AltaExperimentoSchema, CerrarExperimentoSchema, AgregarMuestrasAlExperimentoSchema
-from schemas.blogSchema import BlogSchema
+from schemas.experimentoSchema import  ExperimentoSchema
 
 class Experimentos(Resource):
 
@@ -34,9 +33,9 @@ class ExperimentoResource(Resource):
         if datos:
             try:
                 ExperimentoService.nuevoExperimento(datos)
-                return {"Status":"ok"}, 201
+                return {"Status":"Se creó el experimento."}, 201
             except Exception as err:
-                return {'error': err.args}, 400
+                return {'Error': err.args}, 400
         return {"Error" : "Se deben enviar datos para la creación del experimento."}, 400
 
     #@jwt_required()
@@ -45,7 +44,7 @@ class ExperimentoResource(Resource):
         if datos:
             try:
                 ExperimentoService.modificarExperimento(datos)
-                return {"Status":"ok"}, 201
+                return {"Status":"Se modificó el experimento."}, 201
             except Exception as err:
                 return {'error': err.args}, 400
         return {"Error" : "Se deben enviar datos para la actualización del experimento."}, 400
@@ -58,9 +57,9 @@ class CerrarExperimento(Resource):
         if datos:
             try:
                 ExperimentoService.cerrarExperimento(datos)
-                return {"Status" : "ok"}
+                return {"Status" : "Se cerró el experimento."}
             except Exception as err:
-                return {'error': err.args}, 400
+                return {'Error': err.args}, 400
         return {"Error" : "Se deben enviar datos para poder cerrar el experimento."}, 400
 
 class ExperimentoMuestra(Resource):
@@ -71,20 +70,19 @@ class ExperimentoMuestra(Resource):
         if datos:
             try:
                 ExperimentoService.agregarMuestrasExternasAlExperimento(datos)
-                return {"Status" : "Ok"}, 200
+                return {"Status" : "Se agregaron las muestras al experimento."}, 200
             except Exception as err:
-                return {'error': err.args}, 400
+                return {'Error': err.args}, 400
         return {"Error" : "Se deben enviar datos para poder agregar muestras."}, 400
-
 
     def delete(self, idExperimento, idMuestra):
         if idExperimento and idMuestra:
             try:
                 ExperimentoService.removerMuestraDeExperimento(idExperimento, idMuestra)
-                return {'Status':'ok'}, 200
+                return {'Status':'Se removieron las muestras del experimento'}, 200
             except Exception as err:
-                return {'Error': str(err)}, 400
-        return {'Error': 'Se debe enviar el id del experimento y el id de la muestra'}, 400
+                return {'Error': err.args}, 400
+        return {'Error': 'Se debe enviar el id del experimento y el id de la muestra.'}, 400
         
 class BlogExperimento(Resource):
     def post(self):
@@ -92,11 +90,9 @@ class BlogExperimento(Resource):
         if datos:
             try:
                 ExperimentoService.nuevoBlogExperimento(datos) 
-                return {'Status':'Ok'}, 200      
-            except ValidationError as err:
-                return {"Error" : err.messages}, 400
-            except ErrorExperimentoInexistente as err:
-                return {'Error':err.message},400 
+                return {'Status':'SE creó el blog de experimento.'}, 200      
+            except Exception as err:
+                return {"Error" : err.args}, 400
         return {"Status" : "Deben indicarse datos para la creación del blog"}, 400
 
 class ObtenerBlogsExp(Resource):
@@ -105,8 +101,6 @@ class ObtenerBlogsExp(Resource):
         if(datos):
             try:
                 return ExperimentoService.obtenerBlogs(datos)
-            except (ErrorExperimentoInexistente,ErrorFechasInvalidas) as err:
-                return {'error':err.message},400
-            except ValidationError as err:
-                return {'error': err.messages},400            
+            except Exception as err:
+                return {'Error' : err.args}, 400          
         return {'Error': 'Parametros id de experimento,fecha-desde y fecha-hasta requeridos'},400

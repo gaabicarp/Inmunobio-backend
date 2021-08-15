@@ -15,7 +15,6 @@ class GrupoExperimental(Resource):
                 return  CommonService.json(grupoExperimental,GrupoExperimentalSchema)
             except Exception as err:
                 return {"Error" : err.args}, 400
-
         return {"Error" : "Se debe indicar el id del grupo experimental"}
 
     def delete(self, idGrupoExperimental):
@@ -39,11 +38,9 @@ class GruposExperimentales(Resource):
         if idExperimento:
             gruposExperimentales = GrupoExperimentalService().gruposExperimentalesDelExperimento(idExperimento)
             return  CommonService.jsonMany(gruposExperimentales,GrupoExperimentalSchema)
-
         return {"Error" : "Se debe enviar un id del experimento"}, 400
 
 class DividirGrupoExperimental(Resource):
-
     def post(self):
         datos = request.get_json()
         if datos:
@@ -51,5 +48,5 @@ class DividirGrupoExperimental(Resource):
                 GrupoExperimentalService().dividirGrupoExperimental(datos)
                 return {"Status" : "Se dividio el grupo experimental."}, 200
             except Exception as err:
-                return {"Error" : err.args}, 400
+                return {"Error": err.args}, 400
         return {"Error" : "Se deben enviar datos para la división de un grupo experimental"}, 400

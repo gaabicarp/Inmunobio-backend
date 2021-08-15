@@ -56,7 +56,7 @@ class RenombrarJefeGrupo(Resource):
         if datos:
             try:
                 GrupoDeTrabajoService.modificarJefeGrupo(datos)
-                return {'Status':'ok'},200  
+                return {'Status':'Se modificó el jefe de grupo'},200  
             except Exception as err:
                 return {'Error': err.args},400
         return {'Error': 'Deben suministrarse datos para renombrar Jefe.'},400

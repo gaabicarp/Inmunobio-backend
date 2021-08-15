@@ -1,8 +1,6 @@
 from flask_restful import Resource
 from flask_jwt import jwt_required
 from flask import request
-from marshmallow import ValidationError
-
 from servicios.fuenteExperimentalService import FuenteExperimentalService
 
 class FuenteExperimental(Resource):
@@ -20,15 +18,11 @@ class FuenteExperimental(Resource):
         datos = request.get_json()
         if datos:
             try:
-                resp = FuenteExperimentalService.nuevasFuentesExperimentales(datos)
-                return resp
-            except ValidationError as err:
-                return {"Error": err.messages}, 400
+                return FuenteExperimentalService.nuevasFuentesExperimentales(datos)
             except Exception as err:
-                return {"Error": str(err)}, 400
+                return {"Error" : err.args}, 400
         return {'Error' : "Se deben enviar datos para la creación de la fuente experimental."}, 400
 
 class FuentesExperimentales(Resource):
-
     def get(self):
         pass

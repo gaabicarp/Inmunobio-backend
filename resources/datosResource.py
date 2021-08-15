@@ -1,6 +1,5 @@
 from flask_restful import Resource
 from flask import request
-from marshmallow import ValidationError
 from servicios.datosService import DatosService
 
 class DatosResourceMongo(Resource):

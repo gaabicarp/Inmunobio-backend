@@ -8,8 +8,11 @@ from schemas.muestraSchema import  MuestraSchema
 class Muestra(Resource):
     def get(self, idMuestra):
         if idMuestra:
-            muestra = MuestraService().find_by_id(idMuestra)
-            return CommonService.json(muestra,MuestraSchema)
+            try:
+                muestra = MuestraService().find_by_id(idMuestra)
+                return CommonService.json(muestra,MuestraSchema)
+            except Exception as err:
+                return {'Error': err.args}, 400
         return {"Error" : "Se debe indicar el id de la muestra."}, 400
 
     def post(self):
