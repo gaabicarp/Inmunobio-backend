@@ -40,7 +40,7 @@ class PermisosService():
         try:
             return CommonService.json(PermisosService.find_by_id(id_permiso),PermisoSchema)
         except ErrorPermisoInexistente as err:
-            return {'error': err.message},400
+            return {'Error': err.message},400
 
     @classmethod
     def tieneElPermiso(cls, permisos, idPermiso):

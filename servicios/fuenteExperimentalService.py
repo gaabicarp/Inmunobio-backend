@@ -3,7 +3,6 @@ from schemas.fuenteExperimentalSchema import FuenteExperimentalSchema, FuenteExp
 from models.mongo.grupoExperimental import GrupoExperimental
 from dateutil import parser
 from .validationService import Validacion
-import datetime
 from schemas.grupoExperimentalSchema import AgregarFuentesAlGrupoExperimentalSchema
 
 class FuenteExperimentalService:
