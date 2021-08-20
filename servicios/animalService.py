@@ -53,8 +53,8 @@ class AnimalService:
     
     @classmethod
     def animalesDelProyecto(cls, idProyecto):
-        return FuenteExperimental.objects(id_proyecto = idProyecto, codigoGrupoExperimental__ne="", tipo ="Animal", baja=False).all()
-       
+        return FuenteExperimental.objects(id_proyecto = idProyecto,  tipo ="Animal", baja=False).all()
+       #codigoGrupoExperimental__ne="", -> aca no hace falta saber si lo tiene o no.?
     @classmethod
     def actualizarProyectoAnimalesDeJaulas(cls,jaula):
         FuenteExperimental.objects(id_jaula = jaula.id_jaula).update(set__id_proyecto =jaula.id_proyecto)
