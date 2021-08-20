@@ -97,9 +97,6 @@ class GrupoDeTrabajoService():
         from servicios.usuarioService import UsuarioService
         UsuarioService.validarJefeDeGrupo(id_jefeDeGrupo,idGrupo)
 
-    
-
-
     #-------------------este endpoint ya no se usa:
     @classmethod
     def modificarJefeGrupo(cls, datos):

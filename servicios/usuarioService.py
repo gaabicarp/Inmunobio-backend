@@ -103,15 +103,14 @@ class UsuarioService():
     def validaAsignacionGrupo(cls, _id_usuario):
         usuario = cls.find_by_id(_id_usuario)
         if usuario.id_grupoDeTrabajo:
-            raise Exception(f"El usuario con id {_id_usuario}",
-            " ya se encuentra asignado al grupo de trabajo con id.{usuario.id_grupoDeTrabajo}")
+            raise Exception(f"El usuario con id {_id_usuario} ya se encuentra asignado al grupo de trabajo con id.{ usuario.id_grupoDeTrabajo}")
 
     @classmethod
     def validarJefeDeGrupo(cls, _id_usuario,idNueva ):
         from servicios.permisosService import PermisosService
         jefe = cls.find_by_id(_id_usuario)
         if jefe.esJefeDe and jefe.esJefeDe != idNueva : raise Exception(f"El usuario con id {_id_usuario} ya es jefe del grupo {jefe.esJefeDe}")
-        if not PermisosService.tieneElPermiso(jefe, PermisosService.jefeDeGrupo):
+        if not PermisosService.tieneElPermiso(jefe.permisos, PermisosService.jefeDeGrupo):
             raise Exception(f"El usuario con id {_id_usuario} no posee permisos para ser jefe de grupo.")
     
         
