@@ -32,7 +32,6 @@ class UsuarioNuevoSchema(UsuarioSchema):
     
     @post_load
     def make_Usuario(self, data, **kwargs):
-        print(data)
         return Usuario(**data)
 
 class UsuariosBase(UsuarioNuevoSchema):
