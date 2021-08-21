@@ -1,4 +1,3 @@
-from datetime import datetime, timedelta
 from re import U
 from resources.token import TokenDeAcceso
 from schemas.usuarioSchema import UsuarioSchema
@@ -7,9 +6,7 @@ from warnings import catch_warnings
 from servicios.usuarioService import UsuarioService
 from flask_restful import Resource
 from flask import request
-from werkzeug.security import check_password_hash
-from flask_jwt import jwt
-from flask import jsonify
+
 from servicios.commonService import CommonService
 
 
@@ -70,21 +67,17 @@ class ObtenerUsuariosParaProyecto(Resource):
 
 class Logins(Resource):
     def get(self):
-        from app import app
         datos = request.get_json()
-        if datos:
-            usuario = UsuarioService.find_by_email(datos['email'])
-            usuarioJson = CommonService.json(usuario, UsuarioSchema)
-            if usuario:
-                if check_password_hash(usuario.password, datos['password']):
-                    dt = datetime.now() + timedelta(minutes=60*12)
-                    usuarioJson['exp'] = dt
-                    token = jwt.encode(usuarioJson, app.config['SECRET_KEY'])
-                    return jsonify({'token': token.decode('UTF-8')})
-                return {'Error': 'Las credenciales son incorrectas.'}, 400
-            return {'Error': 'No existe ningún usuario con ese mail.'}, 400
+        if datos :
+            try:
+                UsuarioService.loginUsuario(datos)
+            except Exception as err:
+                return {'Error': err.args}, 400
+        return {'Error': 'Deben enviarse datos para el login.'}, 400
 
     def post(self):
+        from flask_jwt import jwt
+
         datos = request.get_json()
         from app import app
         data = jwt.decode(
