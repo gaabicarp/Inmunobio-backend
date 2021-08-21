@@ -26,3 +26,8 @@ class FuenteExperimental(Resource):
 class FuentesExperimentales(Resource):
     def get(self):
         pass
+
+
+#fuente experimental x id 
+
+#fuentes experimentales de proyecto

@@ -30,8 +30,8 @@ class AnimalService:
 
     @classmethod
     def todosLosAnimales(cls):
-        return FuenteExperimental.objects().all()
-        #TO-DO PREGUNTAR: codigoGrupoExperimental__ne="", tipo ="Animal", baja=False)
+        return FuenteExperimental.objects(tipo ="Animal", baja=False).all()
+        #TO-DO PREGUNTAR: codigoGrupoExperimental__ne="", )
 
     @classmethod
     def animalesSinJaula(cls):
@@ -55,6 +55,8 @@ class AnimalService:
     def animalesDelProyecto(cls, idProyecto):
         return FuenteExperimental.objects(id_proyecto = idProyecto,  tipo ="Animal", baja=False).all()
        #codigoGrupoExperimental__ne="", -> aca no hace falta saber si lo tiene o no.?
+
+#TO-DO agregar el filtro por codigo aca, y sacarlo del otro endpoint
     @classmethod
     def actualizarProyectoAnimalesDeJaulas(cls,jaula):
         FuenteExperimental.objects(id_jaula = jaula.id_jaula).update(set__id_proyecto =jaula.id_proyecto)

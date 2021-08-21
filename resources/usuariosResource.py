@@ -42,9 +42,8 @@ class UsuarioResource(Resource):
 
 
 class UsuarioID(Resource):
- # @jwt_required()
 
-    #@TokenDeAcceso.token_nivel_de_acceso(TokenDeAcceso.SUPERUSUARIO)
+    @TokenDeAcceso.token_nivel_de_acceso(TokenDeAcceso.SUPERUSUARIO)
     def get(self, id_usuario):
         if(id_usuario):
             try:
@@ -78,7 +77,7 @@ class Logins(Resource):
             usuarioJson = CommonService.json(usuario, UsuarioSchema)
             if usuario:
                 if check_password_hash(usuario.password, datos['password']):
-                    dt = datetime.now() + timedelta(minutes=60)
+                    dt = datetime.now() + timedelta(minutes=60*12)
                     usuarioJson['exp'] = dt
                     token = jwt.encode(usuarioJson, app.config['SECRET_KEY'])
                     return jsonify({'token': token.decode('UTF-8')})
