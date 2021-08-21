@@ -52,3 +52,7 @@ class UsuarioSchemaModificar(UsuarioNuevoSchema):
     @post_load
     def make_Usuario(self, data, **kwargs):
         pass
+
+class LoginUsuario(Schema):
+    email = fields.Str( required=True,error_messages={"required": {"message": "Se necesita ingresar el mail", "code": 400}})
+    password = fields.Str(required=True,error_messages={"required": {"message": "Se necesita ingresar el password", "code": 400}})

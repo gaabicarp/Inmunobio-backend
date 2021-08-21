@@ -1,5 +1,6 @@
+from calendar import c
 from models.mysql.usuario import Usuario
-from schemas.usuarioSchema import UsuarioSchemaModificar, UsuarioNuevoSchema
+from schemas.usuarioSchema import UsuarioSchemaModificar, UsuarioNuevoSchema,LoginUsuario,UsuarioSchema
 from servicios.commonService import CommonService
 from servicios.validationService import  ValidacionesUsuario
 from werkzeug.security import generate_password_hash,check_password_hash
@@ -114,3 +115,22 @@ class UsuarioService():
             raise Exception(f"El usuario con id {_id_usuario} no posee permisos para ser jefe de grupo.")
     
         
+    @classmethod
+    def loginUsuario(cls,datos):
+        from flask import jsonify
+        from werkzeug.security import check_password_hash
+        from datetime import datetime, timedelta
+        from app import app
+        from flask_jwt import jwt
+
+        LoginUsuario().load(datos)
+        usuario = UsuarioService.find_by_email(datos['email'])
+        usuarioJson = CommonService.json(usuario, UsuarioSchema)
+        if usuario:
+            if check_password_hash(usuario.password, datos['password']):
+                dt = datetime.now() + timedelta(minutes=60*12)
+                usuarioJson['exp'] = dt
+                token = jwt.encode(usuarioJson, app.config['SECRET_KEY'])
+                return jsonify({'token': token.decode('UTF-8')})
+            raise Exception("Las credenciales son incorrectas.")
+        raise Exception("No existe ningún usuario con ese mail.")
