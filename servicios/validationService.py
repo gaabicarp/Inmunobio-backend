@@ -1,5 +1,6 @@
+from models.mongo.jaula import Jaula
 from models.mongo.proyecto import Proyecto
-from models.mongo.experimento import Experimento, MuestraExterna
+from models.mongo.experimento import Experimento
 from models.mongo.muestra import Muestra
 from models.mongo.grupoExperimental import GrupoExperimental
 from models.mongo.fuenteExperimental import FuenteExperimental
@@ -7,11 +8,19 @@ from models.mongo.fuenteExperimental import FuenteExperimental
 from models.mongo.contenedor import Contenedor
 class ValidacionesUsuario():
     @classmethod
-    def desvincularDeProyectos(cls,id_usuario):
-        proyectos = Proyecto.objects.update(pull__participantes=id_usuario)
+    def jefeDeProyecto(cls,usuario):
+        if  Proyecto.objects(id_proyecto=usuario.id,finalizado= False).first():
+            raise Exception(f"El usuario {usuario.nombre} es jefe de un proyecto activo. Debe desasignarse primero.")
 
+    @classmethod
+    def desvincularDeProyectos(cls,id_usuario):
+        Proyecto.objects.update(pull__participantes=id_usuario)
 
 class Validacion():
+
+    @classmethod
+    def laFuenteExperimentalPerteneceAlGrupo(cls,idFuenteExperimental,idGrupo):
+        return GrupoExperimental.objects(id_grupoExperimental=idGrupo,fuentesExperimentales__id_fuenteExperimental = idFuenteExperimental ).first()
     @classmethod
     def elProyectoExiste(cls, idProyecto):
         return Proyecto.objects(id_proyecto=idProyecto).first() != None
@@ -82,3 +91,7 @@ class Validacion():
     
     def elContenedorPadreEstaDisponible(contenedor):
         return Contenedor.objects(id_contenedor = contenedor.parent, disponible = True).first() != None
+    
+"""     def existeLaJaulas(idJaula):
+        jaula = Jaula.objects(id_jaula = idJaula, habilitado = True).first()
+        return jaula != None """

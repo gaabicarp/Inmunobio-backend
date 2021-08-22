@@ -1,7 +1,6 @@
 from marshmallow import ValidationError
 from models.mongo.espacioFisico import EspacioFisico
 from schemas.espacioFisicoSchema import BusquedaBlogEspacio,NuevoEspacioFisicoSchema,ModificarEspacioFisico,NuevoBlogEspacioFisicoSchema
-from exceptions.exception import ErrorEspacioFisicoInexistente,ErrorBlogInexistente
 from servicios.blogService import BlogService
 from servicios.commonService import CommonService
 
@@ -23,7 +22,7 @@ class EspacioFisicoService():
     def find_by_id(cls,id):
         espacio =  EspacioFisico.objects(id_espacioFisico = id).first()
         if(not espacio):
-            raise ErrorEspacioFisicoInexistente(id)
+            raise Exception(f"No existe espacio fisico con id {id}")
         return espacio     
 
     @classmethod
@@ -50,6 +49,7 @@ class EspacioFisicoService():
     def obtenerBlogs(cls,datos):
         BusquedaBlogEspacio().load(datos)
         espacio = cls.find_by_id(datos['id_espacioFisico'])
+        print(espacio.blogs)
         return BlogService.busquedaPorFecha(espacio.blogs,datos['fechaDesde'],datos['fechaHasta'])
 
     @classmethod
@@ -58,8 +58,7 @@ class EspacioFisicoService():
         if(EspacioFisico.objects.filter(id_espacioFisico = _id_espacioFisico).first()):
             if (EspacioFisico.objects.filter(id_espacioFisico = _id_espacioFisico, blogs__id_blog= _id_blog).first()):
                 return EspacioFisico.objects.filter(id_espacioFisico = _id_espacioFisico).first().modify(pull__blogs__id_blog =_id_blog)
-            raise ErrorBlogInexistente(_id_blog)
-        raise ErrorEspacioFisicoInexistente(_id_espacioFisico)
+            raise Exception(f"No se encontró ningun blog con el id: {_id_blog}")
+        raise Exception(f"No existe espacio fisico con id {_id_espacioFisico}")
  
-
 

@@ -1,29 +1,31 @@
 from flask_restful import Api
 
-from resources.usuariosResource import  ObtenerUsuariosResource,UsuarioResource, UsuarioID,ObtenerUsuariosParaProyecto
+from resources.usuariosResource import  ObtenerUsuariosResource,UsuarioResource, UsuarioID,ObtenerUsuariosParaProyecto, Logins
 from resources.proyectoResource import *
 from resources.permisosResource import Permisos,ObtenerPermisoPorId
 from resources.grupoDeTrabajoResource import GrupoDeTrabajoID,GrupoDeTrabajo,GruposDeTrabajo,RenombrarJefeGrupo
-from resources.experimentoResource import ExperimentoResource, Experimentos, ExperimentoMuestra
-from resources.proyectoResource import *
-from resources.experimentoResource import ObtenerBlogsExp,ExperimentoResource, Experimentos, CerrarExperimento,BlogExperimento
+from resources.experimentoResource import ExperimentoResource, ExperimentoMuestra,ObtenerBlogsExp,Experimentos, CerrarExperimento
 from resources.contenedorResource import Contenedor, ContenedorProyecto, ContenedorParent,ContenedorProyectoId
 
-from resources.grupoExperimentalResource import GrupoExperimental, GruposExperimentales, DevidirGrupoExperimental
+from resources.grupoExperimentalResource import GrupoExperimental, GruposExperimentales, DividirGrupoExperimental
 from resources.stockResource import ObtenerProductosStock,ProductoEnStock,BorrarTodoStock,ConsumirStockResource,ProductoEnStockID
-from resources.productoResource import ProductoResource,ObtenerProductosResource,ProductoID,ArchivoProducto
+from resources.productoResource import ProductoEnStockDeGrupos,ProductoResource,ObtenerProductosResource,ProductoID,ArchivoProducto
 from resources.distribuidoraResource import DistribuidoraResource,ObtenerDistribuidorasResource,DistribuidoraID
 
 from resources.grupoExperimentalResource import GrupoExperimental, GruposExperimentales
 from resources.jaulaResource import JaulasBlogs,JaulaXId,ObtenerBlogsJaula,Jaula, JaulasSinProyecto, JaulasDelProyecto,BlogJaula,BorrarBlogJaula,Jaulas
 from resources.fuenteExperimentalResource import FuenteExperimental
 from resources.animalResource import  Animal, Animales, AnimalesSinJaula, AnimalesDeLaJaula, AnimalesProyecto
-from resources.muestraResource import Muestra, MuestraGrupoExperimental, MuestraProyecto
+from resources.muestraResource import MuestrasPorIDFuente,Muestra, MuestraGrupoExperimental, MuestraProyecto
 from resources.animalResource import  Animal, Animales, AnimalesSinJaula, AnimalesDeLaJaula
 from resources.espacioFisicoResource import EspaciosFisicos,EspacioFisico,EspacioFisicoID,CrearBlogEspacioFisico,BorrarBlogEspacioFisico,ObtenerBlogsEspFisico
 from resources.herramientaResource import HerramientaResource,HerramientaPorId,Herramientas,BorrarBlogHeramienta,BlogHerramientaXId,CrearBlogHerramientas
-
+from resources.datosResource import DatosResourceMongo,DatosResourceMysql
 api = Api()
+
+#datos
+api.add_resource(DatosResourceMongo, '/api/v1/llenarBaseMongo')
+api.add_resource(DatosResourceMysql, '/api/v1/llenarBaseMysql')
 
 #Espacio fisico
 api.add_resource(EspacioFisico, '/api/v1/espacioFisico')
@@ -41,7 +43,9 @@ api.add_resource(Permisos, '/api/v1/permisos')
 api.add_resource(ObtenerUsuariosResource, '/api/v1/usuarios')
 api.add_resource(UsuarioResource, '/api/v1/usuario')
 api.add_resource(UsuarioID, '/api/v1/usuario/<int:id_usuario>')
-api.add_resource(ObtenerUsuariosParaProyecto, '/api/UsuariosParaProyecto')
+api.add_resource(ObtenerUsuariosParaProyecto, '/api/v1/usuariosParaProyecto')
+api.add_resource(Logins, '/api/v1/login', endpoint='login' )
+api.add_resource(Logins, '/api/v1/prueba', endpoint='login_prueba' )
 
 #proyectos
 api.add_resource(Proyectos, '/api/v1/proyectos')
@@ -52,6 +56,8 @@ api.add_resource(ModificarProyecto, '/api/v1/modificarProyecto')
 api.add_resource(ObtenerUsuariosProyecto, '/api/v1/obtenerUsuariosProyecto/<int:id_proyecto>')
 api.add_resource(ObtenerBlogsProyecto, '/api/v1/blogsProyecto')
 api.add_resource(NuevoBlogProyecto, '/api/v1/crearblogProyecto')
+api.add_resource(ObtenerProyectoDeUsuario, '/api/v1/proyectosDeUsuario/<int:id_usuario>')
+
 
 #Grupo de trabajo
 api.add_resource(GrupoDeTrabajo,'/api/v1/grupoDeTrabajo')
@@ -71,6 +77,7 @@ api.add_resource(ProductoResource, '/api/v1/producto')
 api.add_resource(ObtenerProductosResource, '/api/v1/getProductos')
 api.add_resource(ProductoID, '/api/v1/producto/<int:id_producto>')
 api.add_resource(ArchivoProducto, '/api/v1/producto/subirArchivo/<int:id_producto>')
+api.add_resource(ProductoEnStockDeGrupos, '/api/v1/gruposConStock/<int:id_producto>')
 
 #distribuidora
 api.add_resource(DistribuidoraResource, '/api/v1/distribuidora')
@@ -92,7 +99,8 @@ api.add_resource(ObtenerBlogsExp, '/api/v1/blogExperimento', endpoint='obtener_b
 api.add_resource(GrupoExperimental, '/api/v1/grupoExperimental/<int:idGrupoExperimental>', endpoint='grupo_experimental')
 api.add_resource(GrupoExperimental, '/api/v1/nuevoGrupoExperimental', endpoint='nuevo_grupo_experimental')
 api.add_resource(GruposExperimentales, '/api/v1/experimento/<int:idExperimento>/gruposExperimentales', endpoint='grupos_experimentales_del_experimento')
-api.add_resource(DevidirGrupoExperimental, '/api/v1/dividirGrupoExperimental', endpoint='dividir_grupo_experimental')
+api.add_resource(DividirGrupoExperimental, '/api/v1/dividirGrupoExperimental', endpoint='dividir_grupo_experimental')
+api.add_resource(GrupoExperimental, '/api/v1/borrarGrupoExperimental/<int:idGrupoExperimental>', endpoint='borrar_grupo_experimental')
 
 #Jaula
 api.add_resource(Jaula, '/api/v1/nuevaJaula', endpoint="nueva_jaula")
@@ -117,7 +125,7 @@ api.add_resource(Animal, '/api/v1/animal/<int:idAnimal>', endpoint="animal")
 api.add_resource(Animal, '/api/v1/bajaAnimal/<int:idAnimal>', endpoint="baja_animal")
 api.add_resource(Animal, '/api/v1/nuevoAnimal', endpoint="nuevo_animal")
 api.add_resource(Animales, '/api/v1/animales', endpoint="animales")
-api.add_resource((Animales))
+#api.add_resource((Animales))
 api.add_resource(AnimalesSinJaula, '/api/v1/animalesSinJaula', endpoint="animales_sin_jaula")
 api.add_resource(AnimalesDeLaJaula, '/api/v1/jaula/<int:idJaula>/animales', endpoint="animales_de_la_jaula")
 api.add_resource(AnimalesDeLaJaula, '/api/v1/asignarJaulas', endpoint="asignar_jaulas")
@@ -141,6 +149,8 @@ api.add_resource(Muestra, '/api/v1/modificarMuestra', endpoint='modificar_muestr
 api.add_resource(Muestra, '/api/v1/bajarMuestra/<int:idMuestra>', endpoint='bajar_muestra')
 api.add_resource(MuestraGrupoExperimental, '/api/v1/grupoExperimental/<int:idGrupoExperimental>/muestras', endpoint='muestras_grupo_experimental')
 api.add_resource(MuestraProyecto, '/api/v1/proyecto/<int:idProyecto>/muestras', endpoint='muestras_proyecto')
+api.add_resource(MuestrasPorIDFuente, '/api/v1/muestras/<int:idFuenteExperimental>')
+
 
 #Herramientas
 api.add_resource(HerramientaResource, '/api/v1/herramienta')
@@ -149,6 +159,3 @@ api.add_resource(Herramientas, '/api/v1/herramientas/')
 api.add_resource(BorrarBlogHeramienta, '/api/v1/blogHerramienta/<id_herramienta>/<int:id_blog>')
 api.add_resource(BlogHerramientaXId, '/api/v1/blogHerramienta')
 api.add_resource(CrearBlogHerramientas, '/api/v1/crearBlogHerramienta')
-
-
-

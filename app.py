@@ -7,13 +7,14 @@ from db import db, dbMongo
 from security import authenticate, identity
 from flask_cors import CORS, cross_origin
 from servicios.usuarioService import UsuarioService
-
 app= Flask(__name__)
 app.config.from_object(config)
 
 #app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 ############################db configuracion
 db.init_app(app)
+
+#app.config ['JSON_SORT_KEYS'] = True #prueba para respetar orden de json como viene
 
 with app.app_context():
     db.create_all()
@@ -30,36 +31,25 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 
-
 ############################ Api configuracion
 from api import api
 api.init_app(app)
 
 ############################
+app.config['JSON_SORT_KEYS'] = False
 
-@app.route("/")
-@cross_origin()
 
-def Prueba():
-	from models.mysql.usuario import Usuario, Permiso
-	from servicios.usuarioService import UsuarioService
-	u = UsuarioService.find_by_email('naye')
-	p = Permiso.query.limit(5).all()
-	f = UsuarioService.findUsuariosHabilitados()
-	return f"{f}"
+from flask import send_from_directory
+@app.route("/uploads/<path:path>")
+def static_dir(path):
+    return send_from_directory("uploads", path)
 
-#ejecutar esta funcion una unica vez para crear las tablas y los permisos
-@app.route('/llenar_mysql')
-def llenar_msyql():
-	from models.sql_script import MysqlScript
-	MysqlScript.ScriptLlenarTablas()
-	return {'Status':'ok'}
-	
 if __name__ == "__main__":
 	if app.config['DEBUG']:
 		@app.before_first_request
 		def create_tables():
 			db.create_all()
+
 	
 	app.run(port=8080 ,debug=True)	
 

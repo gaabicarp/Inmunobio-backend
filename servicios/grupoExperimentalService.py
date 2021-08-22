@@ -1,21 +1,24 @@
-from models.mongo.grupoExperimental import GrupoExperimental, GrupoExperimentalSchema, AltaGrupoExperimentalSchema, DividirGrupoExperimentalSchema
-from models.mongo.fuenteExperimental import FuenteExperimental, FuenteExperimentalAnimalSchema, FuenteExperimentalOtroSchema
-from dateutil import parser
-import datetime
+from models.mongo.grupoExperimental import GrupoExperimental
+from schemas.grupoExperimentalSchema import GrupoExperimentalSchema, AltaGrupoExperimentalSchema, DividirGrupoExperimentalSchema,AgregarFuentesAlGrupoExperimentalSchema
+from models.mongo.fuenteExperimental import FuenteExperimental
+from schemas.fuenteExperimentalSchema import  FuenteExperimentalAnimalSchema, FuenteExperimentalOtroSchema
 
 class GrupoExperimentalService:
 
     @classmethod
     def find_by_id(cls, id):
-        return GrupoExperimental.objects(id_grupoExperimental = id).first().json()
-    
+        grupo =  GrupoExperimental.objects(id_grupoExperimental = id).first()
+        if not grupo : raise Exception(f"No se encontraron grupos experimenales con id. {id}")
+        return grupo
+
     @classmethod
     def gruposExperimentalesDelExperimento(cls, _id_experimento):
-        return GrupoExperimentalSchema().dump(GrupoExperimental.objects(id_experimento = _id_experimento).all(), many=True)
+        return GrupoExperimental.objects(id_experimento = _id_experimento).all()
 
     @classmethod
     def CrearGrupoExperimental(cls, datos):
         grupoExperimental = AltaGrupoExperimentalSchema().load(datos)
+        #id_experimento no hay que validarlo?
         grupoExperimental.save()
     
     @classmethod
@@ -28,10 +31,10 @@ class GrupoExperimentalService:
         
         for fuenteVieja in grupoExperimentalViejo.fuentesExperimentalesNuevas:
             if any(fuenteExperimentalNueva.id_fuenteExperimental != fuenteVieja.id_fuenteExperimental for fuenteExperimentalNueva in fuentesExperimentalesNuevas):
-                self.desasociarDeGrupoExperimental(fuenteVieja)
+                cls.desasociarDeGrupoExperimental(fuenteVieja)
         for fuenteNueva in fuentesExperimentalesNuevas:
             if fuenteNueva.tipo == "Animal":
-                self.asociarAGrupoExperimental(fuenteNueva)
+                cls.asociarAGrupoExperimental(fuenteNueva)
             else:
                 fuenteNueva.save()
 
@@ -65,3 +68,7 @@ class GrupoExperimentalService:
     def reasignarCodigoGrupoExperimentalAFuentesExperimentales(grupo):
         for fuente in grupo.fuentesExperimentales:
             FuenteExperimental.objects(id_fuenteExperimental = fuente.id_fuenteExperimental).update(codigoGrupoExperimental = grupo.codigo)
+
+
+    def borrarGrupoExperimental(cls,idGrupoPadre):
+        GrupoExperimental.objects(id_grupoExperimental = idGrupoPadre,parent=idGrupoPadre).delete()

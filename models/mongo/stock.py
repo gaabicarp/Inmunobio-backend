@@ -8,6 +8,7 @@ class Stock(dbMongo.Document):
     id_espacioFisico = dbMongo.IntField()
     id_grupoDeTrabajo = dbMongo.IntField()
     producto = dbMongo.ListField(dbMongo.EmbeddedDocumentField('ProductosEnStock'))
-    #TO-DO:unidades totales puede ser calculado ver
+    seguimiento = dbMongo.BooleanField()
+
   
 

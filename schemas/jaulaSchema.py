@@ -6,7 +6,6 @@ from schemas.blogSchema import BlogSchema
 class JaulaSchema(Schema):
     id_jaula = fields.Int()
     id_proyecto = fields.Int()
-    nombre_proyecto = fields.Str()
     id_espacioFisico = fields.Int()
     codigo = fields.Str()
     rack = fields.Int()
@@ -33,10 +32,8 @@ class NuevaJaulaSchema(Schema):
         return Jaula(**data)
 
 class ActualizarProyectoJaulaSchema(JaulaSchema):
-    #class ActualizarProyectoJaulaSchema(Schema):
     id_jaula = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar el id de la jaula", "code" : 400}})
     id_proyecto = fields.Int(required=True, error_messages={"required": {"message" : "Es necesario indicar el id del proyecto", "code": 400}})
-    #nombre_proyecto = fields.String(required=True, error_messages={"required": {"message" : "Es necesario indicar el nombre de proyecto", "code" : 400}})
     
     @post_load
     def makeJaula(self, data, **kwargs):
@@ -55,3 +52,7 @@ class BusquedaBlogsJaula(Schema):
 
 class BusquedaBlogJaula(BusquedaBlogsJaula):
     id_jaula = fields.Integer(required=True,error_messages={"required": {"message": "Debe indicarse  id_jaula", "code": 400}}) 
+
+class JaulaBaseSchema(NuevaJaulaSchema):
+    blogs = fields.Nested(BlogSchema,required=True, error_messages={"required": {"message" : "Es necesario indicar datos de blog de jaula", "code" : 400}},many=True)
+

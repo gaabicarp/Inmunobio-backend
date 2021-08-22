@@ -1,27 +1,33 @@
 from dateutil import parser
 import datetime
 from models.mongo.proyecto import Proyecto
-from schemas.proyectoSchema import NuevoBlogProyectoSchema,ObtenerBlogsProyectoSchema, ProyectoCerradoSchema, ProyectoModificarSchema,ProyectoNuevoSchema
-from servicios.usuarioService import UsuarioService
-from exceptions.exception import ErrorProyectoInexistente
-from servicios.blogService import BlogService
+from schemas.proyectoSchema import ProyectoExtendido,NuevoBlogProyectoSchema,ObtenerBlogsProyectoSchema, ProyectoCerradoSchema, ProyectoModificarSchema,ProyectoNuevoSchema
+from servicios.commonService import CommonService
 
 class ProyectoService:
     @classmethod
     def find_all(cls):
-        return Proyecto.objects.filter().all()
-        
+        proyectos =  Proyecto.objects.filter().all()
+        [cls.agregarDatosProyecto(proyecto) for proyecto in proyectos]
+        return proyectos
     @classmethod
     def find_by_id(cls, id):
         proyecto =  Proyecto.objects.filter(id_proyecto=id).first()
-        if not proyecto: raise ErrorProyectoInexistente(id)
+        if not proyecto: raise Exception(f"No se encontró ningun proyecto con el id: {id}")
         return proyecto
 
     @classmethod
     def nuevoProyecto(cls, datos):
         proyecto = ProyectoNuevoSchema().load(datos)
-        UsuarioService.busquedaUsuariosID(datos['participantes']) #validamos que se pasen usuarios validos 
+        cls.validarProyecto(proyecto)
         proyecto.save()
+
+    @classmethod
+    def validarProyecto(cls,proyecto):
+        from servicios.usuarioService import UsuarioService
+        UsuarioService.busquedaUsuariosID(proyecto.participantes)
+        from servicios.permisosService import PermisosService
+        PermisosService.esJefeDeProyecto(UsuarioService.find_by_id(proyecto.idDirectorProyecto))
 
     @classmethod
     def find_by_nombre(cls, _nombre):
@@ -40,17 +46,14 @@ class ProyectoService:
     @classmethod
     def modificarProyecto(cls, datos):
         proyecto = ProyectoModificarSchema().load(datos)
+        cls.validarProyecto(proyecto)
         if proyecto.descripcion.strip() != "":
             Proyecto.objects(id_proyecto = proyecto.id_proyecto).update(set__descripcion = proyecto.descripcion)
-        Proyecto.objects(id_proyecto = proyecto.id_proyecto).update(set__montoInicial = proyecto.montoInicial)
-    
-    @classmethod
-    def agregarMiembros(cls):
-        usuariosIdPermitidas = UsuarioService.UsuarioService()
-        return usuariosIdPermitidas
+        Proyecto.objects(id_proyecto = proyecto.id_proyecto).update(set__montoInicial = proyecto.montoInicial,set__participantes = proyecto.participantes)
 
     @classmethod
-    def obtenerMiembrosProyecto(cls, id_proyecto):    
+    def obtenerMiembrosProyecto(cls, id_proyecto):  
+        from servicios.usuarioService import UsuarioService
         proyecto = cls.find_by_id(id_proyecto)
         return UsuarioService.busquedaUsuariosID(proyecto.participantes)
 
@@ -64,8 +67,10 @@ class ProyectoService:
     def blogsProyecto(cls,id_proyecto,datos):
         from servicios.jaulaService import JaulaService
         blogsJaula = JaulaService.obtenerBlogsJaulaDeProyecto(id_proyecto,datos)
+
         from servicios.experimentoService import ExperimentoService
         blogsExperimento = ExperimentoService.obtenerBlogsExperimento(id_proyecto,datos)
+
         return blogsJaula+blogsExperimento    
 
     @classmethod
@@ -102,3 +107,23 @@ class ProyectoService:
     @classmethod
     def obtenerNombreProyecto(cls,id):
         return cls.find_by_id(id).nombre
+
+    @classmethod
+    def obtenerProyectosUsuario(cls,id_usuario):
+        proyectos =  Proyecto.objects.filter(idDirectorProyecto=id_usuario,participantes=id_usuario)
+        [cls.agregarDatosProyecto(proyecto) for proyecto in proyectos]
+        return proyectos
+
+    @classmethod
+    def obtenerProyecto(cls,id_proyecto):
+        proyecto = cls.find_by_id(id_proyecto)
+        proyecto.participantes = cls.obtenerMiembrosProyecto(id_proyecto)
+        from servicios.usuarioService import UsuarioService
+        proyecto.idDirectorProyecto = UsuarioService.find_by_id(proyecto.idDirectorProyecto)
+        return proyecto
+    
+    @classmethod
+    def agregarDatosProyecto(cls,proyecto):
+        proyecto.participantes = cls.obtenerMiembrosProyecto(proyecto.id_proyecto)
+        from servicios.usuarioService import UsuarioService
+        proyecto.idDirectorProyecto = UsuarioService.find_by_id(proyecto.idDirectorProyecto)

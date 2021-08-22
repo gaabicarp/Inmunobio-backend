@@ -1,27 +1,32 @@
-from marshmallow import Schema, fields, post_load, ValidationError
+from marshmallow import Schema, fields, post_load
 from models.mongo.proyecto import Proyecto
 from schemas.blogSchema import NuevoBlogProyecto
+from schemas.usuarioSchema import UsuarioSchema
 
 class ProyectoSchema(Schema):
     id_proyecto = fields.Integer()
     codigoProyecto = fields.Str()
     nombre = fields.Str()
-    descripcion = fields.Str()
+    descripcion = fields.Str(default="")
     participantes = fields.List(fields.Int())
     idDirectorProyecto = fields.Int()
     fechaInicio = fields.DateTime()
     fechaFinal = fields.DateTime()
     finalizado = fields.Boolean()
     montoInicial = fields.Float()
-    conclusion = fields.Str()
-
+    conclusion = fields.Str(default="")
     #En Participantes
     #ID, Nombre y ROL
 
     @post_load
     def make_Proyecto(self, data, **kwargs):
         return Proyecto(**data)
-    
+
+        
+class ProyectoExtendido(ProyectoSchema):
+    participantes = fields.Nested(UsuarioSchema, many=True)
+    idDirectorProyecto = fields.Nested(UsuarioSchema)
+
 class ProyectoNuevoSchema(ProyectoSchema):
     codigoProyecto = fields.Str(required=True, error_messages={"required": {"message": "Se necesita el código del proyecto", "code": 400}})
     nombre = fields.Str(required=True, error_messages={"required": {"message": "Se necesita ingresar el nombre del proyecto", "code": 400}})
@@ -37,7 +42,7 @@ class ProyectoCerradoSchema(ProyectoSchema):
     
 class ProyectoModificarSchema(ProyectoSchema):
     id_proyecto = fields.Integer(required=True, error_messages={"required": {"message": "Es necesario el id_proyecto. Este campo no puede estar vacío", "code:": 400}})
-    descripcion = fields.Str(required=True, error_messages={"required": {"message": "Es necesaria una descripcion. Este campo no puede estar vacío", "code": 400}})
+    #descripcion = fields.Str(required=True, error_messages={"required": {"message": "Es necesaria una descripcion. Este campo no puede estar vacío", "code": 400}})
     montoInicial = fields.Float(required=True, error_messages={"required": {"message": "Es necesario un montoInicial. Este campo no puede estar vacío.", "code": 400}})
     fechaFinal = fields.DateTime(allow_none=True)
     conclusion = fields.Str(allow_none=True)
@@ -52,4 +57,3 @@ class NuevoBlogProyectoSchema(Schema):
     id = fields.Integer(required=True, error_messages={"required": {"message": "Es necesario el id", "code:": 400}})
     id_proyecto = fields.Integer(required=True, error_messages={"required": {"message": "Es necesario el id_proyecto. Este campo no puede estar vacío", "code:": 400}})
     blogs = fields.Nested(NuevoBlogProyecto)
-

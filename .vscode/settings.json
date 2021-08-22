@@ -1,5 +1,8 @@
 {
     "python.pythonPath": "env/bin/python",
-    "codetogether.userName": "https://discord.com/channels/791048060787884042/817865828619124746/820482125027344414"
+    "codetogether.userName": "https://discord.com/channels/791048060787884042/817865828619124746/820482125027344414",
+    "python.analysis.extraPaths": [
+        "./models"
+    ]
 
 }

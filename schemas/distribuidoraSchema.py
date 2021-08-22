@@ -21,3 +21,4 @@ class NuevaDistribuidoraSchema(DistribuidoraSchema):
     @post_load
     def makeDistribuidora(self, data, **kwargs):
         return Distribuidora(**data)
+

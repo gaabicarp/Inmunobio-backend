@@ -1,6 +1,7 @@
+from servicios.validationService import Validacion
+from models.mongo.proyecto import Proyecto
 from models.mongo.jaula import Jaula
-from exceptions.exception import ErrorEspacioFisicoInexistente,ErrorJaulaInexistente,ErrorBlogInexistente,ErrorJaulaDeProyecto,ErrorJaulaBaja,ErrorEspacioDeproyecto
-from schemas.jaulaSchema import  JaulaSchemaBlogs,BusquedaBlogsJaula,JaulaSchema,BlogSchema,BusquedaBlogJaula,NuevaJaulaSchema, ActualizarProyectoJaulaSchema, ActualizarJaulaSchema,NuevoBlogJaulaSchema
+from schemas.jaulaSchema import BusquedaBlogsJaula,JaulaSchema,BlogSchema,BusquedaBlogJaula,NuevaJaulaSchema, ActualizarProyectoJaulaSchema, ActualizarJaulaSchema,NuevoBlogJaulaSchema
 from servicios.animalService import AnimalService
 from servicios.commonService import CommonService
 
@@ -8,7 +9,7 @@ class JaulaService:
     @classmethod
     def find_by_id(cls, idJaula):
         jaula =  Jaula.objects(id_jaula = idJaula).first()
-        if not jaula: raise ErrorJaulaInexistente(idJaula)
+        if not jaula: raise Exception(f"No se encontró ninguna jaula con el id {idJaula}")
         return jaula
 
     @classmethod
@@ -22,22 +23,35 @@ class JaulaService:
     @classmethod
     def jaulaPerteneceAlProyecto(cls,_id_proyecto,_id_jaula):
         cls.find_by_id(_id_jaula)
-        if not cls.jaulasDelProyecto(_id_proyecto).filter(id_jaula = _id_jaula).first(): raise ErrorJaulaDeProyecto(_id_proyecto,_id_jaula)
+        if not cls.jaulasDelProyecto(_id_proyecto).filter(id_jaula = _id_jaula).first(): raise Exception( f"La jaula {_id_jaula} no se encuentra asignada al proyecto con id {_id_proyecto}")
 
     @classmethod
     def crearJaula(cls, datos):
         #aca nunca validar si existe el proyecto ->no porque siempre se asigna aparte
         jaula = NuevaJaulaSchema().load(datos)
+        #cls.verificarProyecto(jaula.id_proyecto)
         jaula.save()
+    
+    def verificarProyecto(idProyecto):
+        if not Validacion().elProyectoExiste(idProyecto):
+            raise Exception(f"El proyecto con id {idProyecto} no existe.")
+        if not Validacion().elProyectoEstaActivo(idProyecto):
+            raise Exception(f"El proyecto con id {idProyecto} no se encuentra activo")
 
     @classmethod
     def actualizarProyectoDeLaJaula(cls, datos):
-        from servicios.proyectoService import ProyectoService
         jaula = ActualizarProyectoJaulaSchema().load(datos)
-        ProyectoService.find_by_id(jaula.id_proyecto)
+        cls.validaModificacionJaula(jaula)
         Jaula.objects(id_jaula = jaula.id_jaula).update(
-            id_proyecto = jaula.id_proyecto
+            set__id_proyecto = jaula.id_proyecto
         )
+        AnimalService.actualizarProyectoAnimalesDeJaulas(jaula)
+        
+    @classmethod
+    def validaModificacionJaula(cls,jaula):
+        cls.find_by_id(jaula.id_jaula)
+        cls.verificarProyecto(jaula.id_proyecto)
+
     @classmethod
     def actualizarJaula(cls, datos):
         ActualizarJaulaSchema().dump(datos)
@@ -71,7 +85,7 @@ class JaulaService:
     @classmethod
     def borrarBlogJaula(cls,_id_jaula,_id_blog):
         cls.validarBlogJaula(_id_jaula,_id_blog)
-        return Jaula.objects.filter(id_jaula = _id_jaula).first().modify(pull__blogs__id_blog =_id_blog)
+        Jaula.objects.filter(id_jaula = _id_jaula).first().modify(pull__blogs__id_blog =_id_blog)
             
     @classmethod
     def validarBlogJaula(cls,_id_jaula,_id_blog):
@@ -80,7 +94,7 @@ class JaulaService:
 
     @classmethod
     def validarExistenciaBlog(_id_jaula,_id_blog):
-        if not Jaula.objects.filter(id_jaula = _id_jaula, blogs__id_blog= _id_blog).first() : raise ErrorBlogInexistente(_id_blog) 
+        if not Jaula.objects.filter(id_jaula = _id_jaula, blogs__id_blog= _id_blog).first() : raise Exception(f"No se encontró ningun blog con el id: {_id_blog}") 
 
     @classmethod
     def obtenerBlogs(cls,datos):

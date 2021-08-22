@@ -24,6 +24,7 @@ class ContenedorNuevoSchema(ContenedorSchema):
     nombre = fields.Str(required=True, validate=Validacion.not_empty_string, error_messages={"required": {"message" : "Es necesario indicar el nombre para el contenedor", "code": 400}})
     id_espacioFisico = fields.Int(required=True, validate=Validacion.not_empty_int, error_messages={"required": {"message" : "Es necesario indicar el id del espacio fisico en dónde se encuentra", "code": 400}})
 
+
 class ContenedorProyectoSchema(ContenedorSchema):
     id_contenedor = fields.Int(required=True, validate=Validacion.not_empty_int, error_messages={"required": {"message" : "Es necesario indicar el id del contenedor", "code": 400}})
     id_proyecto = fields.Int(required=True, validate=Validacion.not_empty_int, error_messages={"required": {"message" : "Es necesario indicar el id del proyecto", "code": 400}})

@@ -1,11 +1,11 @@
-from models.mongo.fuenteExperimental import FuenteExperimental, FuenteExperimentalSchema, FuenteExperimentalAnimalSchema, FuenteExperimentalOtroSchema
-from models.mongo.grupoExperimental import GrupoExperimental, AgregarFuentesAlGrupoExperimentalSchema
+from models.mongo.fuenteExperimental import FuenteExperimental
+from schemas.fuenteExperimentalSchema import FuenteExperimentalSchema, FuenteExperimentalAnimalSchema, FuenteExperimentalOtroSchema
+from models.mongo.grupoExperimental import GrupoExperimental
 from dateutil import parser
 from .validationService import Validacion
-import datetime
+from schemas.grupoExperimentalSchema import AgregarFuentesAlGrupoExperimentalSchema
 
 class FuenteExperimentalService:
-
     @classmethod
     def find_by_id(cls, idFuenteExperimental):
         return FuenteExperimentalSchema().dump(FuenteExperimental.objects(id_fuenteExperimental = idFuenteExperimental, codigo__ne="").first())
@@ -24,7 +24,7 @@ class FuenteExperimentalService:
         grupoExperimental = AgregarFuentesAlGrupoExperimentalSchema().load(datos)
         fuentesExperimentales = list(map(lambda fuente: FuenteExperimentalAnimalSchema().load(fuente) if fuente['tipo'] == "Animal" else FuenteExperimentalOtroSchema().load(fuente), datos['fuentesExperimentales']))
         grupoExperimental.fuentesExperimentales = fuentesExperimentales
-        cls.validarGrupoExperimental(cls, grupoExperimental)
+        cls.validarGrupoExperimental(grupoExperimental)
         if fuentesExperimentales[0].tipo == "Animal":
             cls.validarAnimales(cls, grupoExperimental)
             cls.nuevasFuentesAnimales(grupoExperimental)
@@ -51,8 +51,8 @@ class FuenteExperimentalService:
         GrupoExperimental.objects(id_grupoExperimental = grupoExperimental.id_grupoExperimental).update(
             fuentesExperimentales = fuentesExperimentalesDic
         )
-
-    def validarGrupoExperimental(self, grupoExperimental):
+    @classmethod
+    def validarGrupoExperimental(cls, grupoExperimental):
         if not Validacion.existeElgrupoExperimental(grupoExperimental):
             raise Exception("El grupo experimental debe existir y estar habilitado")
         if not Validacion.elExperimentoEstaFinalizado(grupoExperimental.id_experimento):
@@ -60,7 +60,7 @@ class FuenteExperimentalService:
         if not Validacion.elGrupoExperimentalEsDelMismoTipoQueLasFuentes(grupoExperimental):
             raise Exception("El grupo experimental y las fuentes tienen que ser del mismo tipo")
         if not Validacion.todasLasFuentesTienenElMismoGrupoExperimental(grupoExperimental):
-            raise Exception("Todas las fuentes experimentales deben tener el mismo código de grupo experimental.")
+            raise Exception("El -codigoGrupoExperimental-de todas las fuentes experimentales deben ser mismo -código- del grupo experimental.")
     
     def validarAnimales(self, grupoExperimental):
         if not Validacion.losAnimalesEstanHabilitados(grupoExperimental.fuentesExperimentales):
