@@ -3,8 +3,6 @@ import os
 SECRET_KEY = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 PWD = os.path.abspath(os.curdir)
 
-
-
 DEBUG = True
 MONGODB_DB = 'db_mongo_inmunobio'
 MONGODB_HOST = 'mongo'
