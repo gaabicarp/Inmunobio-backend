@@ -10,7 +10,6 @@ from servicios.usuarioService import UsuarioService
 app= Flask(__name__)
 app.config.from_object(config)
 
-#app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 ############################db configuracion
 db.init_app(app)
 
@@ -30,19 +29,12 @@ cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 
-
 ############################ Api configuracion
 from api import api
 api.init_app(app)
-
 ############################
 app.config['JSON_SORT_KEYS'] = False
 
-
-from flask import send_from_directory
-@app.route("/uploads/<path:path>")
-def static_dir(path):
-    return send_from_directory("uploads", path)
 
 if __name__ == "__main__":
 	if app.config['DEBUG']:
@@ -50,7 +42,6 @@ if __name__ == "__main__":
 		def create_tables():
 			db.create_all()
 
-	
 	app.run(port=8080 ,debug=True)	
 
 """ if __name__ == "__main__":
