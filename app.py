@@ -35,7 +35,6 @@ api.init_app(app)
 ############################
 app.config['JSON_SORT_KEYS'] = False
 
-
 if __name__ == "__main__":
 	if app.config['DEBUG']:
 		@app.before_first_request

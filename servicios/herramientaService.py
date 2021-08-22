@@ -14,6 +14,7 @@ class HerramientaService:
         herramienta = NuevaHerramientaSchema().load(datos)
         cls.espacioFisValidacion(herramienta.id_espacioFisico)
         herramienta.save()
+        
     @classmethod
     def espacioFisValidacion(cls,id_espacio):
         from servicios.espacioFisicoService import EspacioFisicoService

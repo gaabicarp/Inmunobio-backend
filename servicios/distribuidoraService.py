@@ -1,28 +1,21 @@
 from models.mongo.distribuidora import Distribuidora
-from schemas.distribuidoraSchema import DistribuidoraSchema,ModificarDistribuidora,NuevaDistribuidoraSchema,IdDistribuidoraSchema
+from schemas.distribuidoraSchema import ModificarDistribuidora,NuevaDistribuidoraSchema
 from servicios.commonService import CommonService
 
 class DistribuidoraService():
     @classmethod
     def altaDistribuidora(cls,datos):
             nuevaDistribuidora = NuevaDistribuidoraSchema().load(datos)
-            cls.validacionDistribuidora(datos)
             nuevaDistribuidora.save()
-
-    def validacionDistribuidora(datos):
-        #debe validar algo la distribuidora?
-        pass
 
     @classmethod    
     def find_by_id(cls,id):
         distribuidora =  Distribuidora.objects(id_distribuidora = id).first()
-        if(not distribuidora):
-            raise Exception("Distribuidora inexistente")
+        if(not distribuidora):raise Exception(f"Distribuidora con id.{id} inexistente")
         return distribuidora  
            
     @classmethod
     def bajaDistribuidora(cls,id_distribuidora):
-            #valida si existe producto activo con esta id?
             distribuidora = cls.find_by_id(id_distribuidora)
             from servicios.productoService import ProductoService
             ProductoService.bajaStockExterno(id_distribuidora)
@@ -30,7 +23,7 @@ class DistribuidoraService():
 
     @classmethod
     def obtenerDistribuidoras(cls):
-        return CommonService.jsonMany(Distribuidora.objects().all(),DistribuidoraSchema)
+        return Distribuidora.objects().all()
 
     @classmethod
     def modificarDistribuidora(cls,datos):

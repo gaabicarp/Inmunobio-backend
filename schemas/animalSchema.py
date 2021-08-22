@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields, post_load, validate
+from marshmallow import Schema, fields, post_load
 from models.mongo.fuenteExperimental import FuenteExperimental
 from models.mongo.validacion import Validacion
 

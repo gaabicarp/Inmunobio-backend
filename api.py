@@ -14,7 +14,7 @@ from resources.distribuidoraResource import DistribuidoraResource,ObtenerDistrib
 
 from resources.grupoExperimentalResource import GrupoExperimental, GruposExperimentales
 from resources.jaulaResource import JaulasBlogs,JaulaXId,ObtenerBlogsJaula,Jaula, JaulasSinProyecto, JaulasDelProyecto,BlogJaula,BorrarBlogJaula,Jaulas
-from resources.fuenteExperimentalResource import FuenteExperimental
+from resources.fuenteExperimentalResource import FuenteExperimental,FuentesExperimentalesPorId,FuentesExperimentalesPorProyecto
 from resources.animalResource import  Animal, Animales, AnimalesSinJaula, AnimalesDeLaJaula, AnimalesProyecto
 from resources.muestraResource import MuestrasPorIDFuente,Muestra, MuestraGrupoExperimental, MuestraProyecto
 from resources.animalResource import  Animal, Animales, AnimalesSinJaula, AnimalesDeLaJaula
@@ -119,6 +119,8 @@ api.add_resource(JaulasBlogs, '/api/v1/blogsJaulas')
 #FuenteExperimental
 api.add_resource(FuenteExperimental, '/api/v1/fuenteExperimental/<string:codigo>', endpoint="fuente_experimental")
 api.add_resource(FuenteExperimental, '/api/v1/nuevasFuentesExperimentales', endpoint="nuevas_fuentes_experimentales")
+api.add_resource(FuentesExperimentalesPorId, '/api/v1/fuenteExperimental/<int:id_fuente>', endpoint="fuentes_por_id")
+api.add_resource(FuentesExperimentalesPorProyecto, '/api/v1/fuenteExperimental/<int:id_proyecto>', endpoint="fuentes_de_proyecto")
 
 #Animal
 api.add_resource(Animal, '/api/v1/animal/<int:idAnimal>', endpoint="animal")

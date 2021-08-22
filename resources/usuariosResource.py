@@ -8,14 +8,11 @@ from flask_restful import Resource
 from flask import request
 
 from servicios.commonService import CommonService
-
-
 class ObtenerUsuariosResource(Resource):
     def get(self):
         return CommonService.jsonMany(UsuarioService.findUsuariosHabilitados(), UsuarioSchema)
 
 class UsuarioResource(Resource):
-    # @jwt_required()
     def put(self):
         datos = request.get_json()
         if (datos):
@@ -26,7 +23,6 @@ class UsuarioResource(Resource):
                 return {'Error': err.args}, 400
         return {'Error': 'Deben suministrarse los datos para modificar el usuario.'}, 400
 
-    # @jwt_required()
     def post(self):
         datos = request.get_json()
         if (datos):
@@ -49,7 +45,8 @@ class UsuarioID(Resource):
             except Exception as err:
                 return {'Error': err.args}, 400
         return {'Error': 'Debe indicarse id_usuario'}, 400
-
+        
+    @TokenDeAcceso.token_nivel_de_acceso(TokenDeAcceso.SUPERUSUARIO)
     def delete(self, id_usuario):
         if(id_usuario):
             try:
