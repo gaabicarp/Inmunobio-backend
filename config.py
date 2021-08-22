@@ -7,7 +7,7 @@ PWD = os.path.abspath(os.curdir)
 
 DEBUG = True
 MONGODB_DB = 'db_mongo_inmunobio'
-MONGODB_HOST = 'localhost'
+MONGODB_HOST = 'mongo'
 MONGODB_PORT = 27017
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_DATABASE_URI = 'mysql://root:secret@mysql:3306/db_mysql_inmunobio'

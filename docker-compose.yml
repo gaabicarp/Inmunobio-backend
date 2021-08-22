@@ -12,7 +12,7 @@ services:
           MYSQL_ROOT_PASSWORD: secret
           MYSQL_DATABASE: db_mysql_inmunobio         
       volumes:
-          - ./data/mysql:/var/lib/mysql
+          - ../data/mysql:/var/lib/mysql
       cap_add:
           - SYS_NICE
       networks:
@@ -25,7 +25,7 @@ services:
       ports:
           - 27017:27017
       volumes:
-        - ./data/mongo:/data/db
+        - ../data/mongo:/data/db
       networks:
           - env_prod
 
@@ -41,6 +41,8 @@ services:
          - mongo
       networks:
          - env_prod
+      volumes:
+        - ../data/uploads
       depends_on:
          - mongo
          - mysql
