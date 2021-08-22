@@ -141,4 +141,3 @@ cython_debug/
 
 #carpeta uploads
 uploads/
-config.py
