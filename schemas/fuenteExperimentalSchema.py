@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields, post_load, validate
+from marshmallow import fields
 from schemas.animalSchema import AnimalSchema
 from models.mongo.validacion import Validacion
 

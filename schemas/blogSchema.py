@@ -1,11 +1,12 @@
 from marshmallow import Schema, fields,post_load,ValidationError
 from models.mongo.blog import Blog
+from models.mongo.validacion import Validacion
 
 
 class NuevoBlogSchema(Schema):
     fecha = fields.DateTime()
-    detalle = fields.String(required=True, error_messages={"required": {"message" : "Es necesario dar detalle del blog", "code" : 400}})
-    id_usuario = fields.Integer(required=True, error_messages={"required": {"message" : "Es necesario indicar el id del usuario autor", "code" : 400}})
+    detalle = fields.String(required=True,validate=Validacion.not_empty_string, error_messages={"required": {"message" : "Es necesario dar detalle del blog", "code" : 400}})
+    id_usuario = fields.Integer(required=True,validate=Validacion.not_empty_int, error_messages={"required": {"message" : "Es necesario indicar el id del usuario autor", "code" : 400}})
     tipo = fields.String()
     @post_load
     def makeBlog(self, data, **kwargs):
@@ -19,7 +20,6 @@ class BlogSchema(NuevoBlogSchema):
     tipo = fields.String()
 
 def tipoValidacion(data):
-    
     if( data != "Jaula" and data != "Experimento"):
         raise ValidationError('Debe indicarse como tipo "Jaula" o "Experimento"')
 

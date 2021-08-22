@@ -1,5 +1,5 @@
 
-from marshmallow import Schema, fields, post_load, validate
+from marshmallow import Schema, fields, post_load
 from models.mongo.validacion import Validacion
 from models.mongo.muestraExterna import MuestraExterna
 

@@ -15,7 +15,6 @@ class Experimentos(Resource):
         return {"Error" : "Se debe indicar un id del proyecto válido."}, 400
 
 class ExperimentoResource(Resource):
-    #@jwt_required()
     def get(self, idExperimiento):
         if idExperimiento:
             try:
@@ -25,7 +24,6 @@ class ExperimentoResource(Resource):
                 return {'error': err.args}, 400
         return {"Error" : "Se debe indicar un id de experimento válido."}, 400
 
-    #@jwt_required()
     def post(self):
         datos = request.get_json()
         if datos:
@@ -36,7 +34,6 @@ class ExperimentoResource(Resource):
                 return {'Error': err.args}, 400
         return {"Error" : "Se deben enviar datos para la creación del experimento."}, 400
 
-    #@jwt_required()
     def put(self):
         datos = request.get_json()
         if datos:
@@ -49,7 +46,6 @@ class ExperimentoResource(Resource):
 
 class CerrarExperimento(Resource):
 
-    #@jwt_required()
     def put(self):
         datos = request.get_json()
         if datos:
@@ -62,7 +58,6 @@ class CerrarExperimento(Resource):
 
 class ExperimentoMuestra(Resource):
 
-    #@jwt_required()
     def put(self):
         datos = request.get_json()
         if datos:

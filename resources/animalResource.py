@@ -33,7 +33,6 @@ class Animal(Resource):
         return {'Error' : f"El id {idAnimal} no es válido."}, 400
 
 class Animales(Resource):
-    #@jwt_required()
     def get(self):
         return CommonService.jsonMany(AnimalService().todosLosAnimales(),AnimalSchema)
 

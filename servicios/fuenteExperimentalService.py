@@ -8,16 +8,16 @@ from schemas.grupoExperimentalSchema import AgregarFuentesAlGrupoExperimentalSch
 class FuenteExperimentalService:
     @classmethod
     def find_by_id(cls, idFuenteExperimental):
-        return FuenteExperimentalSchema().dump(FuenteExperimental.objects(id_fuenteExperimental = idFuenteExperimental, codigo__ne="").first())
-    
+        fuente =  FuenteExperimental.objects(id_fuenteExperimental = idFuenteExperimental, codigo__ne="").first()
+        if not fuente : raise Exception( f"No se encontró una fuente experimental para el id {idFuenteExperimental}")
+        return fuente
+
     @classmethod
     def find_by_codigo(cls, codigoFuenteExperimental):
         return FuenteExperimentalSchema().dump(FuenteExperimental.objects(codigo = codigoFuenteExperimental).first())
-
     @classmethod
     def find_all_sin_asignar(cls):
         return FuenteExperimentalSchema().dump(FuenteExperimental.objects(tipo="Animal", grupoExperimental="", codigo__ne="").all(), many=True)
-    
     #Consultar qué datos se piden cuando se carga el animal y cuáles cuando se crea una nueva fuente experimental
     @classmethod
     def nuevasFuentesExperimentales(cls, datos):
@@ -70,5 +70,9 @@ class FuenteExperimentalService:
         if not Validacion.losAnimalesPertenecenAlMismoProyectoDelExperimento(grupoExperimental):
             raise Exception("Los animales deben pertenecer al mismo proyecto.")
 
+    @classmethod
+    def find_by_proyecto(cls,_id_proyecto):
+        print(FuenteExperimental.objects(id_proyecto = _id_proyecto).all())
+        FuenteExperimental.objects(id_proyecto = _id_proyecto).all()
 
 

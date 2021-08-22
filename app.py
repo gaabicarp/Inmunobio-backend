@@ -37,15 +37,6 @@ api.init_app(app)
 ############################
 app.config['JSON_SORT_KEYS'] = False
 
-@app.route("/")
-def Prueba():
-	from models.mysql.usuario import Usuario, Permiso
-	from servicios.usuarioService import UsuarioService
-	u = UsuarioService.find_by_email('naye')
-	p = Permiso.query.limit(5).all()
-	f = UsuarioService.findUsuariosHabilitados()
-	return f"{f}"
-
 	
 if __name__ == "__main__":
 	if app.config['DEBUG']:

@@ -1,6 +1,5 @@
-from marshmallow import Schema, fields, post_load, validate
+from marshmallow import Schema, fields, post_load
 from models.mongo.validacion import Validacion
-from schemas.muestraSchema import MuestraSchema
 from models.mongo.experimento import Experimento
 from schemas.blogSchema import BlogSchema
 from schemas.muestraExternaSchema import MuestraExternaSchema 
@@ -35,7 +34,6 @@ class CerrarExperimentoSchema(ExperimentoSchema):
     
 class ModificarExperimentoSchema(ExperimentoSchema):
     id_experimento = fields.Int(required=True, validate=Validacion.not_empty_int, error_messages={"required": {"message": "El campo id_experimento es necesario, no puede estar vacío", "code": 400}})
-
 
 class AgregarMuestrasAlExperimentoSchema(ExperimentoSchema):
     id_proyecto = fields.Int(required=True, validate=Validacion.not_empty_int, error_messages={"required": {"message" : "Es necesario indicar el id del proyecto", "code": 400}})

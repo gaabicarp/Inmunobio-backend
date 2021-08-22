@@ -1,6 +1,5 @@
 from servicios.distribuidoraService import DistribuidoraService
-from flask_restful import Resource,Api
-from flask_jwt import jwt_required
+from flask_restful import Resource
 from flask import request
 from servicios.commonService import CommonService
 from schemas.distribuidoraSchema import DistribuidoraSchema
@@ -28,7 +27,8 @@ class DistribuidoraResource(Resource):
     
 class ObtenerDistribuidorasResource(Resource):
     def get(self):
-        return DistribuidoraService().obtenerDistribuidoras()
+        distribuidoras = DistribuidoraService().obtenerDistribuidoras()
+        return CommonService.jsonMany(distribuidoras,DistribuidoraSchema)
     
 class DistribuidoraID(Resource):
     def get(self,id_distribuidora):
