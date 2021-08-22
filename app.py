@@ -37,15 +37,10 @@ api.init_app(app)
 ############################
 app.config['JSON_SORT_KEYS'] = False
 
-@app.route("/")
-def Prueba():
-	from models.mysql.usuario import Usuario, Permiso
-	from servicios.usuarioService import UsuarioService
-	u = UsuarioService.find_by_email('naye')
-	p = Permiso.query.limit(5).all()
-	f = UsuarioService.findUsuariosHabilitados()
-	return f"{f}"
-
+from flask import send_from_directory
+@app.route("/uploads/<path:path>")
+def static_dir(path):
+    return send_from_directory("uploads", path)
 	
 if __name__ == "__main__":
 	if app.config['DEBUG']:
