@@ -5,7 +5,7 @@ from flask_jwt import JWT
 from db import db, dbMongo
 #from api import api
 from security import authenticate, identity
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from servicios.usuarioService import UsuarioService
 app= Flask(__name__)
 app.config.from_object(config)
@@ -25,14 +25,16 @@ Migrate(app, db, compare_type=True)
 
 nojwt = JWT(app, authenticate, identity) 
 
-CORS(app)
-cors = CORS(app,resources={r"/api/*":{"origins":"*"}})
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+
 
 ############################ Api configuracion
 from api import api
 api.init_app(app)
 ############################
 app.config['JSON_SORT_KEYS'] = False
+
 
 if __name__ == "__main__":
 	if app.config['DEBUG']:
