@@ -4,7 +4,6 @@ from servicios.commonService import CommonService
 from flask_restful import Resource
 from flask_jwt import jwt_required
 from flask import request
-from marshmallow import ValidationError
 from schemas.animalSchema import AnimalSchema
 from servicios.animalService import AnimalService
 

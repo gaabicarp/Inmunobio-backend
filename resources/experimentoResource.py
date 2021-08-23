@@ -97,3 +97,6 @@ class ObtenerBlogsExp(Resource):
             except Exception as err:
                 return {'Error' : err.args}, 400          
         return {'Error': 'Parametros id de experimento,fecha-desde y fecha-hasta requeridos'},400
+class TodosLosExperimentos(Resource):
+    def get(self):
+        return CommonService.jsonMany( ExperimentoService.experimentos(),ExperimentoSchema)

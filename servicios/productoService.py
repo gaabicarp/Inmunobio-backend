@@ -52,10 +52,10 @@ class ProductoService():
 
     @classmethod
     def modificarProducto(cls,datos):
-            ModificarProductoSchema().load(datos)
-            producto = cls.find_by_id(datos['id_producto'])
-            CommonService.updateAtributes(producto,datos,'id_producto')
-            producto.save()
+        ModificarProductoSchema().load(datos)
+        producto = cls.find_by_id(datos['id_producto'])
+        CommonService.updateAtributes(producto,datos,'id_producto')
+        producto.save()
 
     def obtenerProducto(cls,id_producto):
         producto = cls.find_by_id(id_producto)

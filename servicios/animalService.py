@@ -52,7 +52,8 @@ class AnimalService:
     
     @classmethod
     def animalesDelProyecto(cls, idProyecto):
-        return FuenteExperimental.objects(codigoGrupoExperimental__ne="",id_proyecto = idProyecto,  tipo ="Animal", baja=False).all()
+        #codigoGrupoExperimental__ne=""
+        return FuenteExperimental.objects(codigoGrupoExperimental='',id_proyecto = idProyecto,  tipo ="Animal", baja=False).all()
 
     @classmethod
     def actualizarProyectoAnimalesDeJaulas(cls,jaula):

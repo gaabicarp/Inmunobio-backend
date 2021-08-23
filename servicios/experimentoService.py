@@ -133,3 +133,7 @@ class ExperimentoService:
         dictBlog =  BlogSchema().dump(blog)
         dictBlog['codigoExperimento'] = exp.codigo
         return dictBlog
+
+    @classmethod
+    def experimentos(self):
+        return Experimento.objects.all()
