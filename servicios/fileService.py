@@ -4,8 +4,8 @@ from config import UPLOAD_FOLDER
 
 class FileService():
     @classmethod
-    def upload(cls,datos):
-        filename = datos.filename
+    def upload(cls,producto,datos):
+        filename = f"{producto.id_producto}_{datos.filename}"
         datos.save(os.path.join(UPLOAD_FOLDER, filename))
         #chequear si hubo errores
         return filename

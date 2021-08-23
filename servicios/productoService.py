@@ -15,15 +15,14 @@ class ProductoService():
             nuevoProducto.save()
             return nuevoProducto.id_producto
        
-
     @classmethod
     def asociarArchivo(cls,archivo,_id_producto):
             producto = cls.find_by_id(_id_producto)
-            filename = FileService.upload(archivo)
             if(producto.detallesTecnicos):
                 FileService.deleteFile(producto.detallesTecnicos)
+            filename = FileService.upload(producto,archivo)
             producto.update(set__detallesTecnicos = filename)
-            producto.reload() 
+            producto.reload()
  
     def validacionAltaProducto(id_distribuidora):
         DistribuidoraService().find_by_id(id_distribuidora)

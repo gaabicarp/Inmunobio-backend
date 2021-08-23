@@ -53,11 +53,9 @@ class ArchivoProducto(Resource):
         if(archivo):
             try:
                 ProductoService().asociarArchivo(archivo,id_producto)
-                return {'Status':'ok'} ,200
+                return {'Status':'Se asoció el archivo al producto.'} ,200
             except Exception as err:
                 return {'Error': err.args},400  
-            except:
-                return {'Error':'no se pudo borrar archivo al hacer el update'},400
         return {'Error': 'Debe subirse el archivo correspondiente al campo detallesTecnicos'},400
 
 class ProductoEnStockDeGrupos(Resource):
