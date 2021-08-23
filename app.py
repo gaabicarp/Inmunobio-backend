@@ -3,14 +3,11 @@ import config
 from flask_migrate import Migrate
 from flask_jwt import JWT
 from db import db, dbMongo
-#from api import api
 from security import authenticate, identity
 from flask_cors import CORS
-from servicios.usuarioService import UsuarioService
 app= Flask(__name__)
 app.config.from_object(config)
 
-#app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 ############################db configuracion
 db.init_app(app)
 
@@ -18,7 +15,6 @@ db.init_app(app)
 
 with app.app_context():
     db.create_all()
-	#pass
 	
 dbMongo.init_app(app)
 

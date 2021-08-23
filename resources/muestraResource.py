@@ -22,7 +22,7 @@ class Muestra(Resource):
                 MuestraService().nuevasMuestras(datos)
                 return {'Status': 'Muestra creada'}, 200
             except Exception as err:
-                return {'Error': err.args}, 400
+                return {'Error': err.args}, 400 
         return {'Error': "Se deben enviar datos para crear la muestra"}, 400
 
     def put(self):
@@ -55,7 +55,6 @@ class MuestraGrupoExperimental(Resource):
         return {'Error' : "Se deben enviar un id del grupo experimental válido."}, 400
 
 class MuestraProyecto(Resource):
-
     def get(self, idProyecto):
         if idProyecto:
             try:
@@ -74,6 +73,10 @@ class MuestraExperimento(Resource):
 class MuestrasPorIDFuente(Resource):
     def get(self,idFuenteExperimental):
         if idFuenteExperimental :
-            muestras = MuestraService().obtenerMuestrasDeFuente(idFuenteExperimental)
-            return CommonService.jsonMany(muestras,MuestraSchema)
+            return MuestraService().obtenerMuestrasDeFuente(idFuenteExperimental)
         return {'Error' : "Se deben enviar un id de fuente ."}, 400
+
+class BorraMuestras(Resource):
+    def post(self):
+        from models.mongo.muestra import Muestra
+        Muestra.objects.delete()

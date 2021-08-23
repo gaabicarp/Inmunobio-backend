@@ -1,3 +1,4 @@
+from servicios.commonService import CommonService
 from models.mongo.grupoExperimental import GrupoExperimental
 from models.mongo.muestra import Muestra
 from schemas.muestraSchema import  MuestraSchema, NuevaMuestraSchema, ModificarMuestraSchema
@@ -90,7 +91,10 @@ class MuestraService:
     
     @classmethod
     def obtenerMuestrasDeFuente(cls,_id_fuente):
-        return Muestra.objects(id_fuenteExperimental=_id_fuente).all()
+        muestras = MuestraSchema().dump(Muestra.objects(id_fuenteExperimental=_id_fuente).all(),many=True)
+        for muestra in muestras: 
+            CommonService.asignarNombreContenedorAux(muestra)
+        return  muestras
 
     def agregarMuestrasExternasAlExperimento(cls, datos):
         experimento = AgregarMuestrasAlExperimentoSchema().load(datos)

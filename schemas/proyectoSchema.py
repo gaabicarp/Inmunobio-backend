@@ -37,7 +37,7 @@ class ProyectoCerradoSchema(ProyectoSchema):
     conclusion = fields.Str(required=True,validate=Validacion.not_empty_string, error_messages={"required": {"message": "Es necesario detallar la conclusión para cerrar el proyecto", "code": 400}})
     
 class ProyectoModificarSchema(ProyectoSchema):
-    id_proyecto = fields.Integer(required=True,validate=Validacion.not_empty_int, validate=Validacion.not_empty_int,error_messages={"required": {"message": "Es necesario el id_proyecto. Este campo no puede estar vacío", "code:": 400}})
+    id_proyecto = fields.Integer(required=True,validate=Validacion.not_empty_int,error_messages={"required": {"message": "Es necesario el id_proyecto. Este campo no puede estar vacío", "code:": 400}})
     montoInicial = fields.Float(required=True, validate=Validacion.not_empty_int,error_messages={"required": {"message": "Es necesario un montoInicial. Este campo no puede estar vacío.", "code": 400}})
     fechaFinal = fields.DateTime(allow_none=True)
     conclusion = fields.Str(allow_none=True)

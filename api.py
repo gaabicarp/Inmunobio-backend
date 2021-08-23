@@ -16,7 +16,7 @@ from resources.grupoExperimentalResource import GrupoExperimental, GruposExperim
 from resources.jaulaResource import JaulasBlogs,JaulaXId,ObtenerBlogsJaula,Jaula, JaulasSinProyecto, JaulasDelProyecto,BlogJaula,BorrarBlogJaula,Jaulas
 from resources.fuenteExperimentalResource import FuenteExperimental,FuentesExperimentalesPorId,FuentesExperimentalesPorProyecto
 from resources.animalResource import  Animal, Animales, AnimalesSinJaula, AnimalesDeLaJaula, AnimalesProyecto
-from resources.muestraResource import MuestrasPorIDFuente,Muestra, MuestraGrupoExperimental, MuestraProyecto
+from resources.muestraResource import BorraMuestras,MuestrasPorIDFuente,Muestra, MuestraGrupoExperimental, MuestraProyecto
 from resources.animalResource import  Animal, Animales, AnimalesSinJaula, AnimalesDeLaJaula
 from resources.espacioFisicoResource import EspaciosFisicos,EspacioFisico,EspacioFisicoID,CrearBlogEspacioFisico,BorrarBlogEspacioFisico,ObtenerBlogsEspFisico
 from resources.herramientaResource import HerramientaResource,HerramientaPorId,Herramientas,BorrarBlogHeramienta,BlogHerramientaXId,CrearBlogHerramientas
@@ -152,6 +152,7 @@ api.add_resource(Muestra, '/api/v1/bajarMuestra/<int:idMuestra>', endpoint='baja
 api.add_resource(MuestraGrupoExperimental, '/api/v1/grupoExperimental/<int:idGrupoExperimental>/muestras', endpoint='muestras_grupo_experimental')
 api.add_resource(MuestraProyecto, '/api/v1/proyecto/<int:idProyecto>/muestras', endpoint='muestras_proyecto')
 api.add_resource(MuestrasPorIDFuente, '/api/v1/muestras/<int:idFuenteExperimental>')
+api.add_resource(BorraMuestras, '/api/v1/muestras/borrar')
 
 
 #Herramientas

@@ -36,7 +36,13 @@ class CommonService():
     def asignarNombreContenedor(cls,objeto):
         from servicios.contenedorService import ContenedorService
         return cls.asignarNombreAObjeto(objeto,ContenedorService.obtenerNombreContenedor, objeto['codigoContenedor'],'nombreContenedor',)
-        
+    @classmethod
+    def asignarNombreContenedorAux(cls,objeto):
+        from servicios.contenedorService import ContenedorService
+        if objeto:
+            agregado= cls.asignarNombreAObjeto(objeto,ContenedorService.obtenerNombreContenedor, objeto['id_contenedor'],'nombreContenedor',) 
+        return objeto
+
     @classmethod
     def asignarNombreProducto(cls,objeto):
         from servicios.productoService import ProductoService
@@ -47,7 +53,6 @@ class CommonService():
         if id: cls.asignaNombre(functionGetNameOf(id), etiqueta,objeto)
         else:cls.asignaNombre(id, etiqueta,objeto)
         return objeto
-
 
     @classmethod
     def asignaNombre(cls,valor,clave,objeto):
