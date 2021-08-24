@@ -121,7 +121,7 @@ api.add_resource(JaulasBlogs, '/api/v1/blogsJaulas')
 api.add_resource(FuenteExperimental, '/api/v1/fuenteExperimental/<string:codigo>', endpoint="fuente_experimental")
 api.add_resource(FuenteExperimental, '/api/v1/nuevasFuentesExperimentales', endpoint="nuevas_fuentes_experimentales")
 api.add_resource(FuentesExperimentalesPorId, '/api/v1/fuenteExperimental/<int:id_fuente>', endpoint="fuentes_por_id")
-api.add_resource(FuentesExperimentalesPorProyecto, '/api/v1/fuenteExperimental/<int:id_proyecto>', endpoint="fuentes_de_proyecto")
+api.add_resource(FuentesExperimentalesPorProyecto, '/api/v1/fuentesExperimentales/<int:id_proyecto>', endpoint="fuentes_de_proyecto")
 
 #Animal
 api.add_resource(Animal, '/api/v1/animal/<int:idAnimal>', endpoint="animal")

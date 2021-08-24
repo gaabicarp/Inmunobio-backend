@@ -19,8 +19,11 @@ class GrupoExperimental(Resource):
 
     def delete(self, idGrupoExperimental):
         if idGrupoExperimental:
-            GrupoExperimentalService().borrarGrupoExperimental(idGrupoExperimental)
-            return  {"Status" : "Se borró el grupo experimental y sus subgrupos."}, 200
+            try:
+                GrupoExperimentalService().borrarGrupoExperimental(idGrupoExperimental)
+                return  {"Status" : "Se borró el grupo experimental y sus subgrupos."}, 200
+            except Exception as err:
+                return {"Error" : err.args}, 400
         return {"Error" : "Se debe indicar el id del grupo experimental"}
 
     def post(self):
