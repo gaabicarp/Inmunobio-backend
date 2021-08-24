@@ -18,7 +18,6 @@ class AnimalSchema(Schema):
 class ExtendAnimal(AnimalSchema):
     codigoGrupoExperimental= fields.Str()
 
-
 class AsignarAnimalAJaula(AnimalSchema):
     id_jaula = fields.Int(required=True, validate=Validacion.not_empty_int, error_messages={"required": {"message" : "Es necesario indicar el id de la jaula.", "code": 400}})
     id_fuenteExperimental = fields.Int(required=True, validate=Validacion.not_empty_int, error_messages={"required": {"message" : "Es necesario indicar el id de la fuente experimental", "code": 400}})

@@ -72,7 +72,6 @@ class FuenteExperimentalService:
 
     @classmethod
     def find_by_proyecto(cls,_id_proyecto):
-        print(FuenteExperimental.objects(id_proyecto = _id_proyecto).all())
-        FuenteExperimental.objects(id_proyecto = _id_proyecto).all()
+        return FuenteExperimental.objects.filter(id_proyecto = _id_proyecto,codigoGrupoExperimental__ne= "").all()
 
 

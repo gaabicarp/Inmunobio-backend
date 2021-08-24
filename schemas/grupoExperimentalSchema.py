@@ -34,4 +34,5 @@ class AgregarFuentesAlGrupoExperimentalSchema(GrupoExperimentalSchema):
     fuentesExperimentales = fields.Nested(FuenteExperimentalPropiaSchema, many=True, required=True, validate=Validacion.not_empty_list, error_messages={"required" : {"message" : "Se deben enviar fuentes experimentales.", "code": 400}})
 
 class DividirGrupoExperimentalSchema(AltaGrupoExperimentalSchema):
-    parent = fields.Int(required=True, validate=Validacion.not_empty_int, error_messages={'required': {"message" : "Se debe indicar el id del grupo experimental del cuál proviene este nuevo grupo.", "code": 400}})
+    parent = fields.Int(required=True,validate=Validacion.not_empty_int, error_messages={'required': {"message" : "Se debe indicar el id del grupo experimental del cuál proviene este nuevo grupo.", "code": 400}})
+    

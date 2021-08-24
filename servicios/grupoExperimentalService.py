@@ -1,3 +1,4 @@
+from resources.experimentoResource import Experimentos
 from models.mongo.grupoExperimental import GrupoExperimental
 from schemas.grupoExperimentalSchema import GrupoExperimentalSchema, AltaGrupoExperimentalSchema, DividirGrupoExperimentalSchema,AgregarFuentesAlGrupoExperimentalSchema
 from models.mongo.fuenteExperimental import FuenteExperimental
@@ -57,7 +58,8 @@ class GrupoExperimentalService:
         cls.elGrupoExperimentalPadreEstaHabilitado(gruposExperimentales)        
         for grupo in gruposExperimentales:
             grupo.save()
-            cls.reasignarCodigoGrupoExperimentalAFuentesExperimentales(grupo)
+            cls.reasignarCodigoGrupoExperimentalAFuentesExperimentales(grupo,grupo.codigo)
+        print(GrupoExperimental.objects(id_grupoExperimental = gruposExperimentales[0].parent))
         GrupoExperimental.objects(id_grupoExperimental = gruposExperimentales[0].parent).update(habilitado = False)
     
     def elGrupoExperimentalPadreEstaHabilitado(gruposExperimentales):
@@ -65,10 +67,15 @@ class GrupoExperimentalService:
             if GrupoExperimental.objects(id_grupoExperimental = grupo.parent, habilitado = True).first() is None:
                 raise Exception("El grupo experimental padre debe existir y estar habilitado")
 
-    def reasignarCodigoGrupoExperimentalAFuentesExperimentales(grupo):
+    @classmethod
+    def reasignarCodigoGrupoExperimentalAFuentesExperimentales(cls,grupo,codigo):
         for fuente in grupo.fuentesExperimentales:
-            FuenteExperimental.objects(id_fuenteExperimental = fuente.id_fuenteExperimental).update(codigoGrupoExperimental = grupo.codigo)
-
+            FuenteExperimental.objects(id_fuenteExperimental = fuente.id_fuenteExperimental).update(codigoGrupoExperimental = codigo)
 
     def borrarGrupoExperimental(cls,idGrupoPadre):
-        GrupoExperimental.objects(id_grupoExperimental = idGrupoPadre,parent=idGrupoPadre).delete()
+
+        padre = GrupoExperimental.objects(id_grupoExperimental = idGrupoPadre)
+        if not padre:raise Exception(f"No existen grupos experimentales asociados al id.{idGrupoPadre}")
+        grupos = GrupoExperimental.objects(parent = idGrupoPadre)
+        if grupos:[cls.reasignarCodigoGrupoExperimentalAFuentesExperimentales(grupo, "") for grupo in grupos]
+    
