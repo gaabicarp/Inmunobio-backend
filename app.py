@@ -7,7 +7,7 @@ from security import authenticate, identity
 
 from flask_cors import CORS, cross_origin
 
-app= Flask(__name__)
+app= Flask(__name__,static_folder='uploads')
 app.config.from_object(config)
 
 ############################db configuracion
@@ -32,6 +32,14 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 from api import api
 api.init_app(app)
 ############################
+
+@app.route("/uploads/<rel_filename>")
+def test_files(rel_filename):
+	from flask import url_for,send_from_directory
+	import os
+	uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
+	return send_from_directory(directory=uploads, filename= rel_filename)
+
 app.config['JSON_SORT_KEYS'] = False
 
 if __name__ == "__main__":
