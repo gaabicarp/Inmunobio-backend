@@ -22,14 +22,13 @@ class GrupoExperimentalService:
         #id_experimento no hay que validarlo?
         grupoExperimental.save()
     
-    @classmethod
+    """ @classmethod
     def AgregarFuenteExperimental(cls, datos):
         #Trae el grupo experimental
         #Arma las fuetnes experimentales de tipo animal y otros
 
         grupoExperimentalViejo = GrupoExperimental.objects(id_grupoExperimental = datos.id_grupoExperimental).first()
         fuentesExperimentalesNuevas = map(lambda fuenteExperimental: FuenteExperimentalAnimalSchema().load(fuenteExperimental) if dato.tipo == "Animal" else FuenteExperimentalOtroSchema.load(fuenteExperimental), datos.fuentesExperimentales) 
-        
         for fuenteVieja in grupoExperimentalViejo.fuentesExperimentalesNuevas:
             if any(fuenteExperimentalNueva.id_fuenteExperimental != fuenteVieja.id_fuenteExperimental for fuenteExperimentalNueva in fuentesExperimentalesNuevas):
                 cls.desasociarDeGrupoExperimental(fuenteVieja)
@@ -37,7 +36,7 @@ class GrupoExperimentalService:
             if fuenteNueva.tipo == "Animal":
                 cls.asociarAGrupoExperimental(fuenteNueva)
             else:
-                fuenteNueva.save()
+                fuenteNueva.save() """
 
     
     def desasociarDeGrupoExperimental(cls, fuenteExperimental):
@@ -71,11 +70,24 @@ class GrupoExperimentalService:
     def reasignarCodigoGrupoExperimentalAFuentesExperimentales(cls,grupo,codigo):
         for fuente in grupo.fuentesExperimentales:
             FuenteExperimental.objects(id_fuenteExperimental = fuente.id_fuenteExperimental).update(codigoGrupoExperimental = codigo)
-
-    def borrarGrupoExperimental(cls,idGrupoPadre):
-
-        padre = GrupoExperimental.objects(id_grupoExperimental = idGrupoPadre)
-        if not padre:raise Exception(f"No existen grupos experimentales asociados al id.{idGrupoPadre}")
-        grupos = GrupoExperimental.objects(parent = idGrupoPadre)
-        if grupos:[cls.reasignarCodigoGrupoExperimentalAFuentesExperimentales(grupo, "") for grupo in grupos]
     
+    @classmethod
+    def reasignarCodigoFuente(cls,grupo,_codigo):
+        for fuente in grupo.fuentesExperimentales:
+            FuenteExperimental.objects(id_fuenteExperimental = fuente.id_fuenteExperimental).update(codigo = _codigo)
+
+    @classmethod
+    def borrarGrupoExperimental(cls,_id_grupoExperimental):
+        #GrupoExperimental.objects(id_grupoExperimental = idGrupoPadre,parent=idGrupoPadre).delete()
+        grupo = GrupoExperimental.objects(id_grupoExperimental = _id_grupoExperimental, habilitado  =True).first()
+        if not grupo:raise Exception(f"No existen grupos experimentales habilitados asociados al id.{_id_grupoExperimental}")
+        #borra nodo padre y todas sus ramas, ¿pero que pasa con los grupos anteriores que esta "deshabilitados?"
+        #gruposHijos = GrupoExperimental.objects(parent = _id_grupoExperimental, habilitado  =True)
+        #if gruposHijos :
+        #[cls.borrarGrupoExperimental(grupoHijo.id_grupoExperimental) for grupoHijo in gruposHijos]
+        #grupos = GrupoExperimental.objects(parent = idGrupoPadre)
+        cls.reasignarCodigoGrupoExperimentalAFuentesExperimentales(grupo, "") 
+        cls.reasignarCodigoFuente(grupo,"")
+        grupo.delete()
+
+
