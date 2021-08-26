@@ -19,7 +19,9 @@ class FuenteExperimental(Resource):
         datos = request.get_json()
         if datos:
             try:
-                return FuenteExperimentalService.nuevasFuentesExperimentales(datos)
+                FuenteExperimentalService.nuevasFuentesExperimentales(datos)
+                return {"Status" : "Se crearon las fuentes experimentales",}, 200
+
             except Exception as err:
                 return {"Error" : err.args}, 400
         return {'Error' : "Se deben enviar datos para la creación de la fuente experimental."}, 400

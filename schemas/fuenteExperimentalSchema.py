@@ -18,6 +18,13 @@ class FuenteExperimentalAnimalBSchema(FuenteExperimentalSchema):
 
 class FuenteExperimentalOtroSchema(FuenteExperimentalSchema):
     codigo = fields.Str(required=True, validate=Validacion.not_empty_string,  error_messages={"required": {"message" : "Es necesario indicar el codigo de la fuente experimental", "code": 400}})
-    codigoGrupoExperimental = fields.Str(required=True, validate=Validacion.not_empty_string, error_messages={"required" : "Es necesario indicar el código para el grupo experimental", "code" : 400})
+    #codigoGrupoExperimental = fields.Str(required=True, validate=Validacion.not_empty_string, error_messages={"required" : "Es necesario indicar el código para el grupo experimental", "code" : 400})
     tipo = fields.Str(required=True, validate=Validacion.not_empty_string,  error_messages={"required" : {"message" : "Es necesario indicar el tipo de la fuente experimental", "code": 400}})
     descripcion = fields.Str(required=True, validate=Validacion.not_empty_string,  error_messages={"required" : {"message" : "Es necesario indicar una descripcion cuando la fuente no es de tipo animal", "code": 400}})
+    id_fuenteExperimental = fields.Int(allow=None)
+    id_proyecto = fields.Int(allow=None)
+    especie = fields.Str(allow=None)
+    sexo = fields.Str(allow=None)
+    cepa = fields.Str(allow=None)
+    id_jaula = fields.Int(allow=None)
+    baja = fields.Boolean(allow=None)

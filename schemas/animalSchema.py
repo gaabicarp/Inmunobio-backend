@@ -15,6 +15,7 @@ class AnimalSchema(Schema):
     @post_load
     def makeAnimal(self, data, **kwargs):
         return FuenteExperimental(**data)
+        
 class ExtendAnimal(AnimalSchema):
     codigoGrupoExperimental= fields.Str()
 

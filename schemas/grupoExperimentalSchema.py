@@ -9,7 +9,7 @@ class GrupoExperimentalSchema(Schema):
     id_grupoExperimental = fields.Int()
     id_experimento = fields.Int()
     codigo = fields.Str()
-    descripcion = fields.Str()
+    descripcion = fields.Str(default="")
     tipo = fields.Str()
     fuentesExperimentales = fields.Nested(FuenteExperimentalPropiaSchema,  many=True)
     muestras = fields.Nested(MuestraPropiaSchema, many=True) #Guardar muestra propias (copia)
@@ -21,12 +21,14 @@ class GrupoExperimentalSchema(Schema):
         return GrupoExperimental(**data)
 
 def tipoGrupo(data):
-    if (not Validacion.not_empty_string(data)) or (data != "Animal" and data !=  "Otro"): raise ValidationError('El tipo debe ser "Animal" u "Otro"'  )
+    print(data)
+    if (not Validacion.not_empty_string(data)) or (data != "Animal" and data !=  "Otro"): raise ValidationError('El tipo debe ser Animal u Otro'  )
 
 class AltaGrupoExperimentalSchema(GrupoExperimentalSchema):
     id_experimento = fields.Int(required=True, validate=Validacion.not_empty_int, error_messages={"required": {"message" : "Es necesario indicar el id del experimento", "code": 400}})
     codigo = fields.Str( required=True, validate=Validacion.not_empty_string, error_messages={"required": {"message": "Es necesario indicar el codigo del grupo experimental", "code": 400}})
     tipo = fields.Str(required=True, validate=tipoGrupo , error_messages={"required": {"message": "Es necesario indicar el tipo del grupo experimental", "code": 400}})
+    descripcion = fields.Str(required=True, validate=Validacion.not_empty_string , error_messages={"required": {"message": "Es necesario indicar una breve descripción al grupo experimental", "code": 400}})
 
 class AgregarFuentesAlGrupoExperimentalSchema(GrupoExperimentalSchema):
     id_grupoExperimental = fields.Int(required=True, validate=Validacion.not_empty_int, error_messages={"required": {"message" : "Es necesario indicar el id del grupo experimental", "code": 400}})
