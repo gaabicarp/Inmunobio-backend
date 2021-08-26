@@ -31,6 +31,7 @@ class FuenteExperimentalService:
             cls.validarAnimales(cls, grupoExperimental)
             cls.nuevasFuentesAnimales(grupoExperimental)
         else:
+            print(FuenteExperimentalOtroSchema().dump(fuentesExperimentales,many=True))
             cls.nuevasFuentesOtros(fuentesExperimentales)
         cls.actualizarFuentesExperimentalesEnGrupoExperimental(grupoExperimental)
 
@@ -46,10 +47,10 @@ class FuenteExperimentalService:
            FuenteExperimental.objects(id_fuenteExperimental = fuente.id_fuenteExperimental).update(
                     codigo = fuente.codigo,
                     codigoGrupoExperimental = fuente.codigoGrupoExperimental,
-                    descripcion=fuente.descripcion
                 )
 
     def nuevasFuentesOtros(fuentesExperimentales):
+        print(fuentesExperimentales)
         for fuente in fuentesExperimentales:
             fuente.idJaula = 0
             fuente.save()
