@@ -33,7 +33,6 @@ class FuenteExperimentalService:
         else:
             cls.nuevasFuentesOtros(fuentesExperimentales)
         cls.actualizarFuentesExperimentalesEnGrupoExperimental(grupoExperimental)
-        return {"Status" : "Se crearon las fuentes experimentales",}, 200
 
     @classmethod
     def agregarCodigoAFuentes(cls,fuentesExperimentales,grupoExperimental):
@@ -46,7 +45,8 @@ class FuenteExperimentalService:
         for fuente in grupoExperimental.fuentesExperimentales:
            FuenteExperimental.objects(id_fuenteExperimental = fuente.id_fuenteExperimental).update(
                     codigo = fuente.codigo,
-                    codigoGrupoExperimental = fuente.codigoGrupoExperimental
+                    codigoGrupoExperimental = fuente.codigoGrupoExperimental,
+                    descripcion=fuente.descripcion
                 )
 
     def nuevasFuentesOtros(fuentesExperimentales):

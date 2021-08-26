@@ -58,7 +58,6 @@ class GrupoExperimentalService:
         for grupo in gruposExperimentales:
             grupo.save()
             cls.reasignarCodigoGrupoExperimentalAFuentesExperimentales(grupo,grupo.codigo)
-        print(GrupoExperimental.objects(id_grupoExperimental = gruposExperimentales[0].parent))
         GrupoExperimental.objects(id_grupoExperimental = gruposExperimentales[0].parent).update(habilitado = False)
     
     def elGrupoExperimentalPadreEstaHabilitado(gruposExperimentales):
@@ -72,9 +71,9 @@ class GrupoExperimentalService:
             FuenteExperimental.objects(id_fuenteExperimental = fuente.id_fuenteExperimental).update(codigoGrupoExperimental = codigo)
     
     @classmethod
-    def reasignarCodigoFuente(cls,grupo,_codigo):
+    def desasignarCodigoAFuente(cls,grupo,_codigo):
         for fuente in grupo.fuentesExperimentales:
-            FuenteExperimental.objects(id_fuenteExperimental = fuente.id_fuenteExperimental).update(codigo = _codigo)
+            FuenteExperimental.objects(id_fuenteExperimental = fuente.id_fuenteExperimental).update(codigo = _codigo,descripcion=_codigo)
 
     @classmethod
     def borrarGrupoExperimental(cls,_id_grupoExperimental):
@@ -82,10 +81,6 @@ class GrupoExperimentalService:
         grupo = GrupoExperimental.objects(id_grupoExperimental = _id_grupoExperimental, habilitado  =True).first()
         if not grupo:raise Exception(f"No existen grupos experimentales habilitados asociados al id.{_id_grupoExperimental}")
         #borra nodo padre y todas sus ramas, ¿pero que pasa con los grupos anteriores que esta "deshabilitados?"
-        #gruposHijos = GrupoExperimental.objects(parent = _id_grupoExperimental, habilitado  =True)
-        #if gruposHijos :
-        #[cls.borrarGrupoExperimental(grupoHijo.id_grupoExperimental) for grupoHijo in gruposHijos]
-        #grupos = GrupoExperimental.objects(parent = idGrupoPadre)
         cls.reasignarCodigoGrupoExperimentalAFuentesExperimentales(grupo, "") 
         cls.reasignarCodigoFuente(grupo,"")
         grupo.delete()
