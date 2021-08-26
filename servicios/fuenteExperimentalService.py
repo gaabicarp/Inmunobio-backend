@@ -1,5 +1,5 @@
 from models.mongo.fuenteExperimental import FuenteExperimental
-from schemas.fuenteExperimentalSchema import FuenteExperimentalSchema, FuenteExperimentalAnimalSchema, FuenteExperimentalOtroSchema
+from schemas.fuenteExperimentalSchema import FuenteExperimentalAnimalBSchema,FuenteExperimentalSchema, FuenteExperimentalAnimalSchema, FuenteExperimentalOtroSchema
 from models.mongo.grupoExperimental import GrupoExperimental
 from dateutil import parser
 from .validationService import Validacion
@@ -22,7 +22,9 @@ class FuenteExperimentalService:
     @classmethod
     def nuevasFuentesExperimentales(cls, datos):
         grupoExperimental = AgregarFuentesAlGrupoExperimentalSchema().load(datos)
-        fuentesExperimentales = list(map(lambda fuente: FuenteExperimentalAnimalSchema().load(fuente) if fuente['tipo'] == "Animal" else FuenteExperimentalOtroSchema().load(fuente), datos['fuentesExperimentales']))
+        fuentesExperimentales = list(map(lambda fuente: FuenteExperimentalAnimalBSchema().load(fuente) if fuente['tipo'] == "Animal" else FuenteExperimentalOtroSchema().load(fuente), datos['fuentesExperimentales']))
+        #fuentesExperimentales = list(map(lambda fuente: FuenteExperimentalAnimalSchema().load(fuente) if fuente['tipo'] == "Animal" else FuenteExperimentalOtroSchema().load(fuente), datos['fuentesExperimentales']))
+        cls.agregarCodigoAFuentes(fuentesExperimentales,grupoExperimental)
         grupoExperimental.fuentesExperimentales = fuentesExperimentales
         cls.validarGrupoExperimental(grupoExperimental)
         if fuentesExperimentales[0].tipo == "Animal":
@@ -32,7 +34,14 @@ class FuenteExperimentalService:
             cls.nuevasFuentesOtros(fuentesExperimentales)
         cls.actualizarFuentesExperimentalesEnGrupoExperimental(grupoExperimental)
         return {"Status" : "Se crearon las fuentes experimentales",}, 200
-    
+
+    @classmethod
+    def agregarCodigoAFuentes(cls,fuentesExperimentales,grupoExperimental):
+        [ cls.asignarCodigo(fuente,grupoExperimental.codigo) for fuente in fuentesExperimentales]
+    @classmethod
+    def asignarCodigo(cls,fuente,codigoGrupo):
+        fuente.codigoGrupoExperimental = codigoGrupo
+
     def nuevasFuentesAnimales(grupoExperimental):
         for fuente in grupoExperimental.fuentesExperimentales:
            FuenteExperimental.objects(id_fuenteExperimental = fuente.id_fuenteExperimental).update(
@@ -47,7 +56,8 @@ class FuenteExperimentalService:
 
     def actualizarFuentesExperimentalesEnGrupoExperimental(grupoExperimental):
         fuentesExperimentales =  FuenteExperimental.objects(codigoGrupoExperimental = grupoExperimental.codigo).all()
-        fuentesExperimentalesDic = FuenteExperimentalSchema(exclude=['id_jaula', 'baja', 'id_proyecto']).dump(fuentesExperimentales, many=True)
+        #fuentesExperimentalesDic = FuenteExperimentalSchema(exclude=['id_jaula', 'baja', 'id_proyecto']).dump(fuentesExperimentales, many=True)
+        fuentesExperimentalesDic = FuenteExperimentalSchema().dump(fuentesExperimentales, many=True)
         GrupoExperimental.objects(id_grupoExperimental = grupoExperimental.id_grupoExperimental).update(
             fuentesExperimentales = fuentesExperimentalesDic
         )
@@ -72,6 +82,6 @@ class FuenteExperimentalService:
 
     @classmethod
     def find_by_proyecto(cls,_id_proyecto):
-        return FuenteExperimental.objects.filter(id_proyecto = _id_proyecto,codigoGrupoExperimental__ne= "").all()
+        return FuenteExperimental.objects.filter(id_proyecto = _id_proyecto,codigoGrupoExperimental__ne= "",codigo_ne="").all()
 
 
