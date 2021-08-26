@@ -64,6 +64,7 @@ class GrupoExperimentalService:
     
     def elGrupoExperimentalPadreEstaHabilitado(gruposExperimentales):
         for grupo in gruposExperimentales:
+
             if GrupoExperimental.objects(id_grupoExperimental = grupo.parent, habilitado = True).first() is None:
                 raise Exception("El grupo experimental padre debe existir y estar habilitado")
 
@@ -71,11 +72,17 @@ class GrupoExperimentalService:
     def reasignarCodigoGrupoExperimentalAFuentesExperimentales(cls,grupo,codigo):
         for fuente in grupo.fuentesExperimentales:
             FuenteExperimental.objects(id_fuenteExperimental = fuente.id_fuenteExperimental).update(codigoGrupoExperimental = codigo)
+    @classmethod
+    def borrarGrupoExperimental(cls,_id_grupoExperimental):
+        #GrupoExperimental.objects(id_grupoExperimental = idGrupoPadre,parent=idGrupoPadre).delete()
+        grupo = GrupoExperimental.objects(id_grupoExperimental = _id_grupoExperimental, habilitado  =True).first()
+        if not grupo:raise Exception(f"No existen grupos experimentales habilitados asociados al id.{_id_grupoExperimental}")
+        #borra nodo padre y todas sus ramas, ¿pero que pasa con los grupos anteriores que esta "deshabilitados?"
+        #gruposHijos = GrupoExperimental.objects(parent = _id_grupoExperimental, habilitado  =True)
+        #if gruposHijos :
+        #[cls.borrarGrupoExperimental(grupoHijo.id_grupoExperimental) for grupoHijo in gruposHijos]
+        #grupos = GrupoExperimental.objects(parent = idGrupoPadre)
+        cls.reasignarCodigoGrupoExperimentalAFuentesExperimentales(grupo, "") 
+        grupo.delete()
 
-    def borrarGrupoExperimental(cls,idGrupoPadre):
 
-        padre = GrupoExperimental.objects(id_grupoExperimental = idGrupoPadre)
-        if not padre:raise Exception(f"No existen grupos experimentales asociados al id.{idGrupoPadre}")
-        grupos = GrupoExperimental.objects(parent = idGrupoPadre)
-        if grupos:[cls.reasignarCodigoGrupoExperimentalAFuentesExperimentales(grupo, "") for grupo in grupos]
-    
