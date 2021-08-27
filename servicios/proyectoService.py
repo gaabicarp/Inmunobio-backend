@@ -32,16 +32,23 @@ class ProyectoService:
     @classmethod
     def find_by_nombre(cls, _nombre):
         return Proyecto.objects(nombre = _nombre).first()
-    
+
+    @classmethod
+    def validacionCierreProyecto(cls,proyecto):
+        from experimentoService import ExperimentoService
+        if not ExperimentoService.todosLosExperimentosFinalizados(proyecto.id_proyecto): raise Exception(f"Hay experimentos activos que deben cerrarse antes de la baja del proyecto.")
+    #falta sacar codigo de fuentes y cerrar grupos (:
     @classmethod
     def cerrarProyecto(cls, datos):
-        proyecto = ProyectoCerradoSchema().load(datos)
-        Proyecto.objects(id_proyecto = proyecto.id_proyecto).update(
-            conclusion = proyecto.conclusion,
-            finalizado = True,
-            fechaFinal = parser.parse(str(datetime.datetime.utcnow()))
-        )
-    
+        proyectoModelo = ProyectoCerradoSchema().load(datos)
+        proyecto = cls.find_by_id(proyectoModelo.id_proyecto)
+        cls.validacionCierreProyecto(proyecto)
+        proyecto.conclusion = proyectoModelo.conclusion,
+        proyecto.finalizado = True,
+        proyecto.fechaFinal = parser.parse(str(datetime.datetime.utcnow()))
+        cls.validacionCierreProyecto(proyectoModelo)
+         
+  
     #Agregar modificar Participantes
     @classmethod
     def modificarProyecto(cls, datos):

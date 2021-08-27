@@ -22,11 +22,9 @@ class NuevoProyecto(Resource):
         if datos:
             try:
                 ProyectoService.nuevoProyecto(datos)
-                return {'Status':'ok'},200
-            except ValidationError as err:
-                return {'Error': err.messages},400
+                return {'Status':'El proyecto fue dado de alta.'},200
             except Exception as err:
-                return {'Error': str(err)},400
+                return {'Error': err.ars},400
         return {'Error': 'Deben suministrarse datos para el alta del proyecto.'},404
 
 class CerrarProyecto(Resource):
@@ -36,9 +34,9 @@ class CerrarProyecto(Resource):
         if datos:
             try:
                 ProyectoService.cerrarProyecto(datos)
-                return {'Status':'ok'},200
-            except ValidationError as err:
-                return {'Error': err.messages},404
+                return {'Status':'El proyecto cambió a estado finalizado.'},200
+            except Exception as err:
+                return {'Error': err.args},400
         return {'Error': 'Debe suministrar los datos del proyecto a cerrar.'},404
 
 class ProyectoID(Resource):
@@ -47,10 +45,8 @@ class ProyectoID(Resource):
         if(id_proyecto):
             try:
                 return  CommonService.json(ProyectoService.obtenerProyecto(id_proyecto),ProyectoExtendido),200
-            except ValidationError as err:
-               return {'Error':err.messages},400
             except Exception as err:
-               return {'Error':str(err)},400
+                return {'Error': err.args},400
         return {'Error': 'Deben indicarse id del proyecto'}, 400
 
 class ModificarProyecto(Resource):
@@ -61,10 +57,8 @@ class ModificarProyecto(Resource):
             try:
                 ProyectoService.modificarProyecto(datos)
                 return {'Status':'Proyecto modificado.'}, 200
-            except ValidationError as err:
-                return {'Error': err.messages}, 400
             except Exception as err:
-                return {'Error':str(err)},400
+                return {'Error': err.args},400
         return {'Error': 'Deben indicarse datos para la modificacion del proyecto'}, 400
 
 class ObtenerUsuariosProyecto(Resource):
@@ -74,10 +68,8 @@ class ObtenerUsuariosProyecto(Resource):
             try:
                 usuarios=  ProyectoService.obtenerMiembrosProyecto(id_proyecto)
                 return  CommonService.jsonMany(usuarios,UsuarioSchema)
-            except ValidationError as err:
-                return {'Error': err.messages}, 400
             except Exception as err:
-                return {'Error':str(err)},400
+                return {'Error': err.args},400
         return {'Error': 'Deben indicarse id del proyecto'}, 400
 
 class ObtenerBlogsProyecto(Resource):
@@ -87,10 +79,8 @@ class ObtenerBlogsProyecto(Resource):
         if datos:
             try:
                 return ProyectoService.obtenerBlogsProyecto(datos)
-            except ValidationError as err:
-                return {'Error': err.messages}, 400
             except Exception as err:
-                return {'Error':str(err)},400
+                return {'Error': err.args},400
         return {"Error" : "Deben indicarse datos para el blog"}, 400
 
 class NuevoBlogProyecto(Resource):
@@ -101,10 +91,8 @@ class NuevoBlogProyecto(Resource):
             try:
                 ProyectoService.nuevoBlogsProyecto(datos)
                 return {'Status':'Se creó el blog de proyecto.'}, 200
-            except ValidationError as err:
-                return {'Error': err.messages}, 400
             except Exception as err:
-                return {'Error':str(err)},400 
+                return {'Error': err.args},400
         return {"Error" : "Deben indicarse datos para el blog"}, 400
 
 class ObtenerProyectoDeUsuario(Resource):
@@ -114,8 +102,6 @@ class ObtenerProyectoDeUsuario(Resource):
         if(id_usuario):
             try:
                 return  CommonService.jsonMany(ProyectoService.obtenerProyectosUsuario(id_usuario),ProyectoExtendido)
-            except ValidationError as err:
-                return {'Error': err.messages}, 400
             except Exception as err:
-                return {'Error':str(err)},400
+                return {'Error': err.args},400
         return {'Error': 'Deben indicarse id de usuario'}, 400
