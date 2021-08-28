@@ -2,17 +2,14 @@ from models.mongo.contenedor import Contenedor
 from schemas.contenedorSchema import ContenedorPrincipalSchema, ContenedorSchema, ContenedorNuevoSchema, ContenedorProyectoSchema, ContenedorParentSchema, ModificarContenedorSchema
 from .validationService import Validacion
 from .commonService import CommonService
-from exceptions.exception import ErrorContenedorInexistente
 
 class ContenedorService:
-
     @classmethod
     def find_by_id(cls, id):
         contenedor = Contenedor.objects.filter(id_contenedor=id).first()
-        if not contenedor : raise ErrorContenedorInexistente(id)
+        if not contenedor : raise Exception(f"No existe contenedor asociado con id {id}")
         return contenedor 
         
-
     @classmethod
     def find_all(cls):
         contenedores =  ContenedorSchema().dump(Contenedor.objects.all(), many=True)
@@ -26,6 +23,8 @@ class ContenedorService:
     @classmethod
     def nuevoContenedor(cls, datos):
         contenedor = ContenedorNuevoSchema().load(datos)
+        from servicios.espacioFisicoService import EspacioFisicoService
+        EspacioFisicoService.find_by_id(contenedor.id_espacioFisico)
         contenedor.save()
     
     @classmethod
@@ -55,6 +54,8 @@ class ContenedorService:
         Contenedor.objects(id_contenedor = idContenedor).delete()
     
     def verificarEliminarContenedor(idContenedor):
+        if not Validacion.elContenedorExiste(idContenedor):
+            raise Exception(f"El contenedor con id {idContenedor} no existe.")
         if Validacion.elContenedorTieneContenedoresHijos(idContenedor):
             raise Exception("El contenedor no puede tener contenedores asociados.")
         if Validacion.elContenedorTieneMuestrasAsociadas(idContenedor):

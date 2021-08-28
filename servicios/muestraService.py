@@ -1,7 +1,9 @@
 from models.mongo.grupoExperimental import GrupoExperimental
-from models.mongo.muestra import Muestra, MuestraSchema, NuevaMuestraSchema, ModificarMuestraSchema
-from models.mongo.grupoExperimental import MuestraPropia, MuestraPropiaSchema, GrupoExperimental
+from models.mongo.muestra import Muestra
+from schemas.muestraSchema import  MuestraSchema, NuevaMuestraSchema, ModificarMuestraSchema
+from schemas.muestrPropiaSchema import  MuestraPropiaSchema
 from models.mongo.experimento import Experimento
+from schemas.experimentoSchema import AgregarMuestrasAlExperimentoSchema
 from .validationService import Validacion
 from dateutil import parser
 import datetime
@@ -19,8 +21,7 @@ class MuestraService:
     
     @classmethod
     def find_all_by_grupoExperimental(cls, idGrupoExperimental):
-        muestras = Muestra.objects(id_grupoExperimental=idGrupoExperimental, habilitada = True).all()
-        return MuestraSchema().dump(muestras, many=True)
+        return Muestra.objects(id_grupoExperimental=idGrupoExperimental, habilitada = True).all()
 
     @classmethod
     def find_all_by_proyecto(cls, idProyecto):
@@ -44,7 +45,8 @@ class MuestraService:
                 raise Exception(f"El experimento con id {muestra.id_experimento} no pertenece al proyecto con id {muestra.id_proyecto}")
             if not Validacion().elGrupoExperimentalPerteneceAlExperimento(muestra.id_experimento, muestra.id_grupoExperimental):
                 raise Exception(f"El grupo experimental con id {muestra.id_grupoExperimental} no pertenece al experimento con id {muestra.id_experimento}")
-
+            if not Validacion().laFuenteExperimentalPerteneceAlGrupo(muestra.id_fuenteExperimental, muestra.id_grupoExperimental):
+                raise Exception(f"La fuente experimental con id {muestra.id_fuenteExperimental} no pertenece al grupo experimental con id {muestra.id_grupoExperimental}")
 
     def actualizarMuestrasEnGrupoExperimental(idGrupoExperimental):
         muestras = Muestra.objects.filter(id_grupoExperimental=idGrupoExperimental, habilitada = True).all()
@@ -85,3 +87,12 @@ class MuestraService:
         Muestra.objects(id_muestra = idMuestra).update(habilitada = False)
         cls.actualizarMuestrasEnGrupoExperimental(muestra.id_grupoExperimental)
         cls.removerMuestraExternaDelExperimento(muestra)
+    
+    @classmethod
+    def obtenerMuestrasDeFuente(cls,_id_fuente):
+        return Muestra.objects(id_fuenteExperimental=_id_fuente).all()
+
+    def agregarMuestrasExternasAlExperimento(cls, datos):
+        experimento = AgregarMuestrasAlExperimentoSchema().load(datos)
+        cls.validarMuestrasExternas(cls, experimento)
+        Experimento.objects(id_experimento = experimento.id_experimento).update(muestrasExternas=experimento.muestrasExternas)

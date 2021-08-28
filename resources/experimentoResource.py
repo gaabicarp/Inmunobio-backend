@@ -24,10 +24,8 @@ class ExperimentoResource(Resource):
             try:
                 experimento = ExperimentoService().find_by_id(idExperimiento)
                 return CommonService.json(experimento,ExperimentoSchema),200
-            except ErrorExperimentoInexistente as err:
-                return {'error': err.message}, 400
-            except ValidationError as err:
-                return {'error': err.messages}, 400
+            except Exception as err:
+                return {'error': err.args}, 400
         return {"Error" : "Se debe indicar un id de experimento válido."}, 400
 
     #@jwt_required()
@@ -37,8 +35,8 @@ class ExperimentoResource(Resource):
             try:
                 ExperimentoService.nuevoExperimento(datos)
                 return {"Status":"ok"}, 201
-            except ValidationError as err:
-                return {'error': err.messages},400
+            except Exception as err:
+                return {'error': err.args}, 400
         return {"Error" : "Se deben enviar datos para la creación del experimento."}, 400
 
     #@jwt_required()
@@ -48,8 +46,8 @@ class ExperimentoResource(Resource):
             try:
                 ExperimentoService.modificarExperimento(datos)
                 return {"Status":"ok"}, 201
-            except ValidationError as err:
-                return {'Error': err.messages},400
+            except Exception as err:
+                return {'error': err.args}, 400
         return {"Error" : "Se deben enviar datos para la actualización del experimento."}, 400
 
 class CerrarExperimento(Resource):
@@ -61,8 +59,8 @@ class CerrarExperimento(Resource):
             try:
                 ExperimentoService.cerrarExperimento(datos)
                 return {"Status" : "ok"}
-            except ValidationError as err:
-                return {'Error': err.messages},400
+            except Exception as err:
+                return {'error': err.args}, 400
         return {"Error" : "Se deben enviar datos para poder cerrar el experimento."}, 400
 
 class ExperimentoMuestra(Resource):
@@ -74,10 +72,8 @@ class ExperimentoMuestra(Resource):
             try:
                 ExperimentoService.agregarMuestrasExternasAlExperimento(datos)
                 return {"Status" : "Ok"}, 200
-            except ValidationError as err:
-                return {"Error" : err.messages}, 400
             except Exception as err:
-                return {"Error" : str(err)}, 400
+                return {'error': err.args}, 400
         return {"Error" : "Se deben enviar datos para poder agregar muestras."}, 400
 
 

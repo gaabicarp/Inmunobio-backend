@@ -18,7 +18,6 @@ class BlogSchema(NuevoBlogSchema):
     id_blog = fields.Integer(dump_only=True)
     tipo = fields.String()
 
-
 def tipoValidacion(data):
     
     if( data != "Jaula" and data != "Experimento"):

@@ -2,13 +2,14 @@ from db import db
 import json
 from models.mysql.permiso import Permiso
 from flask import jsonify
-from schemas.permisosSchema import PermisoSchema
+from schemas.permisosSchema import PermisoSchema,PermisoExistenteSchema
 from servicios.commonService import CommonService
-from exceptions.exception import ErrorPermisoInexistente,ErrorPermisoGeneral
+from exceptions.exception import ErrorPermisoInexistente
 
 class PermisosService():
-    jefeDeGrupo = 4
-    
+    jefeDeGrupo = 3
+    jefeProyecto = 4
+    tecnico = 5
     @classmethod
     def json(cls,datos):
         return jsonify( PermisoSchema().dump(datos))
@@ -23,25 +24,16 @@ class PermisosService():
     @classmethod
     def all_permisos(cls):
         permisos = Permiso.query.all()
-        return CommonService.jsonMany(permisos,PermisoSchema)
+        return CommonService.jsonMany(permisos,PermisoExistenteSchema)
 
     @classmethod
-    def validarPermisos(cls,permisosDicts):
-        if not any(permiso['id_permiso'] == 5 for permiso in permisosDicts): raise ErrorPermisoGeneral()
+    def permisosDefault(cls,permisosDicts):
+        if not cls.tieneElPermiso(permisosDicts,cls.tecnico): permisosDicts.append(cls.find_by_id(cls.tecnico))
+        return permisosDicts
 
     @classmethod
     def permisosById(cls,permisosDict):
-        cls.validarPermisos(permisosDict)
-        '''recibe una lista de este estilo [{'id':1, 'descripcion':"asd},{'id':3, 'descripcion':"asd}]
-        devuelve none si no encuentra todos los objetos de la lista en la base o una lista con los objetos 
-        permisos de la base correspondients a esa id, este servicio lo usa nuevoUsuario()
-        '''
-        """         permisos = []
-        for dictonary in permisosDict:
-            permiso = cls.find_by_id(dictonary['id_permiso'])
-            permisos.append(permiso)
-        return permisos """
-        return list(map(lambda x : cls.find_by_id(x['id_permiso']), permisosDict))
+        return cls.permisosDefault(list(set(map(lambda x : cls.find_by_id(x['id_permiso']), permisosDict))))
 
     @classmethod
     def obtenerPermisoPorId(cls,id_permiso):
@@ -51,8 +43,12 @@ class PermisosService():
             return {'error': err.message},400
 
     @classmethod
-    def tieneElPermiso(cls,usuario,idPermiso):
-        return any( permiso.id_permiso == idPermiso for permiso in usuario.permisos)
+    def tieneElPermiso(cls, permisos, idPermiso):
+        return any( permiso.id_permiso == idPermiso for permiso in permisos)
+    
+    @classmethod
+    def esJefeDeProyecto(cls,usuario):
+        if not cls.tieneElPermiso(usuario.permisos,cls.jefeProyecto): raise Exception(f"El usuario {usuario.nombre} no tiene permisos como Jefe De Proyecto id.{cls.jefeProyecto}")
 
 
 

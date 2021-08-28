@@ -1,7 +1,7 @@
 from servicios.validationService import Validacion
 from models.mongo.proyecto import Proyecto
 from models.mongo.jaula import Jaula
-from exceptions.exception import ErrorJaulaInexistente,ErrorBlogInexistente,ErrorJaulaDeProyecto,ErrorJaulaBaja,ErrorEspacioDeproyecto
+from exceptions.exception import ErrorBlogInexistente,ErrorJaulaDeProyecto,ErrorJaulaBaja,ErrorEspacioDeproyecto
 from schemas.jaulaSchema import BusquedaBlogsJaula,JaulaSchema,BlogSchema,BusquedaBlogJaula,NuevaJaulaSchema, ActualizarProyectoJaulaSchema, ActualizarJaulaSchema,NuevoBlogJaulaSchema
 from servicios.animalService import AnimalService
 from servicios.commonService import CommonService
@@ -10,7 +10,7 @@ class JaulaService:
     @classmethod
     def find_by_id(cls, idJaula):
         jaula =  Jaula.objects(id_jaula = idJaula).first()
-        if not jaula: raise ErrorJaulaInexistente(idJaula)
+        if not jaula: raise Exception(f"No se encontró ninguna jaula con el id {idJaula}")
         return jaula
 
     @classmethod
@@ -41,12 +41,18 @@ class JaulaService:
 
     @classmethod
     def actualizarProyectoDeLaJaula(cls, datos):
-        from servicios.proyectoService import ProyectoService
         jaula = ActualizarProyectoJaulaSchema().load(datos)
-        ProyectoService.find_by_id(jaula.id_proyecto)
+        cls.validaModificacionJaula(jaula)
         Jaula.objects(id_jaula = jaula.id_jaula).update(
-            id_proyecto = jaula.id_proyecto
+            set__id_proyecto = jaula.id_proyecto
         )
+        AnimalService.actualizarProyectoAnimalesDeJaulas(jaula)
+        
+    @classmethod
+    def validaModificacionJaula(cls,jaula):
+        cls.find_by_id(jaula.id_jaula)
+        cls.verificarProyecto(jaula.id_proyecto)
+
     @classmethod
     def actualizarJaula(cls, datos):
         ActualizarJaulaSchema().dump(datos)

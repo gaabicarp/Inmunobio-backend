@@ -1,13 +1,17 @@
-from schemas.datosSchema import DatosSchema
+from schemas.datosSchema import DatosSchema,DatosMysql
+
+from marshmallow import EXCLUDE
 
 class DatosService:
 
     @classmethod
     def llenarBase(cls,datos):
         datosObject = DatosSchema().load(datos)
-        [ unObj.save() for unObj in datosObject['proyecto'] ]
-   
+        [ [ unObj.save() for unObj in value]for key,value in datosObject.items() ]
+        
     @classmethod
     def llenarBaseMysql(cls,datos):
-        datosObject = ().load(datos)
-        [ unObj.save() for unObj in datosObject['proyecto'] ]
+        DatosMysql().load(datos,unknown=EXCLUDE)
+
+
+   
