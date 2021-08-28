@@ -69,7 +69,7 @@ class Logins(Resource):
             try:
                 return UsuarioService.loginUsuario(datos)
             except Exception as err:
-                return {'Error': err.args}, 400
+                return {'Error': err.args}, 401
         return {'Error': 'Deben enviarse datos para el login.'}, 400
 
     """ def post(self):
