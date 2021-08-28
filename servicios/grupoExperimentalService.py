@@ -74,11 +74,19 @@ class GrupoExperimentalService:
     def desasignarCodigoAFuente(cls,grupo,_codigo):
         for fuente in grupo.fuentesExperimentales:
             FuenteExperimental.objects(id_fuenteExperimental = fuente.id_fuenteExperimental).update(codigo = _codigo,descripcion=_codigo)
+
+    @classmethod
+    def borrarFuenteOtros(cls,grupo):
+        FuenteExperimental.objects(codigoGrupoExperimental = grupo.codigo).delete()
     @classmethod
     def actualizarFuentes(cls,grupo):
         if grupo.tipo == 'Animal':
             cls.reasignarCodigoGrupoExperimentalAFuentesExperimentales(grupo, "") 
             cls.desasignarCodigoAFuente(grupo,"")
+        else: 
+            cls.borrarFuenteOtros(grupo)
+            #las de tipo otro las borramos..
+
     @classmethod
     def borrarGrupoExperimental(cls,_id_grupoExperimental):
         #GrupoExperimental.objects(id_grupoExperimental = idGrupoPadre,parent=idGrupoPadre).delete()

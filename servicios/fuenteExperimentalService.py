@@ -31,7 +31,6 @@ class FuenteExperimentalService:
             cls.validarAnimales(cls, grupoExperimental)
             cls.nuevasFuentesAnimales(grupoExperimental)
         else:
-            print(FuenteExperimentalOtroSchema().dump(fuentesExperimentales,many=True))
             cls.nuevasFuentesOtros(fuentesExperimentales)
         cls.actualizarFuentesExperimentalesEnGrupoExperimental(grupoExperimental)
 

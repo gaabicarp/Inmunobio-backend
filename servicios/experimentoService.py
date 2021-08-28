@@ -10,9 +10,7 @@ import datetime
 class ExperimentoService:    
     @classmethod
     def find_by_id(cls, idExperimento):
-        exp =  Experimento.objects.filter(id_experimento=idExperimento).first()
-        if not exp : raise Exception(f"No existe experimento asociado con id {idExperimento}")
-        return exp
+        return  Experimento.objects.filter(id_experimento=idExperimento,finalizado=False).first()
 
     @classmethod
     def find_all_by_idProyecto(cls, idProyecto):
@@ -20,13 +18,24 @@ class ExperimentoService:
     @classmethod
     def find_all_by_id(cls, idProyecto):
         return Experimento.objects.filter(id_proyecto=idProyecto).all()
-    
+
     @classmethod
     def nuevoExperimento(cls, datos):
         #falta validar q exista el proyecto
         experimento = AltaExperimentoSchema().load(datos)
         experimento.save()
-    
+    @classmethod
+    def find_by_proyecto(cls, _id_proyecto):
+        return Experimento.objects(id_proyecto = _id_proyecto) 
+
+    @classmethod
+    def experimentoDisponible(cls, experimento):
+        return experimento.finalizado
+
+    @classmethod
+    def todosLosExperimentosFinalizados(cls,id_proyecto):
+        return all(not cls.experimentoDisponible(experimento.id_experimento) for experimento in cls.find_by_proyecto(id_proyecto))
+
     @classmethod
     def cerrarExperimento(cls, datos):
         experimento = CerrarExperimentoSchema().load(datos)
@@ -74,6 +83,7 @@ class ExperimentoService:
     def crearBlogExp(cls,id_experimento,datosBlog):
         from servicios.blogService import BlogService
         experimento = cls.find_by_id(id_experimento)
+        if not experimento : raise Exception(f"No existe experimento asociado con id {id_experimento}")
         blog = BlogService.nuevoBlog(datosBlog)
         experimento.blogs.append(blog)
         experimento.save()
@@ -81,12 +91,14 @@ class ExperimentoService:
     @classmethod
     def expPerteneceAlProyecto(cls,id_proyecto,id_experimento):
         exp = cls.find_by_id(id_experimento)
-        if not exp.id_proyecto == id_proyecto: raise ErrorExpDeProyecto(id_proyecto,id_experimento)
+        if not exp : raise Exception(f"No existe experimento asociado con id {id_experimento}")
+        if not exp.id_proyecto == id_proyecto: raise Exception("El experimento con id {id_experimento} no pertene al proeyecto")
 
     @classmethod
     def obtenerBlogs(cls,datos):
         BusquedaBlogExp().load(datos)
         experimento = cls.find_by_id(datos['id_experimento'])
+        if not experimento : raise Exception(f"No existe experimento asociado con id {datos['id_experimento']}")
         blogs= BlogService.busquedaPorFecha(experimento.blogs,datos['fechaDesde'],datos['fechaHasta'])
         return cls.deserializarBlogsExp(blogs,experimento)
 
