@@ -63,16 +63,16 @@ class ObtenerUsuariosParaProyecto(Resource):
         return CommonService.jsonMany(UsuarioService.usuariosSinElPermiso(4), UsuarioSchema)
 
 class Logins(Resource):
-    def get(self):
+    def post(self):
         datos = request.get_json()
         if datos :
             try:
-                UsuarioService.loginUsuario(datos)
+                return UsuarioService.loginUsuario(datos)
             except Exception as err:
                 return {'Error': err.args}, 400
         return {'Error': 'Deben enviarse datos para el login.'}, 400
 
-    def post(self):
+    """ def post(self):
         from flask_jwt import jwt
 
         datos = request.get_json()
@@ -81,4 +81,4 @@ class Logins(Resource):
             datos['token'], app.config['SECRET_KEY'], algorithms=["HS256"])
         if not any(permiso['id_permiso'] <= 3 for permiso in data['permisos']):
             raise Exception(f"El usuario {data['email']}")
-        return data, 200
+        return data, 200 """
