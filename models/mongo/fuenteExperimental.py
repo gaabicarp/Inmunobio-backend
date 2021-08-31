@@ -1,6 +1,5 @@
 from re import I
 from db import dbMongo
-from .validacion import Validacion
 
 class FuenteExperimental(dbMongo.Document):
     id_fuenteExperimental = dbMongo.SequenceField()

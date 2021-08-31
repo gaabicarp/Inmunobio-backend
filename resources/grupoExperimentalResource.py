@@ -38,8 +38,7 @@ class GrupoExperimental(Resource):
 class GruposExperimentales(Resource):
     def get(self, idExperimento):
         if idExperimento:
-            gruposExperimentales = GrupoExperimentalService().gruposExperimentalesDelExperimento(idExperimento)
-            return  CommonService.jsonMany(gruposExperimentales,GrupoExperimentalSchema)
+            return GrupoExperimentalService().obtenerGruposExperimentalesDelExperimento(idExperimento)
         return {"Error" : "Se debe enviar un id del experimento"}, 400
 
 class DividirGrupoExperimental(Resource):
