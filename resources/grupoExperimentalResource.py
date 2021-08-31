@@ -1,8 +1,6 @@
 from flask_restful import Resource
 from flask import request
-from servicios.commonService import CommonService
 from servicios.grupoExperimentalService import GrupoExperimentalService
-from schemas.grupoExperimentalSchema import GrupoExperimentalSchema
 
 
 class GrupoExperimental(Resource):
@@ -10,8 +8,7 @@ class GrupoExperimental(Resource):
     def get(self, idGrupoExperimental):
         if idGrupoExperimental:
             try:
-                grupoExperimental = GrupoExperimentalService().find_by_id(idGrupoExperimental)
-                return  CommonService.json(grupoExperimental,GrupoExperimentalSchema)
+                return GrupoExperimentalService().obtenerGrupoPorId(idGrupoExperimental)
             except Exception as err:
                 return {"Error" : err.args}, 400
         return {"Error" : "Se debe indicar el id del grupo experimental"}
