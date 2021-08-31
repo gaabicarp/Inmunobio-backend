@@ -11,16 +11,20 @@ class GrupoExperimentalService:
         return grupo
 
     @classmethod
+    def obtenerGrupoPorId(cls,id):
+        grupo = cls.find_by_id(id)
+        return cls.deserializarSegunTipo(grupo)
+
+
+    @classmethod
     def gruposExperimentalesDelExperimento(cls, _id_experimento):
         return GrupoExperimental.objects(id_experimento = _id_experimento).all()
-
 
     @classmethod
     def obtenerGruposExperimentalesDelExperimento(cls, _id_experimento):
         grupos = cls.gruposExperimentalesDelExperimento(_id_experimento)
         return list(map(cls.deserializarSegunTipo,grupos))
 
-        
     @classmethod
     def deserializarSegunTipo(cls,grupo):
         return GrupoExperimentalSchema().dump(grupo) if grupo.tipo =="Animal" else GrupoDeTipoOtro().dump(grupo)
