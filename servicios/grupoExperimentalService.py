@@ -1,8 +1,6 @@
-from resources.experimentoResource import Experimentos
 from models.mongo.grupoExperimental import GrupoExperimental
-from schemas.grupoExperimentalSchema import GrupoExperimentalSchema, AltaGrupoExperimentalSchema, DividirGrupoExperimentalSchema,AgregarFuentesAlGrupoExperimentalSchema
+from schemas.grupoExperimentalSchema import GrupoDeTipoOtro,DividirGrupoExperimentalOtroSchema,GrupoExperimentalSchema, AltaGrupoExperimentalSchema, DividirGrupoExperimentalSchema,AgregarFuentesAlGrupoExperimentalSchema
 from models.mongo.fuenteExperimental import FuenteExperimental
-from schemas.fuenteExperimentalSchema import  FuenteExperimentalAnimalSchema, FuenteExperimentalOtroSchema
 
 class GrupoExperimentalService:
 
@@ -16,27 +14,24 @@ class GrupoExperimentalService:
     def gruposExperimentalesDelExperimento(cls, _id_experimento):
         return GrupoExperimental.objects(id_experimento = _id_experimento).all()
 
+
+    @classmethod
+    def obtenerGruposExperimentalesDelExperimento(cls, _id_experimento):
+        grupos = cls.gruposExperimentalesDelExperimento(_id_experimento)
+        return list(map(cls.deserializarSegunTipo,grupos))
+
+        
+    @classmethod
+    def deserializarSegunTipo(cls,grupo):
+        return GrupoExperimentalSchema().dump(grupo) if grupo.tipo =="Animal" else GrupoDeTipoOtro().dump(grupo)
+        
+
     @classmethod
     def CrearGrupoExperimental(cls, datos):
         grupoExperimental = AltaGrupoExperimentalSchema().load(datos)
+        print(GrupoExperimentalSchema().dump(grupoExperimental))
         #id_experimento no hay que validarlo?
         grupoExperimental.save()
-    
-    """ @classmethod
-    def AgregarFuenteExperimental(cls, datos):
-        #Trae el grupo experimental
-        #Arma las fuetnes experimentales de tipo animal y otros
-
-        grupoExperimentalViejo = GrupoExperimental.objects(id_grupoExperimental = datos.id_grupoExperimental).first()
-        fuentesExperimentalesNuevas = map(lambda fuenteExperimental: FuenteExperimentalAnimalSchema().load(fuenteExperimental) if dato.tipo == "Animal" else FuenteExperimentalOtroSchema.load(fuenteExperimental), datos.fuentesExperimentales) 
-        for fuenteVieja in grupoExperimentalViejo.fuentesExperimentalesNuevas:
-            if any(fuenteExperimentalNueva.id_fuenteExperimental != fuenteVieja.id_fuenteExperimental for fuenteExperimentalNueva in fuentesExperimentalesNuevas):
-                cls.desasociarDeGrupoExperimental(fuenteVieja)
-        for fuenteNueva in fuentesExperimentalesNuevas:
-            if fuenteNueva.tipo == "Animal":
-                cls.asociarAGrupoExperimental(fuenteNueva)
-            else:
-                fuenteNueva.save() """
 
     
     def desasociarDeGrupoExperimental(cls, fuenteExperimental):
@@ -53,13 +48,18 @@ class GrupoExperimentalService:
     
     @classmethod
     def dividirGrupoExperimental(cls, datos):
-        gruposExperimentales = DividirGrupoExperimentalSchema(exclude=['id_grupoExperimental']).load(datos, many=True)
+        gruposExperimentales = cls.schemaGrupoSegunTipo(datos)
         cls.elGrupoExperimentalPadreEstaHabilitado(gruposExperimentales)        
         for grupo in gruposExperimentales:
             grupo.save()
             cls.reasignarCodigoGrupoExperimentalAFuentesExperimentales(grupo,grupo.codigo)
-        GrupoExperimental.objects(id_grupoExperimental = gruposExperimentales[0].parent).update(habilitado = False)
+        GrupoExperimental.objects(id_grupoExperimental = gruposExperimentales[0].parent).update(habilitado = False)  
     
+    @classmethod
+    def schemaGrupoSegunTipo(cls,datos):
+        if datos[0]['tipo'] == 'Animal': return  DividirGrupoExperimentalSchema().load(datos, many=True) 
+        return DividirGrupoExperimentalOtroSchema().load(datos, many=True)
+
     def elGrupoExperimentalPadreEstaHabilitado(gruposExperimentales):
         for grupo in gruposExperimentales:
             if GrupoExperimental.objects(id_grupoExperimental = grupo.parent, habilitado = True).first() is None:
@@ -89,10 +89,8 @@ class GrupoExperimentalService:
 
     @classmethod
     def borrarGrupoExperimental(cls,_id_grupoExperimental):
-        #GrupoExperimental.objects(id_grupoExperimental = idGrupoPadre,parent=idGrupoPadre).delete()
         grupo = GrupoExperimental.objects(id_grupoExperimental = _id_grupoExperimental, habilitado  =True).first()
         if not grupo:raise Exception(f"No existen grupos experimentales habilitados asociados al id.{_id_grupoExperimental}")
-        #borra nodo padre y todas sus ramas, ¿pero que pasa con los grupos anteriores que esta "deshabilitados?"
         cls.actualizarFuentes(grupo)
         grupo.delete()
 

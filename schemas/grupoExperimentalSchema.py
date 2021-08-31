@@ -1,7 +1,7 @@
 from marshmallow import Schema, fields, post_load
 from mongoengine.errors import ValidationError
 from models.mongo.grupoExperimental import GrupoExperimental
-from schemas.fuenteExperimentalPropia import FuenteExperimentalPropiaSchema
+from schemas.fuenteExperimentalPropia import FuenteExperimentalPropiaSchema,FuenteExperimentalPropiaOtroSchema
 from schemas.muestrPropiaSchema import MuestraPropiaSchema
 from models.mongo.validacion import Validacion
 
@@ -21,7 +21,6 @@ class GrupoExperimentalSchema(Schema):
         return GrupoExperimental(**data)
 
 def tipoGrupo(data):
-    print(data)
     if (not Validacion.not_empty_string(data)) or (data != "Animal" and data !=  "Otro"): raise ValidationError('El tipo debe ser Animal u Otro'  )
 
 class AltaGrupoExperimentalSchema(GrupoExperimentalSchema):
@@ -37,4 +36,11 @@ class AgregarFuentesAlGrupoExperimentalSchema(GrupoExperimentalSchema):
 
 class DividirGrupoExperimentalSchema(AltaGrupoExperimentalSchema):
     parent = fields.Int(required=True,validate=Validacion.not_empty_int, error_messages={'required': {"message" : "Se debe indicar el id del grupo experimental del cuál proviene este nuevo grupo.", "code": 400}})
-    
+
+class DividirGrupoExperimentalOtroSchema(AltaGrupoExperimentalSchema):
+    #fuentesExperimentales = fields.Nested(FuenteExperimentalOtroSchema, many=True, required=True, validate=Validacion.not_empty_list, error_messages={"required" : {"message" : "Se deben enviar fuentes experimentales.", "code": 400}})
+    fuentesExperimentales = fields.Nested(FuenteExperimentalPropiaOtroSchema, many=True, required=True, validate=Validacion.not_empty_list, error_messages={"required" : {"message" : "Se deben enviar fuentes experimentales.", "code": 400}})
+    parent = fields.Int(required=True,validate=Validacion.not_empty_int, error_messages={'required': {"message" : "Se debe indicar el id del grupo experimental del cuál proviene este nuevo grupo.", "code": 400}})
+
+class GrupoDeTipoOtro(GrupoExperimentalSchema):
+    fuentesExperimentales = fields.Nested(FuenteExperimentalPropiaOtroSchema, many=True, required=True, validate=Validacion.not_empty_list, error_messages={"required" : {"message" : "Se deben enviar fuentes experimentales.", "code": 400}})

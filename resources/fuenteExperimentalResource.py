@@ -5,7 +5,6 @@ from servicios.commonService import CommonService
 from schemas.fuenteExperimentalSchema import FuenteExperimentalSchema
 
 class FuenteExperimental(Resource):
-
     def get(self, codigo):
         if codigo:
             try:
@@ -20,8 +19,7 @@ class FuenteExperimental(Resource):
         if datos:
             try:
                 FuenteExperimentalService.nuevasFuentesExperimentales(datos)
-                return {"Status" : "Se crearon las fuentes experimentales",}, 200
-
+                return {"Status" : "Se crearon las fuentes experimentales"}, 200
             except Exception as err:
                 return {"Error" : err.args}, 400
         return {'Error' : "Se deben enviar datos para la creación de la fuente experimental."}, 400
@@ -33,7 +31,7 @@ class FuentesExperimentalesPorId(Resource):
                 fuenteExperimental = FuenteExperimentalService.find_by_id(id_fuente)
                 return CommonService.json(fuenteExperimental,FuenteExperimentalSchema)
             except Exception as err:
-                return {'error': err.args}, 400
+                return {'Error': err.args}, 400
         return {'Error': 'Es necesario indicar el id de la fuente experimental.'}, 400
 
 class FuentesExperimentalesPorProyecto(Resource):
