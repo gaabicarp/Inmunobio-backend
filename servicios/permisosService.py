@@ -34,17 +34,6 @@ class PermisosService():
     @classmethod
     def permisosById(cls,permisosDict):
         return cls.permisosDefault(list(set(map(lambda x : cls.find_by_id(x['id_permiso']), permisosDict))))
-        #cls.validarPermisos(permisosDict)
-        '''recibe una lista de este estilo [{'id':1, 'descripcion':"asd},{'id':3, 'descripcion':"asd}]
-        devuelve none si no encuentra todos los objetos de la lista en la base o una lista con los objetos 
-        permisos de la base correspondients a esa id, este servicio lo usa nuevoUsuario()
-        '''
-        """         permisos = []
-        for dictonary in permisosDict:
-            permiso = cls.find_by_id(dictonary['id_permiso'])
-            permisos.append(permiso)
-        return permisos """
-        #return list(map(lambda x : cls.find_by_id(x['id_permiso']), permisosDict))
 
     @classmethod
     def obtenerPermisoPorId(cls,id_permiso):
@@ -59,7 +48,3 @@ class PermisosService():
     @classmethod
     def esJefeDeProyecto(cls,usuario):
         if not cls.tieneElPermiso(usuario.permisos,cls.jefeProyecto): raise Exception(f"El usuario {usuario.nombre} no tiene permisos como Jefe De Proyecto id.{cls.jefeProyecto}")
-
-    @classmethod
-    def difPermisos(cls,dictPermA,dictPermB):
-        pass
