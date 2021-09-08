@@ -56,7 +56,7 @@ class ProyectoService:
         cls.validarProyecto(proyecto)
         if proyecto.descripcion.strip() != "":
             Proyecto.objects(id_proyecto = proyecto.id_proyecto).update(set__descripcion = proyecto.descripcion)
-        Proyecto.objects(id_proyecto = proyecto.id_proyecto).update(set__montoInicial = proyecto.montoInicial,set__participantes = proyecto.participantes)
+        Proyecto.objects(id_proyecto = proyecto.id_proyecto).update(set__montoInicial = proyecto.montoInicial,set__participantes = proyecto.participantes,set__idDirectorProyecto=proyecto.idDirectorProyecto)
 
     @classmethod
     def obtenerMiembrosProyecto(cls, id_proyecto):  
@@ -117,7 +117,8 @@ class ProyectoService:
 
     @classmethod
     def obtenerProyectosUsuario(cls,id_usuario):
-        proyectos =  Proyecto.objects.filter(idDirectorProyecto=id_usuario,participantes=id_usuario)
+        from mongoengine import Q
+        proyectos =  Proyecto.objects.filter(Q(idDirectorProyecto=id_usuario) | Q(participantes=id_usuario))
         [cls.agregarDatosProyecto(proyecto) for proyecto in proyectos]
         return proyectos
 

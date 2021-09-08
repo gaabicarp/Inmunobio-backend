@@ -19,14 +19,10 @@ class BlogService():
     def busquedaPorFecha(cls,blogs,fecDesde,fecHasta):
         fecDesde= cls.convertirFecha(fecDesde,0,0,0)
         fecHasta = cls.convertirFecha(fecHasta,23,59,0)
-        print("fecha desde ahsta:")
-        print(fecDesde,fecHasta)
         cls.validarFechas(fecDesde, fecHasta)
         blogsMatch = []
         for blog in blogs:
-            print("blog fecha iteracion",blog.fecha)
             if blog.fecha <= fecHasta and blog.fecha>=fecDesde: blogsMatch.append(blog)
-        print(blogsMatch)
         return blogsMatch
 
     def validarFechas(fechaDesde,fechaHasta):

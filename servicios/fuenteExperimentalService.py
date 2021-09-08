@@ -25,7 +25,6 @@ class FuenteExperimentalService:
     def nuevasFuentesExperimentales(cls, datos):
         grupoExperimental = AgregarFuentesAlGrupoExperimentalSchema().load(datos)
         fuentesExperimentales = list(map(lambda fuente: FuenteExperimentalAnimalBSchema().load(fuente) if fuente['tipo'] == "Animal" else FuenteExperimentalOtroSchema().load(fuente), datos['fuentesExperimentales']))        
-        print(FuenteExperimentalOtroSchema().dump(fuentesExperimentales,many=True))
         cls.agregarCodigoAFuentes(fuentesExperimentales,grupoExperimental)
         grupoExperimental.fuentesExperimentales = fuentesExperimentales
         cls.validarGrupoExperimental(grupoExperimental)

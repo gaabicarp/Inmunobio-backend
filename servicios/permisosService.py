@@ -50,8 +50,7 @@ class PermisosService():
     def obtenerPermisoPorId(cls,id_permiso):
         try:
             return CommonService.json(PermisosService.find_by_id(id_permiso),PermisoSchema)
-        except Exception as err:
-            return {'Error': err.message},400
+        except Exception as err: return {'Error': err.message},400
 
     @classmethod
     def tieneElPermiso(cls, permisos, idPermiso):
@@ -61,5 +60,6 @@ class PermisosService():
     def esJefeDeProyecto(cls,usuario):
         if not cls.tieneElPermiso(usuario.permisos,cls.jefeProyecto): raise Exception(f"El usuario {usuario.nombre} no tiene permisos como Jefe De Proyecto id.{cls.jefeProyecto}")
 
-
-
+    @classmethod
+    def difPermisos(cls,dictPermA,dictPermB):
+        pass

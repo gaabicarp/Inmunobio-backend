@@ -29,11 +29,9 @@ class GrupoExperimentalService:
     def deserializarSegunTipo(cls,grupo):
         return GrupoExperimentalSchema().dump(grupo) if grupo.tipo =="Animal" else GrupoDeTipoOtro().dump(grupo)
         
-
     @classmethod
     def CrearGrupoExperimental(cls, datos):
         grupoExperimental = AltaGrupoExperimentalSchema().load(datos)
-        print(GrupoExperimentalSchema().dump(grupoExperimental))
         #id_experimento no hay que validarlo?
         grupoExperimental.save()
 
