@@ -12,9 +12,9 @@ class UsuarioService():
         usuario = cls.validarModificacion(datos)
         CommonService.updateAtributes(usuario , datos, ['permisos','password'])
         cls.modificacionPassword(usuario,datos['password'])
-        #cls.asignarPermisos(usuario, datos['permisos'])
+        cls.asignarPermisos(usuario, datos['permisos'])
         from db import db
-        #db.session.commit()
+        db.session.commit()
 
     @classmethod
     def validarModificacion(cls, datos):
@@ -27,15 +27,13 @@ class UsuarioService():
     @classmethod
     def validarModificacionPermisos(cls,usuarioAnt,permisos):
         from servicios.permisosService import PermisosService
-
-        print("permisos que el usuario ya tiene")
-        print(PermisosService.permisosById(usuarioAnt.permisos))
-        PermisosService.permisosById(permisos)
-        print("permisos que el usuario va a tener")
-        print(permisos)
+        from servicios.proyectoService import ProyectoService
+        nuevosPermisos = PermisosService.permisosById(permisos)
+        if not PermisosService.tieneElPermiso(nuevosPermisos,PermisosService.jefeProyecto) and ProyectoService.usuarioEsJefeDeAlgunProyecto(usuarioAnt.id) :
+            raise Exception("El usuario es jefe de un proyecto activo.No se puede revocar el permiso -Jefe de Proyecto-.")
+        if not PermisosService.tieneElPermiso(nuevosPermisos,PermisosService.jefeDeGrupo) and usuarioAnt.esJefeDe :
+            raise Exception("El usuario es jefe de un grupo activo.No se puede revocar el permiso -Jefe de Grupo-.")
         
-
-
     @classmethod
     def asignarPermisos(cls, usuario, permisosDicts):
         from servicios.permisosService import PermisosService
