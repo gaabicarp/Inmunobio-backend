@@ -56,7 +56,7 @@ class ProyectoService:
         cls.validarProyecto(proyecto)
         if proyecto.descripcion.strip() != "":
             Proyecto.objects(id_proyecto = proyecto.id_proyecto).update(set__descripcion = proyecto.descripcion)
-        Proyecto.objects(id_proyecto = proyecto.id_proyecto).update(set__montoInicial = proyecto.montoInicial,set__participantes = proyecto.participantes)
+        Proyecto.objects(id_proyecto = proyecto.id_proyecto).update(set__montoInicial = proyecto.montoInicial,set__participantes = proyecto.participantes,set__idDirectorProyecto=proyecto.idDirectorProyecto)
 
     @classmethod
     def obtenerMiembrosProyecto(cls, id_proyecto):  

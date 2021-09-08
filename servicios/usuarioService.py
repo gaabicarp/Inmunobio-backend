@@ -1,6 +1,7 @@
 from calendar import c
 from models.mysql.usuario import Usuario
 from schemas.usuarioSchema import UsuarioSchemaModificar, UsuarioNuevoSchema,LoginUsuario,UsuarioSchema
+from schemas.permisosSchema import PermisoExistenteSchema
 from servicios.commonService import CommonService
 from servicios.validationService import  ValidacionesUsuario
 from werkzeug.security import generate_password_hash,check_password_hash
@@ -11,17 +12,29 @@ class UsuarioService():
         usuario = cls.validarModificacion(datos)
         CommonService.updateAtributes(usuario , datos, ['permisos','password'])
         cls.modificacionPassword(usuario,datos['password'])
-        cls.asignarPermisos(usuario, datos['permisos'])
-
+        #cls.asignarPermisos(usuario, datos['permisos'])
         from db import db
-        db.session.commit()
+        #db.session.commit()
 
     @classmethod
     def validarModificacion(cls, datos):
         UsuarioSchemaModificar().load(datos)
         usuarioAnt = UsuarioService.find_by_id(datos['id'])
         cls.validaModificacionEmail(usuarioAnt,datos['email'])
+        cls.validarModificacionPermisos(usuarioAnt,datos['permisos'])
         return usuarioAnt
+
+    @classmethod
+    def validarModificacionPermisos(cls,usuarioAnt,permisos):
+        from servicios.permisosService import PermisosService
+
+        print("permisos que el usuario ya tiene")
+        print(PermisosService.permisosById(usuarioAnt.permisos))
+        PermisosService.permisosById(permisos)
+        print("permisos que el usuario va a tener")
+        print(permisos)
+        
+
 
     @classmethod
     def asignarPermisos(cls, usuario, permisosDicts):
@@ -47,7 +60,8 @@ class UsuarioService():
 
     @classmethod
     def modificacionPassword(cls,usuario,password):
-        if not check_password_hash(usuario.password, password): cls.hashPassword(usuario,password)
+        if usuario.password != password: 
+            cls.hashPassword(usuario,password)
 
     @classmethod
     def validarEmail(cls,email ):

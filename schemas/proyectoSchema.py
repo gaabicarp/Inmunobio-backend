@@ -29,7 +29,7 @@ class ProyectoNuevoSchema(ProyectoSchema):
     codigoProyecto = fields.Str(required=True,validate=Validacion.not_empty_string, error_messages={"required": {"message": "Se necesita el código del proyecto", "code": 400}})
     nombre = fields.Str(required=True,validate=Validacion.not_empty_string, error_messages={"required": {"message": "Se necesita ingresar el nombre del proyecto", "code": 400}})
     montoInicial = fields.Float(required=True, error_messages={"required": {"message": "Se necesita ingresar un monto inicial", "code": 400}})
-    participantes = fields.List(fields.Int(required=True,validate=Validacion.not_empty_list, error_messages={"required": {"message": "Se deben indicar participantes", "code": 400}})) 
+    participantes = fields.List(fields.Int(required=True,validate=Validacion.not_empty_int, error_messages={"required": {"message": "Se deben indicar participantes", "code": 400}})) 
     idDirectorProyecto = fields.Integer(required=True,validate=Validacion.not_empty_int,error_messages={"required": {"message": "Debe indicarse jefe de proyecto", "code": 400}})
 
 class ProyectoCerradoSchema(ProyectoSchema):

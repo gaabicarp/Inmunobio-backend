@@ -26,8 +26,7 @@ class MuestraService:
 
     @classmethod
     def find_all_by_proyecto(cls, idProyecto):
-        muestras = Muestra.objects(id_proyecto=idProyecto, habilitada = True).all()
-        return MuestraSchema().dump(muestras, many=True)
+        return Muestra.objects(id_proyecto=idProyecto, habilitada = True).all()
 
     @classmethod
     def nuevasMuestras(cls, datos):

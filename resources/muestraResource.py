@@ -58,7 +58,7 @@ class MuestraProyecto(Resource):
     def get(self, idProyecto):
         if idProyecto:
             try:
-                muestras = MuestraService().find_all_by_proyecto(idProyecto)
+                muestras= MuestraService().find_all_by_proyecto(idProyecto)
                 return CommonService.jsonMany(muestras,MuestraSchema)
             except Exception as err:
                 return {'Error': err.args}, 400
