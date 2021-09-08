@@ -101,7 +101,6 @@ class GrupoDeTrabajoService():
     @classmethod
     def modificarJefeGrupo(cls, datos):
         jefeDeGrupoSchema().load(datos)
-        # TO-DO ver si esto se mover al schema
         grupoAModificar = cls.find_by_id(datos['id_grupoDeTrabajo'])
         cls.validarJefe(datos['jefeDeGrupo'],grupoAModificar.id_grupoDeTrabajo)
         cls.desnombrarJefe(grupoAModificar.jefeDeGrupo)

@@ -117,7 +117,8 @@ class ProyectoService:
 
     @classmethod
     def obtenerProyectosUsuario(cls,id_usuario):
-        proyectos =  Proyecto.objects.filter(idDirectorProyecto=id_usuario,participantes=id_usuario)
+        from mongoengine import Q
+        proyectos =  Proyecto.objects.filter(Q(idDirectorProyecto=id_usuario) | Q(participantes=id_usuario))
         [cls.agregarDatosProyecto(proyecto) for proyecto in proyectos]
         return proyectos
 
