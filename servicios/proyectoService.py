@@ -38,6 +38,7 @@ class ProyectoService:
         from experimentoService import ExperimentoService
         if not ExperimentoService.todosLosExperimentosFinalizados(proyecto.id_proyecto): raise Exception(f"Hay experimentos activos que deben cerrarse antes de la baja del proyecto.")
     #falta sacar codigo de fuentes y cerrar grupos (:
+    
     @classmethod
     def cerrarProyecto(cls, datos):
         proyectoModelo = ProyectoCerradoSchema().load(datos)
@@ -135,3 +136,7 @@ class ProyectoService:
         proyecto.participantes = cls.obtenerMiembrosProyecto(proyecto.id_proyecto)
         from servicios.usuarioService import UsuarioService
         proyecto.idDirectorProyecto = UsuarioService.find_by_id(proyecto.idDirectorProyecto)
+
+    @classmethod
+    def usuarioEsJefeDeAlgunProyecto(cls,id_usuario):
+        return Proyecto.objects.filter(idDirectorProyecto = id_usuario,finalizado=False)
