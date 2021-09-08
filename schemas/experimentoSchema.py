@@ -22,7 +22,6 @@ class ExperimentoSchema(Schema):
         return Experimento(**data)
 
 class AltaExperimentoSchema(ExperimentoSchema):
-
     id_proyecto = fields.Int(required=True, validate=Validacion.not_empty_int, error_messages={"required": {"message" : "Es necesario indicar el id del proyecto", "code": 400}})
     codigo = fields.String(required=True, validate=Validacion.not_empty_string, error_messages={"required": {"message" : "Es necesario indicar el código del experimento", "code": 400}})
     metodologia = fields.Str( required=True, validate=Validacion.not_empty_string, error_messages={"required": {"message": "El campo metodología es necesario, no puede estar vacío", "code": 400}})

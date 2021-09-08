@@ -18,10 +18,9 @@ class ExperimentoResource(Resource):
     def get(self, idExperimiento):
         if idExperimiento:
             try:
-                experimento = ExperimentoService().find_by_id(idExperimiento)
-                return CommonService.json(experimento,ExperimentoSchema),200
+                return ExperimentoService().experimentoPorId(idExperimiento)
             except Exception as err:
-                return {'error': err.args}, 400
+                return {'Error': err.args}, 400
         return {"Error" : "Se debe indicar un id de experimento válido."}, 400
 
     def post(self):

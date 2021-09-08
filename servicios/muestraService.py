@@ -29,6 +29,10 @@ class MuestraService:
         return Muestra.objects(id_proyecto=idProyecto, habilitada = True).all()
 
     @classmethod
+    def muestrasDelExperimentoDatosExtra(cls,muestras):      
+        [CommonService.asignarNombreExperimento(CommonService.asignarNombreContenedorAux(muestra)) for muestra in muestras ]
+
+    @classmethod
     def nuevasMuestras(cls, datos):
         muestras = NuevaMuestraSchema().load(datos, many=True)
         cls.validarRelacionDeMuestras(cls, muestras)

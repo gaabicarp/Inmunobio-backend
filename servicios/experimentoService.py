@@ -11,6 +11,13 @@ class ExperimentoService:
     @classmethod
     def find_by_id(cls, idExperimento):
         return  Experimento.objects.filter(id_experimento=idExperimento,finalizado=False).first()
+    
+    @classmethod
+    def experimentoPorId(cls,idExperimento):
+        experimento = ExperimentoSchema().dump(cls.find_by_id(idExperimento))
+        from servicios.muestraService import MuestraService
+        MuestraService.muestrasDelExperimentoDatosExtra(experimento['muestrasExternas'])
+        return experimento
 
     @classmethod
     def find_all_by_idProyecto(cls, idProyecto):
@@ -24,6 +31,7 @@ class ExperimentoService:
         #falta validar q exista el proyecto
         experimento = AltaExperimentoSchema().load(datos)
         experimento.save()
+
     @classmethod
     def find_by_proyecto(cls, _id_proyecto):
         return Experimento.objects(id_proyecto = _id_proyecto) 
@@ -119,7 +127,6 @@ class ExperimentoService:
         experimentos = cls.find_all_by_id(_id_proyecto)
         return cls.obtenerLosBlogs(experimentos,datos)
 
-        #BlogSchema().dump(many=True))
     @classmethod
     def blogServiceExp(cls,blogs,fechaDesde,fechaHasta):
         from servicios.blogService import BlogService
@@ -149,3 +156,7 @@ class ExperimentoService:
     @classmethod
     def experimentos(self):
         return Experimento.objects.all()
+
+    @classmethod
+    def nombreExperimento(cls,idExperimento):
+        return cls.find_by_id(idExperimento).codigo

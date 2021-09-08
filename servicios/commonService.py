@@ -28,6 +28,11 @@ class CommonService():
         return cls.asignarNombreAObjeto(objeto,ProyectoService.obtenerNombreProyecto, objeto['id_proyecto'],'nombreProyecto')
 
     @classmethod
+    def asignarNombreExperimento(cls,objeto):
+        from servicios.experimentoService import ExperimentoService
+        return cls.asignarNombreAObjeto(objeto,ExperimentoService.nombreExperimento, objeto['id_experimento'],'codigoExperimento')
+   
+    @classmethod
     def asignacionNombresDistribuidora(cls,objeto):
         from servicios.distribuidoraService import DistribuidoraService
         return cls.asignarNombreAObjeto(objeto,DistribuidoraService.obtenerNombreDistribuidora, objeto['id_distribuidora'],'nombreDistribuidora',)
@@ -36,11 +41,11 @@ class CommonService():
     def asignarNombreContenedor(cls,objeto):
         from servicios.contenedorService import ContenedorService
         return cls.asignarNombreAObjeto(objeto,ContenedorService.obtenerNombreContenedor, objeto['codigoContenedor'],'nombreContenedor',)
+
     @classmethod
     def asignarNombreContenedorAux(cls,objeto):
         from servicios.contenedorService import ContenedorService
-        if objeto:
-            agregado= cls.asignarNombreAObjeto(objeto,ContenedorService.obtenerNombreContenedor, objeto['id_contenedor'],'nombreContenedor',) 
+        if objeto: cls.asignarNombreAObjeto(objeto,ContenedorService.obtenerNombreContenedor, objeto['id_contenedor'],'nombreContenedor',) 
         return objeto
 
     @classmethod
