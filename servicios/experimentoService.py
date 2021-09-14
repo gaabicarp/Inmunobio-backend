@@ -22,8 +22,9 @@ class ExperimentoService:
     @classmethod
     def find_all_by_idProyecto(cls, idProyecto):
         return ExperimentoSchema().dump(Experimento.objects.filter(id_proyecto=idProyecto).all(), many=True)
+
     @classmethod
-    def find_all_by_id(cls, idProyecto):
+    def find_by_id_proyecto(cls, idProyecto):
         return Experimento.objects.filter(id_proyecto=idProyecto).all()
 
     @classmethod
@@ -92,8 +93,7 @@ class ExperimentoService:
         from servicios.blogService import BlogService
         experimento = cls.find_by_id(id_experimento)
         if not experimento : raise Exception(f"No existe experimento asociado con id {id_experimento}")
-        blog = BlogService.nuevoBlog(datosBlog)
-        experimento.blogs.append(blog)
+        experimento.blogs.append(BlogService.nuevoBlog(datosBlog))
         experimento.save()
 
     @classmethod
@@ -101,15 +101,14 @@ class ExperimentoService:
         exp = cls.find_by_id(id_experimento)
         if not exp : raise Exception(f"No existe experimento asociado con id {id_experimento}")
         if not exp.id_proyecto == id_proyecto: raise Exception("El experimento con id {id_experimento} no pertene al proeyecto")
-
+  
     @classmethod
-    def obtenerBlogs(cls,datos):
+    def obtenerBlogsEXperimentoPorID(cls,datos):
         BusquedaBlogExp().load(datos)
         experimento = cls.find_by_id(datos['id_experimento'])
-        if not experimento : raise Exception(f"No existe experimento asociado con id {datos['id_experimento']}")
-        blogs= BlogService.busquedaPorFecha(experimento.blogs,datos['fechaDesde'],datos['fechaHasta'])
-        return cls.deserializarBlogsExp(blogs,experimento)
-
+        return cls.obtenerBlogs(experimento,datos)
+        
+    @classmethod
     def removerMuestraDeExperimento(cls, idExperimento, idMuestra):
         cls.validarRemoverMuestraExperimento(idExperimento, idMuestra)
         Experimento.objects(id_experimento=idExperimento).update(pull__muestrasExternas__id_muestra=idMuestra)
@@ -123,33 +122,24 @@ class ExperimentoService:
             raise Exception(f"El experimento con id {idExperimento} no tiene la muestra con id {idMuestra}.")
 
     @classmethod
-    def obtenerBlogsExperimento(cls,_id_proyecto,datos):
-        experimentos = cls.find_all_by_id(_id_proyecto)
-        return cls.obtenerLosBlogs(experimentos,datos)
+    def obtenerBlogsExperimentoDeProyecto(cls,_id_proyecto,datos):
+        experimentos = cls.find_by_id_proyecto(_id_proyecto)
+        return [x for x in list(map(lambda exp: cls.obtenerBlogs(exp,datos),experimentos)) if x]
 
     @classmethod
-    def blogServiceExp(cls,blogs,fechaDesde,fechaHasta):
+    def obtenerBlogs(cls,experimento,datos):
         from servicios.blogService import BlogService
-        return BlogService.busquedaPorFecha(blogs,fechaDesde,fechaHasta)
-
-    @classmethod
-    def obtenerLosBlogs(cls,experimentos,datos):
-        blogs = []
-        for exp in experimentos:
-            blogsExperimentos= cls.blogServiceExp(exp.blogs,datos['fechaDesde'],datos['fechaHasta'])
-            blogs.extend(cls.deserializarBlogsExp(blogsExperimentos,exp))
-        return blogs
-
+        blogs = BlogService.busquedaPorFecha(experimento.blogs,datos['fechaDesde'],datos['fechaHasta'])
+        return cls.deserializarBlogsExp(blogs,experimento) 
+   
     @classmethod
     def deserializarBlogsExp(cls,blogs,exp):
-        blogsDic = []
-        for blog in blogs: blogsDic.append(cls.agregarDatosExtraBlogExp(blog,exp))
-        return blogsDic
+        return list(map(lambda blog: cls.agregarDatosExtraBlogExp(blog,exp),blogs))
 
     @classmethod
     def agregarDatosExtraBlogExp(cls,blog,exp):
-        from schemas.blogSchema import BlogSchema
-        dictBlog =  BlogSchema().dump(blog)
+        from schemas.blogSchema import BlogSchemaExtendido
+        dictBlog =  BlogSchemaExtendido().dump(blog)
         dictBlog['codigoExperimento'] = exp.codigo
         return dictBlog
 

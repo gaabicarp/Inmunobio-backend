@@ -8,8 +8,7 @@ class BlogService():
     @classmethod
     def nuevoBlog(cls,datos):
         #falta validar usuario q crea
-        nuevoBlog = NuevoBlogSchema().load(datos)
-        return nuevoBlog
+        return NuevoBlogSchema().load(datos)
         
     @classmethod
     def convertirFecha(cls,fecha,hr,min,seg):
@@ -20,13 +19,15 @@ class BlogService():
         fecDesde= cls.convertirFecha(fecDesde,0,0,0)
         fecHasta = cls.convertirFecha(fecHasta,23,59,0)
         cls.validarFechas(fecDesde, fecHasta)
-        blogsMatch = []
-        for blog in blogs:
-            if blog.fecha <= fecHasta and blog.fecha>=fecDesde: blogsMatch.append(blog)
-        return blogsMatch
-
+        return cls.agregarDataUsuarios(list(filter(lambda blog: blog.fecha <= fecHasta and blog.fecha>=fecDesde , blogs)))
+        
+    @classmethod
+    def agregarDataUsuarios(cls,blogs):
+        from .commonService import CommonService
+        return list(map(lambda blog: CommonService.asignarUsuario(blog), blogs))
+        
     def validarFechas(fechaDesde,fechaHasta):
-        if not fechaDesde<fechaHasta: raise Exception("La fecha-desde debe ser inferior a la fecha-hasta")
+        if not fechaDesde<fechaHasta: raise Exception("El rango de fechas debe ser válido.")
 
     @classmethod
     def appendBlogs(cls,objetos):

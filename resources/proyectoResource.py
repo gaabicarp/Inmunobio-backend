@@ -1,7 +1,6 @@
 from flask_restful import Resource
 from flask_jwt import jwt_required
 from flask import  request
-from marshmallow import ValidationError
 from schemas.proyectoSchema import ProyectoExtendido
 from servicios.proyectoService import ProyectoService
 from servicios.commonService import CommonService
@@ -13,7 +12,7 @@ class Proyectos(Resource):
         try:
             return CommonService.jsonMany(ProyectoService.find_all(),ProyectoExtendido)
         except Exception as err:
-            return {'Error': str(err)},400
+            return {'Error': err.args},400
 
 class NuevoProyecto(Resource):
     # @jwt_required()
@@ -24,7 +23,7 @@ class NuevoProyecto(Resource):
                 ProyectoService.nuevoProyecto(datos)
                 return {'Status':'El proyecto fue dado de alta.'},200
             except Exception as err:
-                return {'Error': err.ars},400
+                return {'Error': err.args},400
         return {'Error': 'Deben suministrarse datos para el alta del proyecto.'},404
 
 class CerrarProyecto(Resource):
@@ -66,8 +65,7 @@ class ObtenerUsuariosProyecto(Resource):
     def get(self,id_proyecto):
         if(id_proyecto):
             try:
-                usuarios=  ProyectoService.obtenerMiembrosProyecto(id_proyecto)
-                return  CommonService.jsonMany(usuarios,UsuarioSchema)
+                return  CommonService.jsonMany(ProyectoService.obtenerMiembrosProyecto(id_proyecto),UsuarioSchema)
             except Exception as err:
                 return {'Error': err.args},400
         return {'Error': 'Deben indicarse id del proyecto'}, 400

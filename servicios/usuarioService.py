@@ -1,7 +1,6 @@
 from calendar import c
 from models.mysql.usuario import Usuario
 from schemas.usuarioSchema import UsuarioSchemaModificar, UsuarioNuevoSchema,LoginUsuario,UsuarioSchema
-from schemas.permisosSchema import PermisoExistenteSchema
 from servicios.commonService import CommonService
 from servicios.validationService import  ValidacionesUsuario
 from werkzeug.security import generate_password_hash,check_password_hash
@@ -78,6 +77,10 @@ class UsuarioService():
         return resultado
 
     @classmethod
+    def find_by_id_all(cls, _id):
+        return CommonService.json(Usuario.query.filter_by(id=_id).first(),UsuarioSchema)  
+
+    @classmethod
     def findUsuariosHabilitados(cls):
         return Usuario.query.filter_by(habilitado=True).all()
 
@@ -126,7 +129,6 @@ class UsuarioService():
         if not PermisosService.tieneElPermiso(jefe.permisos, PermisosService.jefeDeGrupo):
             raise Exception(f"El usuario con id {_id_usuario} no posee permisos para ser jefe de grupo.")
     
-        
     @classmethod
     def loginUsuario(cls,datos):
         from flask import jsonify

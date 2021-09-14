@@ -38,8 +38,7 @@ class Jaula(Resource):
 
 class JaulasSinProyecto(Resource):
     def get(self):
-        jaulas = JaulaService.jaulasSinAsignar()
-        return CommonService.jsonMany(jaulas,JaulaSchema)
+        return CommonService.jsonMany(JaulaService.jaulasSinAsignar(),JaulaSchema)
 
 class JaulasDelProyecto(Resource):
     def get(self, idProyecto):
@@ -73,7 +72,7 @@ class ObtenerBlogsJaula(Resource):
         datos = request.get_json()
         if datos:
             try:
-                return JaulaService.obtenerBlogs(datos)       
+                return JaulaService.obtenerBlogsDeJaula(datos)       
             except Exception as err:
                 return {"Error": err.args}, 400
         return {"Error" : "Deben indicarse datos para el blog"}, 400
@@ -100,8 +99,7 @@ class JaulaXId(Resource):
         if id_jaula:
             try:
                 #obtener nombre del proyecto y asignarlo en este momento, no guardarlo
-                jaula = JaulaService.obtenerJaula(id_jaula)
-                return  CommonService.json(jaula,JaulaSchema)
+                return  CommonService.json(JaulaService.obtenerJaula(id_jaula),JaulaSchema)
             except Exception as err:
                 return {"Error": err.args}, 400
         return {"Error" : "Se debe indicar el id de una jaula."}, 400

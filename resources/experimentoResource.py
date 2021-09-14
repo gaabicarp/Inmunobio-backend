@@ -10,8 +10,7 @@ class Experimentos(Resource):
     #@jwt_required()
     def get(self, idProyecto):
         if idProyecto:
-            experimentos = ExperimentoService().find_all_by_idProyecto(idProyecto)
-            return experimentos, 200
+            return ExperimentoService().find_all_by_idProyecto(idProyecto), 200
         return {"Error" : "Se debe indicar un id del proyecto válido."}, 400
 
 class ExperimentoResource(Resource):
@@ -92,10 +91,11 @@ class ObtenerBlogsExp(Resource):
         datos = request.get_json()
         if(datos):
             try:
-                return ExperimentoService.obtenerBlogs(datos)
+                return ExperimentoService.obtenerBlogsEXperimentoPorID(datos)
             except Exception as err:
                 return {'Error' : err.args}, 400          
         return {'Error': 'Parametros id de experimento,fecha-desde y fecha-hasta requeridos'},400
+        
 class TodosLosExperimentos(Resource):
     def get(self):
         return CommonService.jsonMany( ExperimentoService.experimentos(),ExperimentoSchema)

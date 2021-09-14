@@ -20,7 +20,7 @@ class ProductoResource(Resource):
         if(datos):
             try:
                 ProductoService().modificarProducto(datos)
-                return {'Status':'ok'},200
+                return {'Status':'Se modificó el producto.'},200
             except Exception as err:
                 return {'Error': err.args},400 
         return {'Error': 'Deben indicarse datos para modificar el producto'},400

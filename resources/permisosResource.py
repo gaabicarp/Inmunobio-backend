@@ -1,5 +1,5 @@
 from servicios.permisosService import PermisosService
-from flask_restful import Resource,Api
+from flask_restful import Resource
 from flask_jwt import jwt_required
 from flask import request
 

@@ -8,8 +8,7 @@ class FuenteExperimental(Resource):
     def get(self, codigo):
         if codigo:
             try:
-                fuenteExperimental = FuenteExperimentalService.find_by_codigo(codigo)
-                return CommonService.json(FuenteExperimentalSchema,fuenteExperimental)
+                return CommonService.json(FuenteExperimentalService.find_by_codigo(codigo),FuenteExperimentalSchema)
             except Exception as err:
                 return {'error': err.args}, 400
         return {'Error': 'Es necesario indicar el codigo de la fuente experimental.'}, 400
@@ -28,8 +27,7 @@ class FuentesExperimentalesPorId(Resource):
     def get(self, id_fuente):
         if id_fuente:
             try:
-                fuenteExperimental = FuenteExperimentalService.find_by_id(id_fuente)
-                return CommonService.json(fuenteExperimental,FuenteExperimentalSchema)
+                return CommonService.json(FuenteExperimentalService.find_by_id(id_fuente),FuenteExperimentalSchema)
             except Exception as err:
                 return {'Error': err.args}, 400
         return {'Error': 'Es necesario indicar el id de la fuente experimental.'}, 400
@@ -38,8 +36,7 @@ class FuentesExperimentalesPorProyecto(Resource):
     def get(self, id_proyecto):
         if id_proyecto:
             try:
-                fuentesExperimentales = FuenteExperimentalService.find_by_proyecto(id_proyecto)
-                return CommonService.jsonMany(fuentesExperimentales,FuenteExperimentalSchema)
+                return CommonService.jsonMany(FuenteExperimentalService.find_by_proyecto(id_proyecto),FuenteExperimentalSchema)
             except Exception as err:
                 return {'error': err.args}, 400
         return {'Error': 'Es necesario indicar el id del proyecto al que pertenecn las fuentes experimentales.'}, 400

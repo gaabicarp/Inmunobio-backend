@@ -3,7 +3,7 @@ from flask_jwt import jwt_required
 from flask import request
 from servicios.herramientaService import HerramientaService
 from schemas.herramientaSchema import HerramientaSchema
-from schemas.blogSchema import BlogSchema
+from schemas.blogSchema import BlogSchemaExtendido
 from servicios.commonService import CommonService
 
 class HerramientaResource(Resource):
@@ -66,7 +66,7 @@ class BlogHerramientaXId(Resource):
         if datos:
             try:
                 blogs = HerramientaService.blogHerramienta(datos)
-                return CommonService.jsonMany(blogs,BlogSchema)     
+                return CommonService.jsonMany(blogs,BlogSchemaExtendido)     
             except Exception as err:
                 return {'Error': err.args},400    
         return {'Error': 'Parametros requeridos'},400  

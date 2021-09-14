@@ -75,10 +75,8 @@ class ProyectoService:
     def blogsProyecto(cls,id_proyecto,datos):
         from servicios.jaulaService import JaulaService
         blogsJaula = JaulaService.obtenerBlogsJaulaDeProyecto(id_proyecto,datos)
-
         from servicios.experimentoService import ExperimentoService
-        blogsExperimento = ExperimentoService.obtenerBlogsExperimento(id_proyecto,datos)
-
+        blogsExperimento = ExperimentoService.obtenerBlogsExperimentoDeProyecto(id_proyecto,datos)
         return blogsJaula+blogsExperimento    
 
     @classmethod

@@ -9,8 +9,7 @@ class Muestra(Resource):
     def get(self, idMuestra):
         if idMuestra:
             try:
-                muestra = MuestraService().find_by_id(idMuestra)
-                return CommonService.json(muestra,MuestraSchema)
+                return CommonService.json(MuestraService().find_by_id(idMuestra),MuestraSchema)
             except Exception as err:
                 return {'Error': err.args}, 400
         return {"Error" : "Se debe indicar el id de la muestra."}, 400
@@ -48,8 +47,7 @@ class MuestraGrupoExperimental(Resource):
     def get(self, idGrupoExperimental):
         if idGrupoExperimental:
             try:
-                muestras = MuestraService().find_all_by_grupoExperimental(idGrupoExperimental)
-                return CommonService.jsonMany(muestras,MuestraSchema)
+                return CommonService.jsonMany(MuestraService().find_all_by_grupoExperimental(idGrupoExperimental),MuestraSchema)
             except Exception as err:
                 return {'Error': err.args}, 400
         return {'Error' : "Se deben enviar un id del grupo experimental válido."}, 400
@@ -58,8 +56,7 @@ class MuestraProyecto(Resource):
     def get(self, idProyecto):
         if idProyecto:
             try:
-                muestras= MuestraService().find_all_by_proyecto(idProyecto)
-                return CommonService.jsonMany(muestras,MuestraSchema)
+                return CommonService.jsonMany(MuestraService().find_all_by_proyecto(idProyecto),MuestraSchema)
             except Exception as err:
                 return {'Error': err.args}, 400
         return {'Error' : "Se deben enviar un id de proyecto válido."}, 400
