@@ -52,11 +52,16 @@ class CommonService():
     def asignarNombreProducto(cls,objeto):
         from servicios.productoService import ProductoService
         return cls.asignarNombreAObjeto(objeto,ProductoService.obtenerNombreProducto, objeto['id_producto'],'nombre')
-
+    
+    @classmethod
+    def asignarUsuario(cls,objeto):
+        from servicios.usuarioService import UsuarioService
+        objeto.id_usuario = UsuarioService.find_by_id_all(objeto.id_usuario)
+        return objeto
+        
     @classmethod
     def asignarNombreAObjeto(cls,objeto,functionGetNameOf, id,etiqueta):
-        if id: cls.asignaNombre(functionGetNameOf(id), etiqueta,objeto)
-        else:cls.asignaNombre(id, etiqueta,objeto)
+        cls.asignaNombre(functionGetNameOf(id), etiqueta,objeto) if id else cls.asignaNombre(id, etiqueta,objeto)
         return objeto
 
     @classmethod

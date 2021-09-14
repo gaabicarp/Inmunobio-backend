@@ -3,7 +3,7 @@ from flask_restful import Resource
 from flask import request
 from servicios.grupoDeTrabajoService import GrupoDeTrabajoService
 from servicios.commonService import CommonService
-from schemas.grupoTrabajoSchema import GrupoDeTrabajoSchema,GrupoDeTrabajoDatosExtra
+from schemas.grupoTrabajoSchema import GrupoDeTrabajoDatosExtra
 
 class GrupoDeTrabajo(Resource):
     def post(self):
@@ -30,8 +30,7 @@ class GrupoDeTrabajoID(Resource):
     def get(self,id_grupoDeTrabajo):  
         if(id_grupoDeTrabajo):
             try:
-                grupo = GrupoDeTrabajoService.obtenerGrupoPorId(id_grupoDeTrabajo)
-                return CommonService.json(grupo,GrupoDeTrabajoDatosExtra)
+                return CommonService.json(GrupoDeTrabajoService.obtenerGrupoPorId(id_grupoDeTrabajo),GrupoDeTrabajoDatosExtra)
             except Exception as err:
                 return {'Error': err.args},400
         return {'Error': 'Debe indicarse el id del grupo de trabajo.'},400

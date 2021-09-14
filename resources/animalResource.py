@@ -10,8 +10,7 @@ from servicios.animalService import AnimalService
 class Animal(Resource):
     def get(self, idAnimal):
         if idAnimal:
-            animal = AnimalService().find_by_id(idAnimal)
-            return  CommonService.json(animal,AnimalSchema)
+            return  CommonService.json(AnimalService().find_by_id(idAnimal),AnimalSchema)
         return {'Error' : f"El id {idAnimal} no es válido."}, 400
 
     def post(self):
@@ -27,8 +26,8 @@ class Animal(Resource):
     def put(self, idAnimal):
         if idAnimal:
             if AnimalService().bajarAnimal(idAnimal):
-                return {'Status': f'Se dio de baja el animal con id {idAnimal}'}
-            return {'Status': f'No se encontró ningún animal con el id {idAnimal}'}, 200
+                return {'Status': f'Se dio de baja el animal con id {idAnimal}'},200
+            return {'Error': f'No se encontró ningún animal con el id {idAnimal}'}, 400
         return {'Error' : f"El id {idAnimal} no es válido."}, 400
 
 class Animales(Resource):
@@ -37,14 +36,12 @@ class Animales(Resource):
 
 class AnimalesSinJaula(Resource):
     def get(self):
-        animales = AnimalService.animalesSinJaula()
-        return CommonService.jsonMany(animales,AnimalSchema)
+        return CommonService.jsonMany(AnimalService.animalesSinJaula(),AnimalSchema)
 
 class AnimalesDeLaJaula(Resource):
     def get(self, idJaula):
         if idJaula:
-            animales = AnimalService().animalesDeLaJaula(idJaula)
-            return CommonService.jsonMany(animales,AnimalSchema)
+            return CommonService.jsonMany( AnimalService().animalesDeLaJaula(idJaula),AnimalSchema)
         return {'Error': 'Se debe indicar un id de la jaula.'}, 400
 
     def put(self):

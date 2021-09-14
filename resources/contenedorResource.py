@@ -68,8 +68,7 @@ class ContenedorEspFisicoID(Resource):
     def get(self,id_espacioFisico):
         if id_espacioFisico:
             try:
-                contenedores = ContenedorService.find_all_by_id_esp(id_espacioFisico)
-                return contenedores,200
+                return ContenedorService.find_all_by_id_esp(id_espacioFisico),200
             except Exception as err:
                 return {'Error': err.args}, 400
         return {'Error': 'Se debe enviar un atributo id_espacioFisico válido'}, 400

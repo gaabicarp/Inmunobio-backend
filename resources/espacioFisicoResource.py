@@ -4,8 +4,7 @@ from flask import request
 from servicios.espacioFisicoService import EspacioFisicoService
 from servicios.commonService import CommonService
 from schemas.espacioFisicoSchema import EspacioFisicoSchema
-from schemas.blogSchema import BlogSchema
-from marshmallow import ValidationError
+from schemas.blogSchema import BlogSchemaExtendido
 
 class EspacioFisico(Resource):
 
@@ -33,8 +32,7 @@ class EspacioFisicoID(Resource):
     def get(self,id_espacioFisico):
         if id_espacioFisico:
             try:
-                espacio = EspacioFisicoService.find_by_id(id_espacioFisico)
-                return CommonService.json(espacio,EspacioFisicoSchema)
+                return CommonService.json(EspacioFisicoService.find_by_id(id_espacioFisico),EspacioFisicoSchema)
             except Exception as err:
                 return {'Error': err.args}, 400
         return {'Error': 'Debe enviarse el id del espacio físico.'},400
@@ -75,10 +73,9 @@ class ObtenerBlogsEspFisico(Resource):
         datos = request.get_json()
         if(datos):
             try:
-                blogs = EspacioFisicoService.obtenerBlogs(datos)
-                return CommonService.jsonMany(blogs,BlogSchema)
+                return CommonService.jsonMany(EspacioFisicoService.obtenerBlogs(datos),BlogSchemaExtendido)
             except Exception as err:
-                return {'Error': err.args}, 400          
+                return {'Error': err.args}, 400           
         return {'Error': 'Deben enviarse los datos para obtener el blog de espacio físico.'},400
 
 class EspaciosFisicos(Resource):

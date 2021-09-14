@@ -58,8 +58,8 @@ class HerramientaService:
         if(Herramienta.objects.filter(id_herramienta = _id_herramienta)):
             if (Herramienta.objects.filter(id_herramienta = _id_herramienta, blogs__id_blog= _id_blog).first()):
                 return Herramienta.objects.filter(id_herramienta = _id_herramienta).first().modify(pull__blogs__id_blog =_id_blog)
-            raise ErrorBlogInexistente(_id_blog)
-        raise ErrorHerramientaInexistente(_id_herramienta)
+            raise Exception(f"No existe blog con id:{_id_blog}")
+        raise Exception(f"No existe herramienta con id:{_id_herramienta}")
 
 
 

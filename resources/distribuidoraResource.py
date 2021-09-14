@@ -27,16 +27,14 @@ class DistribuidoraResource(Resource):
     
 class ObtenerDistribuidorasResource(Resource):
     def get(self):
-        distribuidoras = DistribuidoraService().obtenerDistribuidoras()
-        return CommonService.jsonMany(distribuidoras,DistribuidoraSchema)
+        return CommonService.jsonMany(DistribuidoraService().obtenerDistribuidoras(),DistribuidoraSchema)
     
 class DistribuidoraID(Resource):
     def get(self,id_distribuidora):
         try:
-            distribuidora = DistribuidoraService().find_by_id(id_distribuidora)
-            return CommonService.json(distribuidora,DistribuidoraSchema)
+            return CommonService.json(DistribuidoraService().find_by_id(id_distribuidora),DistribuidoraSchema)
         except Exception as err:
-            return {'Error': err.message},400
+            return {'Error': err.args},400
     
     def delete(self,id_distribuidora):
         if(id_distribuidora):

@@ -19,6 +19,10 @@ class BlogSchema(NuevoBlogSchema):
     id_blog = fields.Integer(dump_only=True)
     tipo = fields.String()
 
+class BlogSchemaExtendido(BlogSchema):
+    from .usuarioSchema import UsuarioSchema
+    id_usuario = fields.Nested(UsuarioSchema)
+
 def tipoValidacion(data):
     if( data != "Jaula" and data != "Experimento"):
         raise ValidationError('Debe indicarse como tipo "Jaula" o "Experimento"')
