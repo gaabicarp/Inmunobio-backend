@@ -1,4 +1,5 @@
 
+
 # Pasos para levantar el entorno:
 
 -Requerimientos: tener python 3.x instalado.
@@ -24,5 +25,8 @@ Posibles errores solucionables con algunos de estos comandos:
 
 $apt-get install libmysqlclient-dev python-dev (Fuera del entorno)
 
+## Bases en Docker
 
- 
+$sudo docker run -d -p 27017-27019:27017-27019 --name mongoDB mongo
+$sudo docker run -d -p 33060:3306 --name mysqlDB -e MYSQL_ROOT_PASSWORD=secret mysql
+
